@@ -4,14 +4,14 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
-class Interpreter {
+class Emulator {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
 
     private int instructionsPerSecond;
 
-    Interpreter(int instructionsPerSecond) {
+    Emulator(int instructionsPerSecond) {
         this.instructionsPerSecond = instructionsPerSecond;
     }
 

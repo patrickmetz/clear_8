@@ -9,10 +9,10 @@ public class Main {
     public static void main(String[] args) {
         int instructionsPerSecond = Integer.parseInt(args[0]);
 
-        Interpreter interpreter = new Interpreter(instructionsPerSecond);
+        Emulator emulator = new Emulator(instructionsPerSecond);
 
         try {
-            interpreter.run();
+            emulator.run();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
