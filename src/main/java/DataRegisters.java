@@ -4,16 +4,22 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import java.util.HashMap;
+
 public class DataRegisters {
 
-    public byte read(short address) {
-        // TODO - implement DataRegisters.read
-        throw new UnsupportedOperationException();
+    private HashMap<Byte, Byte> memory;
+
+    DataRegisters() {
+        memory = new HashMap<>(16, 2);
     }
 
-    public void write(short address, byte value) {
-        // TODO - implement DataRegisters.write
-        throw new UnsupportedOperationException();
+    byte read(byte address) {
+        return memory.get(address);
+    }
+
+    void write(byte address, byte value) {
+        memory.put(address, value);
     }
 
 }

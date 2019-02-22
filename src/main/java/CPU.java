@@ -6,28 +6,30 @@
 
 public class CPU {
 
-    private final Memory memory;
-    private final DataRegisters dataRegisters;
     private final AddressRegister addressRegister;
     private final CallStack callStack;
-    private final ProgrammCounter programmCounter;
+    private final DataRegisters dataRegisters;
     private final DelayTimer delayTimer;
-    private final SoundTimer soundTimer;
-    private final Keyboard keyboard;
     private final Graphics graphics;
+    private final Keyboard keyboard;
+    private final Memory memory;
+    private final ProgrammCounter programmCounter;
+    private final SoundTimer soundTimer;
 
-    public CPU(Memory memory, DataRegisters dataRegisters, AddressRegister addressRegister,
-            CallStack callStack, ProgrammCounter programmCounter, DelayTimer delayTimer,
-            SoundTimer soundTimer, Keyboard keyboard, Graphics graphics) {
-        this.memory = memory;
-        this.dataRegisters = dataRegisters;
+    public CPU(AddressRegister addressRegister, CallStack callStack, DataRegisters dataRegisters,
+            DelayTimer delayTimer, Graphics graphics, Keyboard keyboard, Memory memory,
+            ProgrammCounter programmCounter,
+            SoundTimer soundTimer) {
+
         this.addressRegister = addressRegister;
         this.callStack = callStack;
-        this.programmCounter = programmCounter;
+        this.dataRegisters = dataRegisters;
         this.delayTimer = delayTimer;
-        this.soundTimer = soundTimer;
-        this.keyboard = keyboard;
         this.graphics = graphics;
+        this.keyboard = keyboard;
+        this.memory = memory;
+        this.programmCounter = programmCounter;
+        this.soundTimer = soundTimer;
     }
 
 }

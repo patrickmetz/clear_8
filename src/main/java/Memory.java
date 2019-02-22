@@ -4,16 +4,22 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import java.util.HashMap;
+
 public class Memory {
 
-    public byte read(short address) {
-        // TODO - implement Memory.read
-        throw new UnsupportedOperationException();
+    private HashMap<Short, Byte> memory;
+
+    Memory() {
+        memory = new HashMap<>(4096, 2);
     }
 
-    public void write(short address, byte value) {
-        // TODO - implement Memory.write
-        throw new UnsupportedOperationException();
+    byte read(short address) {
+        return memory.get(address);
+    }
+
+    void write(short address, byte value) {
+        memory.put(address, value);
     }
 
 }

@@ -6,14 +6,14 @@
 
 public class AddressRegister {
 
-    public char read() {
-        // TODO - implement AddressRegister.read
-        throw new UnsupportedOperationException();
+    private short memory;
+
+    short read() {
+        return memory;
     }
 
-    public void write(char value) {
-        // TODO - implement AddressRegister.write
-        throw new UnsupportedOperationException();
+    void write(short value) {
+        memory = value;
     }
 
 }

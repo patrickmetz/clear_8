@@ -6,24 +6,22 @@
 
 public class Graphics {
 
-    public void setPixel(byte x, byte y) {
-        // TODO - implement Graphics.setPixel
-        throw new UnsupportedOperationException();
+    private boolean[][] pixels;
+
+    Graphics() {
+        pixels = new boolean[32][64];
     }
 
-    public void unsetPixel(byte x, byte y) {
-        // TODO - implement Graphics.unsetPixel
-        throw new UnsupportedOperationException();
+    boolean[][] getAllPixels() {
+        return pixels;
     }
 
-    public byte getPixel(byte x, byte y) {
-        // TODO - implement Graphics.getPixel
-        throw new UnsupportedOperationException();
+    boolean getPixel(byte x, byte y) {
+        return pixels[x][y];
     }
 
-    public byte getAllPixels() {
-        // TODO - implement Graphics.getAllPixels
-        throw new UnsupportedOperationException();
+    void setPixel(byte x, byte y, boolean value) {
+        pixels[x][y] = value;
     }
 
 }

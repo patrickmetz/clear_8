@@ -4,16 +4,22 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import java.util.Stack;
+
 public class CallStack {
 
-    public void push(byte value) {
-        // TODO - implement CallStack.push
-        throw new UnsupportedOperationException();
+    private Stack<Byte> memory;
+
+    CallStack() {
+        memory = new Stack<>();
     }
 
-    public byte pop() {
-        // TODO - implement CallStack.pop
-        throw new UnsupportedOperationException();
+    byte pop() {
+        return memory.pop();
+    }
+
+    void push(byte value) {
+        memory.push(value);
     }
 
 }

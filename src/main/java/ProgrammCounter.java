@@ -8,13 +8,13 @@ public class ProgrammCounter {
 
     private short value = 0;
 
-    public void increment(short value) {
-        // TODO - implement ProgrammCounter.increment
+    public void decrement(short value) {
+        // TODO - implement ProgrammCounter.decrement
         throw new UnsupportedOperationException();
     }
 
-    public void decrement(short value) {
-        // TODO - implement ProgrammCounter.decrement
+    public void increment(short value) {
+        // TODO - implement ProgrammCounter.increment
         throw new UnsupportedOperationException();
     }
 
