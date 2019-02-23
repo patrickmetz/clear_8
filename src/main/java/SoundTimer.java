@@ -4,32 +4,33 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
-import javax.sound.sampled.LineUnavailableException;
-
 class SoundTimer {
 
-    private Sound sound;
+    private Thread sound;
+
     private byte value = 60;
 
     SoundTimer(Sound sound) {
-        this.sound = sound;
+        this.sound = new Thread(sound);
     }
 
-    void decrement() throws LineUnavailableException {
+    void decrement() {
         value--;
 
         checkValue();
     }
 
-    void write(byte value) throws LineUnavailableException {
+    void write(byte value) {
         this.value = value;
 
         checkValue();
     }
 
-    private void checkValue() throws LineUnavailableException {
+    private void checkValue() {
         if (value == 0) {
-            sound.play();
+            sound.start();
+        } else {
+            sound.interrupt();
         }
     }
 }

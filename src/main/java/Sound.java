@@ -9,15 +9,15 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-class Sound {
+class Sound extends Thread {
 
     private static final float SAMPLE_RATE_IN_HZ = 8000f;
-    private static final int TONE_DURATION_IN_MS = 1000;
     private static final int TONE_FREQUENCY_IN_HZ = 400;
     private static final float SAMPLE_HZ_PER_TONE_HZ = SAMPLE_RATE_IN_HZ / TONE_FREQUENCY_IN_HZ;
     private static final int TONE_VOLUME = 100;
 
-    private static AudioFormat audioFormat;
+    private AudioFormat audioFormat;
+    private SourceDataLine sdl;
 
     Sound() {
         audioFormat = new AudioFormat(
@@ -26,22 +26,41 @@ class Sound {
                 1,
                 true,
                 false);
-    }
 
-    void play() throws LineUnavailableException {
-        SourceDataLine sdl = AudioSystem.getSourceDataLine(audioFormat);
-
-        byte[] buffer = new byte[1];
-
-        sdl.open(audioFormat);
-        sdl.start();
-
-        for (int i = 0; i < TONE_DURATION_IN_MS * SAMPLE_RATE_IN_HZ / 1000; i++) {
-            buffer[0] = (byte) (sineWave(i));
-            sdl.write(buffer, 0, buffer.length);
+        try {
+            sdl = AudioSystem.getSourceDataLine(audioFormat);
+        } catch (LineUnavailableException e) {
+            //todo: log this
+            e.printStackTrace();
         }
 
-        sdl.drain();
+        try {
+            sdl.open(audioFormat);
+        } catch (LineUnavailableException e) {
+            //todo: log this
+            e.printStackTrace();
+        }
+    }
+
+    public void run() {
+        byte[] output = new byte[1];
+        int outputBuffer;
+        int outputWritten = 0;
+
+        sdl.start();
+
+        while (!Thread.currentThread().isInterrupted()) {
+            outputBuffer = sdl.available();
+
+            // don't exceed buffer size to keep the thread interruptible
+            while (outputWritten < outputBuffer) {
+                output[0] = (byte) sineWave(outputWritten++);
+                sdl.write(output, 0, 1);
+            }
+
+            outputWritten = 0;
+        }
+
         sdl.stop();
         sdl.close();
     }
