@@ -11,9 +11,10 @@ import javax.sound.sampled.SourceDataLine;
 
 class Sound {
 
-    private static final float SAMPLE_RATE_IN_HZ = 1000f;
+    private static final float SAMPLE_RATE_IN_HZ = 8000f;
     private static final int TONE_DURATION_IN_MS = 1000;
     private static final int TONE_FREQUENCY_IN_HZ = 400;
+    private static final float SAMPLE_HZ_PER_TONE_HZ = SAMPLE_RATE_IN_HZ / TONE_FREQUENCY_IN_HZ;
     private static final int TONE_VOLUME = 100;
 
     private static AudioFormat audioFormat;
@@ -36,7 +37,7 @@ class Sound {
         sdl.start();
 
         for (int i = 0; i < TONE_DURATION_IN_MS * SAMPLE_RATE_IN_HZ / 1000; i++) {
-            buffer[0] = (byte) (sine(i));
+            buffer[0] = (byte) (sineWave(i));
             sdl.write(buffer, 0, buffer.length);
         }
 
@@ -45,8 +46,8 @@ class Sound {
         sdl.close();
     }
 
-    private double sine(double i) {
-        return Math.sin(
-                i / (SAMPLE_RATE_IN_HZ / TONE_FREQUENCY_IN_HZ) * 2.0 * Math.PI) * TONE_VOLUME;
+    private double sineWave(double sampleIndex) {
+        // sin(x * 2.0 * PI) * amplitude
+        return Math.sin(sampleIndex / SAMPLE_HZ_PER_TONE_HZ * 2.0 * Math.PI) * TONE_VOLUME;
     }
 }
