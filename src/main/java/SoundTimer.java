@@ -4,11 +4,32 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
-public class SoundTimer extends Timer {
+import javax.sound.sampled.LineUnavailableException;
 
-    public SoundTimer(Sound sound) {
-        // TODO - implement SoundTimer.SoundTimer
-        throw new UnsupportedOperationException();
+class SoundTimer {
+
+    private Sound sound;
+    private byte value = 60;
+
+    SoundTimer(Sound sound) {
+        this.sound = sound;
     }
 
+    void decrement() throws LineUnavailableException {
+        value--;
+
+        checkValue();
+    }
+
+    void write(byte value) throws LineUnavailableException {
+        this.value = value;
+
+        checkValue();
+    }
+
+    private void checkValue() throws LineUnavailableException {
+        if (value == 0) {
+            sound.play();
+        }
+    }
 }

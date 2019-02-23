@@ -4,11 +4,19 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
-public class DelayTimer extends Timer {
+public class DelayTimer {
 
-    public byte read() {
-        // TODO - implement DelayTimer.read
-        throw new UnsupportedOperationException();
+    private byte value = 60;
+
+    public void decrement() {
+        value--;
     }
 
+    public byte read() {
+        return value;
+    }
+
+    public void write(byte value) {
+        this.value = value;
+    }
 }
