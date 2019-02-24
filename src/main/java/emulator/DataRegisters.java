@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 22.02.19 21:04.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 import java.util.HashMap;
 
@@ -10,7 +12,7 @@ public class DataRegisters {
 
     private HashMap<Byte, Byte> memory;
 
-    DataRegisters() {
+    public DataRegisters() {
         memory = new HashMap<>(16, 2);
     }
 

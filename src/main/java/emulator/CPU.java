@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 23.02.19 19:33.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 public class CPU {
 
@@ -30,6 +32,12 @@ public class CPU {
         this.memory = memory;
         this.programmCounter = programmCounter;
         this.soundTimer = soundTimer;
+    }
+
+    public void writeToMemory(int offset, byte[] bytes) {
+        for (byte b : bytes) {
+            memory.write((short) offset++, b);
+        }
     }
 
 }

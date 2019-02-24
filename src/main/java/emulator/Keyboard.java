@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 22.02.19 21:25.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 import java.util.HashMap;
 

@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:23.
+ * Last modified 22.02.19 20:55.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 public class AddressRegister {
 

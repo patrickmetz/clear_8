@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 22.02.19 21:24.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 import java.util.Stack;
 
@@ -10,7 +12,7 @@ public class CallStack {
 
     private Stack<Byte> memory;
 
-    CallStack() {
+    public CallStack() {
         memory = new Stack<>();
     }
 

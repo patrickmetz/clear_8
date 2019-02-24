@@ -1,16 +1,18 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 23.02.19 17:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
-class SoundTimer {
+package emulator;
+
+public class SoundTimer {
 
     private Thread sound;
 
     private byte value = 60;
 
-    SoundTimer(Sound sound) {
+    public SoundTimer(Sound sound) {
         this.sound = new Thread(sound);
     }
 

@@ -1,15 +1,17 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 23.02.19 18:48.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-class Sound extends Thread {
+public class Sound extends Thread {
 
     private static final float SAMPLE_RATE_IN_HZ = 8000f;
     private static final int TONE_FREQUENCY_IN_HZ = 400;
@@ -19,7 +21,7 @@ class Sound extends Thread {
     private AudioFormat audioFormat;
     private SourceDataLine sdl;
 
-    Sound() {
+    public Sound() {
         audioFormat = new AudioFormat(
                 SAMPLE_RATE_IN_HZ,
                 8,

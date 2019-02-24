@@ -1,14 +1,16 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 22.02.19 17:22.
+ * Last modified 22.02.19 22:00.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package emulator;
 
 public class Graphics {
 
     private boolean[][] pixels;
 
-    Graphics() {
+    public Graphics() {
         pixels = new boolean[32][64];
     }
 
