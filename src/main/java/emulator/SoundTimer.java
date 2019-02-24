@@ -6,13 +6,13 @@
 
 package emulator;
 
-public class SoundTimer {
+final class SoundTimer {
 
-    private Thread sound;
+    private final Thread sound;
 
     private byte value = 60;
 
-    public SoundTimer(Sound sound) {
+    SoundTimer(Sound sound) {
         this.sound = new Thread(sound);
     }
 

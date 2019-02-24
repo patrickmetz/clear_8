@@ -4,9 +4,11 @@
  * Copyright (c) 2019. All rights reserved.
  */
 
+import emulator.Emulator;
+
 import java.io.FileNotFoundException;
 
-public class Main {
+final public class Main {
 
     private static final int INSTRUCTIONS_PER_SECOND = 500;
 
@@ -22,9 +24,9 @@ public class Main {
 
         try {
             emulator.run(rom);
-        } catch (FileNotFoundException e) {
-            //todo: log this
-            e.printStackTrace();
+//        } catch (FileNotFoundException e) {
+//            //todo: log this
+//            e.printStackTrace();
         } catch (InterruptedException e) {
             //todo: log this
             e.printStackTrace();

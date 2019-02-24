@@ -11,18 +11,17 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-public class Sound extends Thread {
+final class Sound extends Thread {
 
     private static final float SAMPLE_RATE_IN_HZ = 8000f;
     private static final int TONE_FREQUENCY_IN_HZ = 400;
     private static final float SAMPLE_HZ_PER_TONE_HZ = SAMPLE_RATE_IN_HZ / TONE_FREQUENCY_IN_HZ;
     private static final int TONE_VOLUME = 100;
 
-    private AudioFormat audioFormat;
     private SourceDataLine sdl;
 
-    public Sound() {
-        audioFormat = new AudioFormat(
+    Sound() {
+        AudioFormat audioFormat = new AudioFormat(
                 SAMPLE_RATE_IN_HZ,
                 8,
                 1,

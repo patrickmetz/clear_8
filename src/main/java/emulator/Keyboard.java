@@ -8,11 +8,11 @@ package emulator;
 
 import java.util.HashMap;
 
-public class Keyboard {
+final class Keyboard {
 
-    private HashMap<Byte, Boolean> keys;
+    private final HashMap<Byte, Boolean> keys;
 
-    public Keyboard() {
+    Keyboard() {
         keys = new HashMap<>(16, 2);
     }
 

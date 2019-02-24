@@ -6,7 +6,7 @@
 
 package emulator;
 
-public class CPU {
+final class CPU {
 
     private final AddressRegister addressRegister;
     private final CallStack callStack;
@@ -15,12 +15,12 @@ public class CPU {
     private final Graphics graphics;
     private final Keyboard keyboard;
     private final Memory memory;
-    private final ProgrammCounter programmCounter;
+    private final ProgramCounter programCounter;
     private final SoundTimer soundTimer;
 
-    public CPU(AddressRegister addressRegister, CallStack callStack, DataRegisters dataRegisters,
+    CPU(AddressRegister addressRegister, CallStack callStack, DataRegisters dataRegisters,
             DelayTimer delayTimer, Graphics graphics, Keyboard keyboard, Memory memory,
-            ProgrammCounter programmCounter,
+            ProgramCounter programCounter,
             SoundTimer soundTimer) {
 
         this.addressRegister = addressRegister;
@@ -30,11 +30,11 @@ public class CPU {
         this.graphics = graphics;
         this.keyboard = keyboard;
         this.memory = memory;
-        this.programmCounter = programmCounter;
+        this.programCounter = programCounter;
         this.soundTimer = soundTimer;
     }
 
-    public void writeToMemory(int offset, byte[] bytes) {
+    void writeToMemory(int offset, byte[] bytes) {
         for (byte b : bytes) {
             memory.write((short) offset++, b);
         }

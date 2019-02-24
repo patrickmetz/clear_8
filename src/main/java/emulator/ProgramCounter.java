@@ -6,17 +6,17 @@
 
 package emulator;
 
-public class ProgrammCounter {
+final class ProgramCounter {
 
     private short value = 0;
 
     public void decrement(short value) {
-        // TODO - implement ProgrammCounter.decrement
+        // TODO - implement ProgramCounter.decrement
         throw new UnsupportedOperationException();
     }
 
     public void increment(short value) {
-        // TODO - implement ProgrammCounter.increment
+        // TODO - implement ProgramCounter.increment
         throw new UnsupportedOperationException();
     }
 

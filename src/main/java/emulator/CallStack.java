@@ -8,11 +8,11 @@ package emulator;
 
 import java.util.Stack;
 
-public class CallStack {
+final class CallStack {
 
-    private Stack<Byte> memory;
+    private final Stack<Byte> memory;
 
-    public CallStack() {
+    CallStack() {
         memory = new Stack<>();
     }
 

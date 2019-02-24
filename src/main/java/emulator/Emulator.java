@@ -1,12 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 24.02.19 12:14.
+ * Last modified 24.02.19 12:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
-import emulator.*;
+package emulator;
 
-public class Emulator {
+final public class Emulator {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
@@ -18,7 +18,7 @@ public class Emulator {
 
         cpu = new CPU(new AddressRegister(), new CallStack(), new DataRegisters(),
                 new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
-                new ProgrammCounter(), new SoundTimer(new Sound()));
+                new ProgramCounter(), new SoundTimer(new Sound()));
     }
 
     public void run(String romPath) throws InterruptedException {

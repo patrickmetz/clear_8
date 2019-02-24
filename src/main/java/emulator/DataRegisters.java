@@ -8,11 +8,11 @@ package emulator;
 
 import java.util.HashMap;
 
-public class DataRegisters {
+final class DataRegisters {
 
-    private HashMap<Byte, Byte> memory;
+    private final HashMap<Byte, Byte> memory;
 
-    public DataRegisters() {
+    DataRegisters() {
         memory = new HashMap<>(16, 2);
     }
 

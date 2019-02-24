@@ -6,7 +6,7 @@
 
 package emulator;
 
-public class DelayTimer {
+final class DelayTimer {
 
     private byte value = 60;
 

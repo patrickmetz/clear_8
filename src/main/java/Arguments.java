@@ -6,13 +6,13 @@
 
 import org.apache.commons.cli.*;
 
-class Arguments {
+final class Arguments {
 
-    private String[] arguments;
+    final private String[] arguments;
+    final private String executableName;
+    final private Options options;
+    final private CommandLineParser parser;
     private CommandLine commandLine;
-    private String executableName;
-    private Options options;
-    private CommandLineParser parser;
 
     Arguments(String[] arguments, String executableName) {
         this.arguments = arguments;

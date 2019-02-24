@@ -6,11 +6,11 @@
 
 package emulator;
 
-public class Graphics {
+final class Graphics {
 
-    private boolean[][] pixels;
+    private final boolean[][] pixels;
 
-    public Graphics() {
+    Graphics() {
         pixels = new boolean[32][64];
     }
 

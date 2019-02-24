@@ -6,7 +6,7 @@
 
 package emulator;
 
-public class AddressRegister {
+final class AddressRegister {
 
     private short memory;
 

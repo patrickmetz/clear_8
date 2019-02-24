@@ -8,11 +8,11 @@ package emulator;
 
 import java.util.HashMap;
 
-public class Memory {
+final class Memory {
 
-    private HashMap<Short, Byte> memory;
+    private final HashMap<Short, Byte> memory;
 
-    public Memory() {
+    Memory() {
         memory = new HashMap<>(4096, 2);
     }
 
