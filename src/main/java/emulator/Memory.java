@@ -10,6 +10,8 @@ import java.util.HashMap;
 
 final class Memory {
 
+    static final short OFFSET_ROM = 512;
+
     private final HashMap<Short, Byte> memory;
 
     Memory() {

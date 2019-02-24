@@ -26,7 +26,7 @@ final public class Emulator {
     public void run(String romPath) throws InterruptedException, IOException {
         final int INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
 
-        cpu.writeToMemory(512, loadRom(romPath));
+        cpu.loadRomIntoMemory(loadRom(romPath));
 
         long now = System.currentTimeMillis();
         long endOfFrameTime;

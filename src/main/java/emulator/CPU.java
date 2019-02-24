@@ -34,10 +34,13 @@ final class CPU {
         this.soundTimer = soundTimer;
     }
 
-    void writeToMemory(int offset, byte[] bytes) {
+    void loadRomIntoMemory(byte[] bytes) {
+        short offset = Memory.OFFSET_ROM;
+
         for (byte b : bytes) {
             memory.write((short) offset++, b);
         }
-    }
 
+        programCounter.set(Memory.OFFSET_ROM);
+    }
 }

@@ -10,14 +10,16 @@ final class ProgramCounter {
 
     private short value = 0;
 
-    public void decrement(short value) {
-        // TODO - implement ProgramCounter.decrement
-        throw new UnsupportedOperationException();
+    void decrement(short value) {
+        value -= value;
     }
 
-    public void increment(short value) {
-        // TODO - implement ProgramCounter.increment
-        throw new UnsupportedOperationException();
+    void increment(short value) {
+        value += value;
+    }
+
+    void set(short value) {
+        this.value = value;
     }
 
 }
