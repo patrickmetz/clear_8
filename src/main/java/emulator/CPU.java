@@ -34,8 +34,34 @@ final class CPU {
         this.soundTimer = soundTimer;
     }
 
-    void executeNextInstruction() {
+    /**
+     * example:
+     * <p>
+     * instruction = 4645 as integer
+     * instruction = 1225 as hexadecimal
+     * <p>
+     * => 1NNN = jump to memory address NNN
+     * see https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
+     * for all supported cpu instructions
+     * <p>
+     * 1225 & 0xF000 = 1000 (gets 1st digit)
+     * 1225 & 0x0F00 = 0200 (gets 2nd digit
+     * 1225 & 0x00F0 = 0020 (gets 3rd digit)
+     * 1225 & 0x000F = 0005 (gets 4th digit)
+     */
+    void executeNextInstruction() throws UnsupportedOperationException {
         int instruction = getNextInstruction();
+
+        switch (instruction & 0xF000) {
+            case 0x1000:
+                execute1NNN(instruction);
+                break;
+            default:
+                throw new UnsupportedOperationException(
+                        "CPU instruction 0x" + Integer.toHexString(instruction)
+                );
+        }
+
     }
 
     void loadRomIntoMemory(byte[] bytes) {
@@ -48,8 +74,12 @@ final class CPU {
         programCounter.write(Memory.OFFSET_ROM);
     }
 
+    private void execute1NNN(int instruction) {
+        programCounter.write(instruction & 0x0FFF);
+    }
+
     /**
-     * Example:
+     * example:
      * <p>
      * first byte : 00000111
      * second byte: 01010010
