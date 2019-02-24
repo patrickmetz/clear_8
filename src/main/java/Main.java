@@ -6,7 +6,7 @@
 
 import emulator.Emulator;
 
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
 final public class Main {
 
@@ -24,9 +24,9 @@ final public class Main {
 
         try {
             emulator.run(rom);
-//        } catch (FileNotFoundException e) {
-//            //todo: log this
-//            e.printStackTrace();
+        } catch (IOException e) {
+            //todo: log this
+            e.printStackTrace();
         } catch (InterruptedException e) {
             //todo: log this
             e.printStackTrace();

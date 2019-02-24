@@ -6,6 +6,8 @@
 
 package emulator;
 
+import java.io.*;
+
 final public class Emulator {
 
     private final int FRAMES_PER_SECOND = 60;
@@ -21,7 +23,7 @@ final public class Emulator {
                 new ProgramCounter(), new SoundTimer(new Sound()));
     }
 
-    public void run(String romPath) throws InterruptedException {
+    public void run(String romPath) throws InterruptedException, IOException {
         final int INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
 
         cpu.writeToMemory(512, loadRom(romPath));
@@ -45,7 +47,18 @@ final public class Emulator {
         }
     }
 
-    private byte[] loadRom(String romPath) {
-        throw new UnsupportedOperationException();
+    private byte[] loadRom(String romPath) throws IOException {
+        File file = new File(romPath);
+        byte[] bytes = new byte[(int) file.length()];
+        FileInputStream fileStream = new FileInputStream(file);
+
+        int byteCount = 0;
+        int byteAsInteger;
+
+        while ((byteAsInteger = fileStream.read()) != -1) {
+            bytes[byteCount++] = (byte) byteAsInteger;
+        }
+
+        return bytes;
     }
 }
