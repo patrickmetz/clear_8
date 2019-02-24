@@ -6,7 +6,9 @@
 
 package emulator;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 final public class Emulator {
 
@@ -35,7 +37,7 @@ final public class Emulator {
             endOfFrameTime = now + MILLISECONDS_PER_FRAME;
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-                // cpu.processInstruction();
+                cpu.executeNextInstruction();
             }
 
             while (System.currentTimeMillis() < endOfFrameTime) {

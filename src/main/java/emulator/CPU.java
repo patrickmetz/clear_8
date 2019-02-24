@@ -34,13 +34,40 @@ final class CPU {
         this.soundTimer = soundTimer;
     }
 
+    void executeNextInstruction() {
+        int instruction = getNextInstruction();
+    }
+
     void loadRomIntoMemory(byte[] bytes) {
         short offset = Memory.OFFSET_ROM;
 
         for (byte b : bytes) {
-            memory.write((short) offset++, b);
+            memory.write(offset++, b);
         }
 
-        programCounter.set(Memory.OFFSET_ROM);
+        programCounter.write(Memory.OFFSET_ROM);
+    }
+
+    /**
+     * Example:
+     * <p>
+     * first byte : 00000111
+     * second byte: 01010010
+     * <p>
+     * instruction               : 00000000|00000000
+     * instruction = first byte  : 00000000|00000111
+     * instruction <<= 8         : 00000111|00000000
+     * instruction |= second byte: 00000111|01010010
+     */
+    private int getNextInstruction() {
+        int address = programCounter.read();
+
+        int instruction = memory.read(address);
+        instruction <<= 8;
+        instruction |= memory.read(address + 1);
+
+        programCounter.increment(2);
+
+        return instruction;
     }
 }

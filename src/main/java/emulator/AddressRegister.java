@@ -8,13 +8,13 @@ package emulator;
 
 final class AddressRegister {
 
-    private short memory;
+    private int memory;
 
-    short read() {
+    int read() {
         return memory;
     }
 
-    void write(short value) {
+    void write(int value) {
         memory = value;
     }
 

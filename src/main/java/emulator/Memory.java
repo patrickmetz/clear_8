@@ -12,17 +12,19 @@ final class Memory {
 
     static final short OFFSET_ROM = 512;
 
-    private final HashMap<Short, Byte> memory;
+    // hash map read and write access surpasses array:
+    // algorithmic complexity of get and put are at O(1)
+    private final HashMap<Integer, Byte> memory;
 
     Memory() {
         memory = new HashMap<>(4096, 2);
     }
 
-    byte read(short address) {
+    byte read(int address) {
         return memory.get(address);
     }
 
-    void write(short address, byte value) {
+    void write(int address, byte value) {
         memory.put(address, value);
     }
 
