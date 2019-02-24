@@ -56,6 +56,9 @@ final class CPU {
             case 0x1000:
                 execute1NNN(instruction);
                 break;
+            case 0x6000:
+                execute6XNN(instruction);
+                break;
             default:
                 throw new UnsupportedOperationException(
                         "CPU instruction 0x" + Integer.toHexString(instruction)
@@ -74,8 +77,18 @@ final class CPU {
         programCounter.write(Memory.OFFSET_ROM);
     }
 
-    private void execute1NNN(int instruction) {
-        programCounter.write(instruction & 0x0FFF);
+    /**
+     * sets program counter to address 0xNNN
+     */
+    private void execute1NNN(int i) {
+        programCounter.write(i & 0x0FFF);
+    }
+
+    /**
+     * sets register X to value NN
+     */
+    private void execute6XNN(int i) {
+        dataRegisters.write((byte) ((i & 0x0F00) >> 8), (byte) (i & 0x00FF));
     }
 
     /**
