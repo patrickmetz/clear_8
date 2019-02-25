@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 22:46.
+ * Last modified 25.02.19 23:45.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -59,6 +59,9 @@ final class CentralProcessingUnit {
             case 0x6000:
                 execute6XNN(instruction);
                 break;
+            case 0x7000:
+                execute7XNN(instruction);
+                break;
             case 0xA000:
                 executeANNN(instruction);
                 break;
@@ -106,6 +109,22 @@ final class CentralProcessingUnit {
                 (byte) ((i & 0x0F00) >> 8),
                 (byte) (i & 0x00FF)
         );
+    }
+
+    /**
+     * adds value NN to data register X.
+     * if new value exceeds maximum unsigned byte size, it is
+     * "wrapped around" (modulo) without setting carry flag.
+     */
+    private void execute7XNN(short i) {
+        byte registerAddress = (byte) ((i & 0x0F00) >> 8);
+        int newValue = dataRegisters.read(registerAddress) + (i & 0x00FF);
+
+        if (newValue > 255) {
+            newValue %= 255;
+        }
+
+        dataRegisters.write(registerAddress, (byte) newValue);
     }
 
     /**
