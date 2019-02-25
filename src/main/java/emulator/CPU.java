@@ -59,6 +59,9 @@ final class CPU {
             case 0x6000:
                 execute6XNN(instruction);
                 break;
+            case 0xA000:
+                executeANNN(instruction);
+                break;
             default:
                 throw new UnsupportedOperationException(
                         "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
@@ -89,6 +92,13 @@ final class CPU {
      */
     private void execute6XNN(int i) {
         dataRegisters.write((byte) ((i & 0x0F00) >> 8), (byte) (i & 0x00FF));
+    }
+
+    /**
+     * sets address register to address NNN
+     */
+    private void executeANNN(short i) {
+        addressRegister.write(i & 0x0FFF);
     }
 
     /**
