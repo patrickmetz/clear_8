@@ -50,7 +50,7 @@ final class CPU {
      * 1225 & 0x000F = 0005 (gets 4th digit)
      */
     void executeNextInstruction() throws UnsupportedOperationException {
-        int instruction = getNextInstruction();
+        short instruction = getNextInstruction();
 
         switch (instruction & 0xF000) {
             case 0x1000:
@@ -61,7 +61,7 @@ final class CPU {
                 break;
             default:
                 throw new UnsupportedOperationException(
-                        "CPU instruction 0x" + Integer.toHexString(instruction)
+                        "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
                 );
         }
 
@@ -78,7 +78,7 @@ final class CPU {
     }
 
     /**
-     * sets program counter to address 0xNNN
+     * sets program counter to address NNN
      */
     private void execute1NNN(int i) {
         programCounter.write(i & 0x0FFF);
@@ -102,10 +102,10 @@ final class CPU {
      * instruction <<= 8         : 00000111|00000000
      * instruction |= second byte: 00000111|01010010
      */
-    private int getNextInstruction() {
+    private short getNextInstruction() {
         int address = programCounter.read();
 
-        int instruction = memory.read(address);
+        short instruction = memory.read(address);
         instruction <<= 8;
         instruction |= memory.read(address + 1);
 
