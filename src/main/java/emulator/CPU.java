@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 23.02.19 19:33.
+ * Last modified 25.02.19 18:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -105,14 +105,14 @@ final class CPU {
     }
 
     /**
-     * draws a sprite at screen coordinates X,Y,
-     * using sprite data found at memory address N
+     * draws a sprite at screen coordinates X,Y, using
+     * N sprite rows found at currently registered address
      */
     private void executeDXYN(short i) {
         boolean pixelCollision = graphics.drawSprite(
-                dataRegisters.read((byte) ((i & 0x0F00) >> 8)),         // X
-                dataRegisters.read((byte) ((i & 0x00F0) >> 4)),         // y
-                memory.read(addressRegister.read(), (i) & 0x000F) // N
+                dataRegisters.read((byte) ((i & 0x0F00) >> 8)),
+                dataRegisters.read((byte) ((i & 0x00F0) >> 4)),
+                memory.read(addressRegister.read(), (i) & 0x000F)
         );
 
         dataRegisters.write((byte) 0xF, (byte) (pixelCollision ? 1 : 0));
