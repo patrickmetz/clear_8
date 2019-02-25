@@ -62,6 +62,9 @@ final class CPU {
             case 0xA000:
                 executeANNN(instruction);
                 break;
+            case 0xD000:
+                executeDXYN(instruction);
+                break;
             default:
                 throw new UnsupportedOperationException(
                         "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
@@ -81,31 +84,45 @@ final class CPU {
     }
 
     /**
-     * sets program counter to address NNN
+     * sets program counter to value NNN
      */
     private void execute1NNN(int i) {
-        programCounter.write(i & 0x0FFF);
+        programCounter.write((short) (i & 0x0FFF));
     }
 
     /**
-     * sets register X to value NN
+     * sets data register X to value NN
      */
     private void execute6XNN(int i) {
         dataRegisters.write((byte) ((i & 0x0F00) >> 8), (byte) (i & 0x00FF));
     }
 
     /**
-     * sets address register to address NNN
+     * sets address register to value NNN
      */
     private void executeANNN(short i) {
-        addressRegister.write(i & 0x0FFF);
+        addressRegister.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * draws a sprite at screen coordinates X,Y,
+     * using sprite data found at memory address N
+     */
+    private void executeDXYN(short i) {
+        boolean pixelCollision = graphics.drawSprite(
+                dataRegisters.read((byte) ((i & 0x0F00) >> 8)),         // X
+                dataRegisters.read((byte) ((i & 0x00F0) >> 4)),         // y
+                memory.read(addressRegister.read(), (i) & 0x000F) // N
+        );
+
+        dataRegisters.write((byte) 0xF, (byte) (pixelCollision ? 1 : 0));
     }
 
     /**
      * example:
      * <p>
-     * first byte : 00000111
-     * second byte: 01010010
+     * first byte from memory : 00000111
+     * second byte from memory: 01010010
      * <p>
      * instruction               : 00000000|00000000
      * instruction = first byte  : 00000000|00000111
@@ -113,13 +130,13 @@ final class CPU {
      * instruction |= second byte: 00000111|01010010
      */
     private short getNextInstruction() {
-        int address = programCounter.read();
+        short address = programCounter.read();
 
         short instruction = memory.read(address);
         instruction <<= 8;
-        instruction |= memory.read(address + 1);
+        instruction |= memory.read(++address);
 
-        programCounter.increment(2);
+        programCounter.increment((short) 2);
 
         return instruction;
     }

@@ -8,9 +8,9 @@ package emulator;
 
 final class ProgramCounter {
 
-    private int value = 0;
+    private short value = 0;
 
-    void decrement(int value) {
+    void decrement(short value) {
         this.value -= value;
     }
 
@@ -18,7 +18,7 @@ final class ProgramCounter {
         value--;
     }
 
-    void increment(int value) {
+    void increment(short value) {
         this.value += value;
     }
 
@@ -26,11 +26,11 @@ final class ProgramCounter {
         value++;
     }
 
-    int read() {
+    short read() {
         return value;
     }
 
-    void write(int value) {
+    void write(short value) {
         this.value = value;
     }
 

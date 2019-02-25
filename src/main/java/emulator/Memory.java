@@ -14,17 +14,27 @@ final class Memory {
 
     // hash map read and write access surpasses array:
     // algorithmic complexity of get and put are at O(1)
-    private final HashMap<Integer, Byte> memory;
+    private final HashMap<Short, Byte> memory;
 
     Memory() {
         memory = new HashMap<>(4096, 2);
     }
 
-    byte read(int address) {
+    byte read(short address) {
         return memory.get(address);
     }
 
-    void write(int address, byte value) {
+    byte[] read(short address, int count) {
+        byte[] bytes = new byte[count];
+
+        for (short b = 0, m = address; m < address + count; b++, m++) {
+            bytes[b] = memory.get(m);
+        }
+
+        return bytes;
+    }
+
+    void write(Short address, byte value) {
         memory.put(address, value);
     }
 

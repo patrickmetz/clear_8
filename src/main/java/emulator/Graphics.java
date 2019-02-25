@@ -8,22 +8,40 @@ package emulator;
 
 final class Graphics {
 
-    private final boolean[][] pixels;
+    private static final byte SCREEN_HEIGHT = 32;
+    private static final byte SCREEN_WIDTH = 64;
+    private static final byte SPRITE_WIDTH = 8;
+
+    private final byte[][] pixels;
 
     Graphics() {
-        pixels = new boolean[32][64];
+        pixels = new byte[SCREEN_WIDTH][SCREEN_HEIGHT];
     }
 
-    boolean[][] getAllPixels() {
+    boolean drawSprite(byte offsetX, byte offsetY, byte[] rows) {
+        boolean collision = false;
+
+        for (byte x = 0; x < SPRITE_WIDTH; x++) {
+            for (byte y = 0; y < rows.length; y++) {
+                byte newPixelState = (byte) ((rows[y] >> x) & 1);
+
+                byte positionX = (byte) ((offsetX + x) % SCREEN_WIDTH);
+                byte positionY = (byte) ((offsetY + y) % SCREEN_HEIGHT);
+
+                if ((newPixelState == 1) && (pixels[positionX][positionY] == 1)) {
+                    newPixelState = 0;
+                    collision = true;
+                }
+
+                pixels[positionX][positionY] = newPixelState;
+            }
+        }
+
+        return collision;
+    }
+
+    byte[][] getAllPixels() {
         return pixels;
-    }
-
-    boolean getPixel(byte x, byte y) {
-        return pixels[x][y];
-    }
-
-    void setPixel(byte x, byte y, boolean value) {
-        pixels[x][y] = value;
     }
 
 }
