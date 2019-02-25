@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 23:45.
+ * Last modified 26.02.19 00:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -56,6 +56,9 @@ final class CentralProcessingUnit {
             case 0x1000:
                 execute1NNN(instruction);
                 break;
+            case 0x3000:
+                execute3XNN(instruction);
+                break;
             case 0x6000:
                 execute6XNN(instruction);
                 break;
@@ -97,14 +100,28 @@ final class CentralProcessingUnit {
     /**
      * sets program counter to value NNN
      */
-    private void execute1NNN(int i) {
+    private void execute1NNN(short i) {
         programCounter.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * skips one instruction if the value of
+     * data register X is equal to NN
+     */
+    private void execute3XNN(short i) {
+        if (
+                dataRegisters.read((byte) ((i & 0x0F00) >> 8))
+                == (i & 0x00FF)
+        ) {
+            // one instruction = two bytes
+            programCounter.increment((short) 2);
+        }
     }
 
     /**
      * sets data register X to value NN
      */
-    private void execute6XNN(int i) {
+    private void execute6XNN(short i) {
         dataRegisters.write(
                 (byte) ((i & 0x0F00) >> 8),
                 (byte) (i & 0x00FF)
