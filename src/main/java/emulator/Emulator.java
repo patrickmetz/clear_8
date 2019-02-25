@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 25.02.19 22:53.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,15 +14,16 @@ final public class Emulator {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
-    private final CPU cpu;
+    private final CentralProcessingUnit cpu;
     private final int instructionsPerSecond;
 
     public Emulator(int instructionsPerSecond) {
         this.instructionsPerSecond = instructionsPerSecond;
 
-        cpu = new CPU(new AddressRegister(), new CallStack(), new DataRegisters(),
-                new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
-                new ProgramCounter(), new SoundTimer(new Sound()));
+        cpu = new CentralProcessingUnit(new AddressRegister(), new CallStack(), new DataRegisters(),
+                                        new DelayTimer(), new Graphics(), new Keyboard(),
+                                        new Memory(),
+                                        new ProgramCounter(), new SoundTimer(new Sound()));
     }
 
     public void run(String romPath) throws InterruptedException, IOException {

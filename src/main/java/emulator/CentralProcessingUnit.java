@@ -1,12 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 25.02.19 22:46.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package emulator;
 
-final class CPU {
+final class CentralProcessingUnit {
 
     private final AddressRegister addressRegister;
     private final CallStack callStack;
@@ -18,11 +18,11 @@ final class CPU {
     private final ProgramCounter programCounter;
     private final SoundTimer soundTimer;
 
-    CPU(AddressRegister addressRegister, CallStack callStack, DataRegisters dataRegisters,
-            DelayTimer delayTimer, Graphics graphics, Keyboard keyboard, Memory memory,
-            ProgramCounter programCounter,
-            SoundTimer soundTimer) {
-
+    CentralProcessingUnit(AddressRegister addressRegister, CallStack callStack,
+                          DataRegisters dataRegisters, DelayTimer delayTimer,
+                          Graphics graphics, Keyboard keyboard, Memory memory,
+                          ProgramCounter programCounter, SoundTimer soundTimer
+    ) {
         this.addressRegister = addressRegister;
         this.callStack = callStack;
         this.dataRegisters = dataRegisters;
@@ -44,10 +44,10 @@ final class CPU {
      * see https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
      * for all supported cpu instructions
      * <p>
-     * 1225 & 0xF000 = 1000 (gets 1st digit)
-     * 1225 & 0x0F00 = 0200 (gets 2nd digit
-     * 1225 & 0x00F0 = 0020 (gets 3rd digit)
-     * 1225 & 0x000F = 0005 (gets 4th digit)
+     * 1225 & 0xF000 = 1000 (exposes 1st digit) | 1000 >> 12 = 1
+     * 1225 & 0x0F00 = 0200 (exposes 2nd digit  | 0200 >> 8  = 2
+     * 1225 & 0x00F0 = 0020 (exposes 3rd digit) | 0020 >> 4  = 2
+     * 1225 & 0x000F = 0005 (exposes 4th digit) | 0005       = 5
      */
     void executeNextInstruction() throws UnsupportedOperationException {
         short instruction = getNextInstruction();
@@ -65,10 +65,18 @@ final class CPU {
             case 0xD000:
                 executeDXYN(instruction);
                 break;
+            case 0xF000:
+                switch (instruction & 0x00FF) {
+                    case 0x001E:
+                        executeFX1E(instruction);
+                        break;
+                    default:
+                        throwInstructionException(instruction);
+                }
+                break;
             default:
-                throw new UnsupportedOperationException(
-                        "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
-                );
+                throwInstructionException(instruction);
+                return;
         }
 
     }
@@ -94,7 +102,10 @@ final class CPU {
      * sets data register X to value NN
      */
     private void execute6XNN(int i) {
-        dataRegisters.write((byte) ((i & 0x0F00) >> 8), (byte) (i & 0x00FF));
+        dataRegisters.write(
+                (byte) ((i & 0x0F00) >> 8),
+                (byte) (i & 0x00FF)
+        );
     }
 
     /**
@@ -115,7 +126,22 @@ final class CPU {
                 memory.read(addressRegister.read(), (i) & 0x000F)
         );
 
-        dataRegisters.write((byte) 0xF, (byte) (pixelCollision ? 1 : 0));
+        dataRegisters.write(
+                (byte) 0xF,
+                (byte) (pixelCollision ? 1 : 0)
+        );
+    }
+
+    /**
+     * adds value of data register X to the address register
+     */
+    private void executeFX1E(short i) {
+        addressRegister.write(
+                (short) (
+                        addressRegister.read()
+                        + dataRegisters.read((byte) ((i & 0x0F00) >> 8))
+                )
+        );
     }
 
     /**
@@ -139,5 +165,11 @@ final class CPU {
         programCounter.increment((short) 2);
 
         return instruction;
+    }
+
+    private void throwInstructionException(short instruction) {
+        throw new UnsupportedOperationException(
+                "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
+        );
     }
 }
