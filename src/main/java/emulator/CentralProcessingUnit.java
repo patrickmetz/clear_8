@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 12:49.
+ * Last modified 26.02.19 14:13.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -65,6 +65,9 @@ final class CentralProcessingUnit {
             case 0x1000:
                 execute1NNN(instruction);
                 break;
+            case 0x2000:
+                execute2NNN(instruction);
+                break;
             case 0x3000:
                 execute3XNN(instruction);
                 break;
@@ -120,6 +123,15 @@ final class CentralProcessingUnit {
      * sets program counter to value NNN
      */
     private void execute1NNN(short i) {
+        programCounter.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * execute subroutine by storing current memory
+     * location and jumping to the subroutine's location
+     */
+    private void execute2NNN(short i) {
+        callStack.push(programCounter.read());
         programCounter.write((short) (i & 0x0FFF));
     }
 
@@ -228,12 +240,12 @@ final class CentralProcessingUnit {
         instruction <<= 8;
 
         /*
-            (short)(byte & 0xFF) converts signed to unsigned:
+            (short)(memory... & 0xFF) converts signed to unsigned:
 
             It takes all the bits of the byte with a bitwise and
             (0xFF is 1111_1111), puts them into a bigger short,
-            so that Java "forgets" the Two`s complement, e.g.
-            the most significant bit of the negative value gets lost.
+            so that Java "forgets" the Two`s complement, when
+            converting
 
             So the following works:
             byte1: 00000000 (dec 0, hex 0x0)
@@ -242,10 +254,8 @@ final class CentralProcessingUnit {
             => result matches opcode 00E0 (clear screen)
 
             But, if we didn't do that, and used the byte directly:
-            byte1: 00000000 (dec 0, hex 0x0)
-            byte2: 11100000 (dec -32, hex 0xE0)
             instruction: 11111111_11100000 (dec -32, hex 0xFFE0)
-            => result FFE0 is just garbage
+            => result FFE0 is just useless
          */
         instruction |= (short) (memory.read(++address) & 0xFF);
 
