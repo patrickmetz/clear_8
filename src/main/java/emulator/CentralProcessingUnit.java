@@ -1,16 +1,16 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 14:31.
+ * Last modified 26.02.19 17:56.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package emulator;
 
-final class CentralProcessingUnit {
+class CentralProcessingUnit {
 
+    protected final DataRegisters dataRegisters;
     private final AddressRegister addressRegister;
     private final CallStack callStack;
-    private final DataRegisters dataRegisters;
     private final DelayTimer delayTimer;
     private final Graphics graphics;
     private final Keyboard keyboard;
@@ -32,6 +32,62 @@ final class CentralProcessingUnit {
         this.memory = memory;
         this.programCounter = programCounter;
         this.soundTimer = soundTimer;
+    }
+
+    /**
+     * modifies the value of data register X
+     * by shifting it to the right by one bit
+     * (equivalent to dividing by two).
+     * <p>
+     * the least significant bit of the
+     * former value is stored in data register F
+     * <p>
+     *
+     * @see CentralProcessingUnitLegacy#execute8XY6(short)
+     */
+    protected void execute8XY6(short i) {
+        int xAddress = (i & 0x0F00) >> 8;
+        byte xValue = dataRegisters.read((byte) xAddress);
+
+        dataRegisters.write((byte) 0xF, (byte) (xValue & 1));
+
+        dataRegisters.write(
+                (byte) xAddress,
+                (byte) (xValue >> 1)
+        );
+    }
+
+    void loadRomIntoMemory(byte[] bytes) {
+        short offset = Memory.OFFSET_ROM;
+
+        for (byte b : bytes) {
+            memory.write(offset++, b);
+        }
+
+        programCounter.write(Memory.OFFSET_ROM);
+    }
+
+    /**
+     * clears the screen
+     */
+    private void execute00E0(short instruction) {
+        graphics.clearScreen();
+    }
+
+    /**
+     * sets program counter to value NNN
+     */
+    private void execute1NNN(short i) {
+        programCounter.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * execute subroutine by storing current memory
+     * location and jumping to the subroutine's location
+     */
+    private void execute2NNN(short i) {
+        callStack.push(programCounter.read());
+        programCounter.write((short) (i & 0x0FFF));
     }
 
     /**
@@ -82,6 +138,9 @@ final class CentralProcessingUnit {
                     case 0x0000:
                         execute8XY0(instruction);
                         break;
+                    case 0x0006:
+                        execute8XY6(instruction);
+                        break;
                     default:
                         throwInstructionException(instruction);
                 }
@@ -111,53 +170,6 @@ final class CentralProcessingUnit {
 
     }
 
-    void loadRomIntoMemory(byte[] bytes) {
-        short offset = Memory.OFFSET_ROM;
-
-        for (byte b : bytes) {
-            memory.write(offset++, b);
-        }
-
-        programCounter.write(Memory.OFFSET_ROM);
-    }
-
-    /**
-     * clears the screen
-     */
-    private void execute00E0(short instruction) {
-        graphics.clearScreen();
-    }
-
-    /**
-     * sets program counter to value NNN
-     */
-    private void execute1NNN(short i) {
-        programCounter.write((short) (i & 0x0FFF));
-    }
-
-    /**
-     * execute subroutine by storing current memory
-     * location and jumping to the subroutine's location
-     */
-    private void execute2NNN(short i) {
-        callStack.push(programCounter.read());
-        programCounter.write((short) (i & 0x0FFF));
-    }
-
-    /**
-     * skips one instruction if the value of
-     * data register X is equal to NN
-     */
-    private void execute3XNN(short i) {
-        if (
-                dataRegisters.read((byte) ((i & 0x0F00) >> 8))
-                == (i & 0x00FF)
-        ) {
-            // one instruction = two bytes
-            programCounter.increment((short) 2);
-        }
-    }
-
     /**
      * sets data register X to value NN
      */
@@ -169,24 +181,38 @@ final class CentralProcessingUnit {
     }
 
     /**
+     * skips one instruction if the value of
+     * data register X is equal to NN
+     */
+    private void execute3XNN(short i) {
+        if (
+                dataRegisters.read((byte) ((i & 0x0F00) >> 8))
+                == (i & 0x00FF)
+        ) {
+            // one instruction = 2 bytes
+            programCounter.increment((short) 2);
+        }
+    }
+
+    /**
      * adds value NN to data register X.
      * if the new value exceeds maximum unsigned byte size,
      * it is "wrapped around" (modulo) without setting carry flag.
      */
     private void execute7XNN(short i) {
-        byte registerAddress = (byte) ((i & 0x0F00) >> 8);
-        int newValue = dataRegisters.read(registerAddress) + (i & 0x00FF);
+        byte address = (byte) ((i & 0x0F00) >> 8);
+        int newValue = dataRegisters.read(address) + (i & 0x00FF);
 
         if (newValue > 255) {
             newValue %= 255;
         }
 
-        dataRegisters.write(registerAddress, (byte) newValue);
+        dataRegisters.write(address, (byte) newValue);
     }
 
     /**
-     * sets the value of address register X
-     * to the value of address register Y
+     * sets the value of data register X
+     * to the value of data register Y
      */
     private void execute8XY0(short i) {
         dataRegisters.write(

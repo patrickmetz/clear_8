@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 26.02.19 15:21.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,7 +13,7 @@ final class Memory {
     static final short OFFSET_ROM = 512;
 
     // hash map read and write access surpasses array:
-    // algorithmic complexity of get and put are at O(1)
+    // algorithmic complexity of get() and put() is O(1)
     private final HashMap<Short, Byte> memory;
 
     Memory() {

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 26.02.19 17:45.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -23,11 +23,23 @@ final class Arguments {
     }
 
     void expect(Class<?> type, boolean required, String name, String longName,
-            String description) {
+                String description) {
         Option option = Option.builder(name).longOpt(longName).desc(description)
                 .type(type).hasArg().required(required).build();
 
         options.addOption(option);
+    }
+
+    boolean toBoolean(String option, boolean defaultValue) {
+        if (commandLine == null) {
+            createCommandLine();
+        }
+
+        if (commandLine.hasOption(option)) {
+            return Boolean.parseBoolean(commandLine.getOptionValue(option));
+        }
+
+        return defaultValue;
     }
 
     int toInteger(String option, int defaultValue) {

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 26.02.19 17:54.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,14 +16,16 @@ final public class Main {
         Arguments arg = new Arguments(args, "chip8-java");
         arg.expect(String.class, true, "r", "rom", "Path of a ROM file.");
         arg.expect(Integer.class, false, "i", "ips", "Instructions per second.");
+        arg.expect(Boolean.class, false, "l", "leg", "Legacy mode.");
 
-        String rom = arg.toString("rom");
-        int ips = arg.toInteger("ips", INSTRUCTIONS_PER_SECOND);
+        String romPath = arg.toString("rom");
+        int instructionsPerSecond = arg.toInteger("ips", INSTRUCTIONS_PER_SECOND);
+        boolean legacyMode = arg.toBoolean("leg", false);
 
-        Emulator emulator = new Emulator(ips);
+        Emulator emulator = new Emulator(instructionsPerSecond, legacyMode);
 
         try {
-            emulator.run(rom);
+            emulator.run(romPath);
         } catch (IOException e) {
             //todo: log this
             e.printStackTrace();

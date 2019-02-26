@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 22:53.
+ * Last modified 26.02.19 17:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -17,13 +17,22 @@ final public class Emulator {
     private final CentralProcessingUnit cpu;
     private final int instructionsPerSecond;
 
-    public Emulator(int instructionsPerSecond) {
+    public Emulator(int instructionsPerSecond, boolean legacyMode) {
         this.instructionsPerSecond = instructionsPerSecond;
 
-        cpu = new CentralProcessingUnit(new AddressRegister(), new CallStack(), new DataRegisters(),
-                                        new DelayTimer(), new Graphics(), new Keyboard(),
-                                        new Memory(),
-                                        new ProgramCounter(), new SoundTimer(new Sound()));
+        //todo: this looks quite ugly
+        // https://stackoverflow.com/questions/1268817/create-new-class-from-a-variable-in-java
+        if (legacyMode) {
+            cpu = new CentralProcessingUnitLegacy(
+                    new AddressRegister(), new CallStack(), new DataRegisters(),
+                    new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
+                    new ProgramCounter(), new SoundTimer(new Sound()));
+        } else {
+            cpu = new CentralProcessingUnit(
+                    new AddressRegister(), new CallStack(), new DataRegisters(),
+                    new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
+                    new ProgramCounter(), new SoundTimer(new Sound()));
+        }
     }
 
     public void run(String romPath) throws InterruptedException, IOException {
