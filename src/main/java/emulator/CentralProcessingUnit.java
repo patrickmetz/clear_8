@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 14:13.
+ * Last modified 26.02.19 14:31.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -76,6 +76,15 @@ final class CentralProcessingUnit {
                 break;
             case 0x7000:
                 execute7XNN(instruction);
+                break;
+            case 0x8000:
+                switch (instruction & 0x000F) {
+                    case 0x0000:
+                        execute8XY0(instruction);
+                        break;
+                    default:
+                        throwInstructionException(instruction);
+                }
                 break;
             case 0xA000:
                 executeANNN(instruction);
@@ -173,6 +182,17 @@ final class CentralProcessingUnit {
         }
 
         dataRegisters.write(registerAddress, (byte) newValue);
+    }
+
+    /**
+     * sets the value of address register X
+     * to the value of address register Y
+     */
+    private void execute8XY0(short i) {
+        dataRegisters.write(
+                (byte) ((i & 0x0F00) >> 8),
+                dataRegisters.read((byte) ((i & 0x00F0) >> 4))
+        );
     }
 
     /**
