@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 00:15.
+ * Last modified 26.02.19 12:34.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -76,6 +76,9 @@ final class CentralProcessingUnit {
                     case 0x001E:
                         executeFX1E(instruction);
                         break;
+                    case 0x000A:
+                        executeFX0A(instruction);
+                        break;
                     default:
                         throwInstructionException(instruction);
                 }
@@ -130,8 +133,8 @@ final class CentralProcessingUnit {
 
     /**
      * adds value NN to data register X.
-     * if new value exceeds maximum unsigned byte size, it is
-     * "wrapped around" (modulo) without setting carry flag.
+     * if the new value exceeds maximum unsigned byte size,
+     * it is "wrapped around" (modulo) without setting carry flag.
      */
     private void execute7XNN(short i) {
         byte registerAddress = (byte) ((i & 0x0F00) >> 8);
@@ -169,6 +172,17 @@ final class CentralProcessingUnit {
     }
 
     /**
+     * waits for a key press and stores
+     * the key code in data register x
+     */
+    private void executeFX0A(short i) {
+        dataRegisters.write(
+                (byte) ((i & 0x0F00) >> 8),
+                keyboard.waitForKey()
+        );
+    }
+
+    /**
      * adds value of data register X to the address register
      */
     private void executeFX1E(short i) {
@@ -196,7 +210,28 @@ final class CentralProcessingUnit {
 
         short instruction = memory.read(address);
         instruction <<= 8;
-        instruction |= memory.read(++address);
+
+        /*
+            (short)(byte & 0xFF) converts signed to unsigned:
+
+            It takes all the bits of the byte with a bitwise and
+            (0xFF is 1111_1111), puts them into a bigger short,
+            so that Java "forgets" the Two`s complement, e.g.
+            the most significant bit of the negative value gets lost.
+
+            So the following works:
+            byte1: 00000000 (dec 0, hex 0x0)
+            byte2: 11100000 (dec -32, hex 0xE0)
+            instruction : 00000000_11100000 (dec 224, hex 0xE0)
+            => result matches opcode 00E0 (clear screen)
+
+            But, if we didn't do that, and used the byte directly:
+            byte1: 00000000 (dec 0, hex 0x0)
+            byte2: 11100000 (dec -32, hex 0xE0)
+            instruction: 11111111_11100000 (dec -32, hex 0xFFE0)
+            => result FFE0 is just garbage
+         */
+        instruction |= (short) (memory.read(++address) & 0xFF);
 
         programCounter.increment((short) 2);
 

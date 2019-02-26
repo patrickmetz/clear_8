@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 26.02.19 01:18.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,16 +8,13 @@ package emulator;
 
 import java.util.HashMap;
 
-final class Keyboard {
+final class Keyboard extends Thread {
 
     private final HashMap<Byte, Boolean> keys;
 
     Keyboard() {
+        // 16 hexadecimal key codes, from 0 to F
         keys = new HashMap<>(16, 2);
-    }
-
-    public boolean getKeyState(byte keyCode) {
-        return keys.get(keyCode);
     }
 
     public void pressKey(byte keyCode) {
@@ -28,9 +25,8 @@ final class Keyboard {
         keys.put(keyCode, false);
     }
 
-    public void waitForKey(byte keyCode) {
-        // TODO - implement Keyboard.waitForKey
-        throw new UnsupportedOperationException();
+    byte waitForKey() {
+        return 0xF; // just fake it for now ;-P
     }
 
 }
