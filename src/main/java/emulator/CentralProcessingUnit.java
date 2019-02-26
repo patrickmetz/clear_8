@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 12:34.
+ * Last modified 26.02.19 12:49.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -53,6 +53,15 @@ final class CentralProcessingUnit {
         short instruction = getNextInstruction();
 
         switch (instruction & 0xF000) {
+            case 0x0000:
+                switch (instruction & 0x00FF) {
+                    case 0x00E0:
+                        execute00E0(instruction);
+                        break;
+                    default:
+                        throwInstructionException(instruction);
+                }
+                break;
             case 0x1000:
                 execute1NNN(instruction);
                 break;
@@ -98,6 +107,13 @@ final class CentralProcessingUnit {
         }
 
         programCounter.write(Memory.OFFSET_ROM);
+    }
+
+    /**
+     * clears the screen
+     */
+    private void execute00E0(short instruction) {
+        graphics.clearScreen();
     }
 
     /**
