@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 27.02.19 10:36.
+ * Last modified 28.02.19 14:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package emulator;
 
 class CentralProcessingUnitFactory {
 
-    static CentralProcessingUnit getCpu(boolean legacyMode) {
+    static CentralProcessingUnit makeCpu(boolean legacyMode) {
         if (legacyMode) {
             return new CentralProcessingUnitLegacy(
                     new AddressRegister(), new CallStack(), new DataRegisters(),

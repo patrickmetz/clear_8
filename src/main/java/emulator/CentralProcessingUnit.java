@@ -1,22 +1,30 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 13:43.
+ * Last modified 28.02.19 14:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package emulator;
 
+/**
+ * CPU implementation using opcodes of the SCHIP (Super Chip)
+ * <p>
+ * see:
+ * http://www.mattmik.com/files/chip8/mastering/chip8.html
+ * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+ * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
+ */
 class CentralProcessingUnit {
 
     protected final AddressRegister addressRegister;
-    protected final CallStack callStack;
     protected final DataRegisters dataRegisters;
-    protected final DelayTimer delayTimer;
-    protected final Graphics graphics;
-    protected final Keyboard keyboard;
-    protected final Memory memory;
-    protected final ProgramCounter programCounter;
-    protected final SoundTimer soundTimer;
+    private final CallStack callStack;
+    private final DelayTimer delayTimer;
+    private final Graphics graphics;
+    private final Keyboard keyboard;
+    private final Memory memory;
+    private final ProgramCounter programCounter;
+    private final SoundTimer soundTimer;
 
     CentralProcessingUnit(AddressRegister addressRegister, CallStack callStack,
                           DataRegisters dataRegisters, DelayTimer delayTimer,
@@ -95,6 +103,9 @@ class CentralProcessingUnit {
                     case 0x00E0:
                         execute00E0(instruction);
                         break;
+                    case 0x00EE:
+                        execute00EE(instruction);
+                        break;
                     default:
                         throwInstructionException(instruction);
                 }
@@ -155,7 +166,6 @@ class CentralProcessingUnit {
                 break;
             default:
                 throwInstructionException(instruction);
-                return;
         }
 
     }
@@ -169,8 +179,16 @@ class CentralProcessingUnit {
     /**
      * clears the screen
      */
-    private void execute00E0(short instruction) {
+    private void execute00E0(short i) {
         graphics.clearScreen();
+    }
+
+    /**
+     * leaving subroutine by popping former memory
+     * location from the stack and jumping there
+     */
+    private void execute00EE(short i) {
+        programCounter.write(callStack.pop());
     }
 
     /**
@@ -181,8 +199,9 @@ class CentralProcessingUnit {
     }
 
     /**
-     * execute subroutine by storing current memory
-     * location and jumping to the subroutine's location
+     * execute subroutine by pushing current memory
+     * location to the stack and jumping to the
+     * subroutine's location
      */
     private void execute2NNN(short i) {
         callStack.push(programCounter.read());

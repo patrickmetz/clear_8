@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 11:52.
+ * Last modified 28.02.19 14:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,7 +25,7 @@ final public class Emulator {
         INSTRUCTIONS_PER_SECOND = instructionsPerSecond;
         INSTRUCTIONS_PER_FRAME = INSTRUCTIONS_PER_SECOND / FRAMES_PER_SECOND;
 
-        cpu = CentralProcessingUnitFactory.getCpu(legacyMode);
+        cpu = CentralProcessingUnitFactory.makeCpu(legacyMode);
     }
 
     public void run(String romPath) throws InterruptedException, IOException {

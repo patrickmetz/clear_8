@@ -1,18 +1,18 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 13:38.
+ * Last modified 28.02.19 14:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package emulator;
 
 /**
+ * CPU implementation using opcodes of the Cosmac VIP
+ * <p>
  * see:
- * https://github.com/JohnEarnest/Octo/blob/39e001152f55b2ae44dadb8d23fd27dfc415fed1/docs/SuperChip.md
- * https://github.com/Chromatophore/HP48-Superchip
- * https://www.reddit.com/r/EmuDev/comments/8cbvz6/chip8_8xy6/
- * https://www.reddit.com/r/EmuDev/comments/72dunw/chip8_8xy6_help/
- * http://laurencescotford.co.uk/?p=266
+ * http://www.mattmik.com/files/chip8/mastering/chip8.html
+ * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+ * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
 public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
 
