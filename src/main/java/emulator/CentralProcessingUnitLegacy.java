@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 21:06.
+ * Last modified 28.02.19 13:38.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -51,4 +51,23 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
         );
     }
 
+    /**
+     * sets registers 0 to X to consecutive memory values
+     * beginning at registered memory address
+     * <p>
+     * additionally increments address register by X
+     *
+     * @see CentralProcessingUnit#executeFX65(short)
+     */
+    @Override
+    protected void executeFX65(short i) {
+        super.executeFX65(i);
+
+        addressRegister.write(
+                (short) (
+                        addressRegister.read()
+                        + (byte) ((i & 0x0F00) >> 8)
+                )
+        );
+    }
 }

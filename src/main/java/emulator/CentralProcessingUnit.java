@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 12:10.
+ * Last modified 28.02.19 13:43.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,15 +8,15 @@ package emulator;
 
 class CentralProcessingUnit {
 
+    protected final AddressRegister addressRegister;
+    protected final CallStack callStack;
     protected final DataRegisters dataRegisters;
-    private final AddressRegister addressRegister;
-    private final CallStack callStack;
-    private final DelayTimer delayTimer;
-    private final Graphics graphics;
-    private final Keyboard keyboard;
-    private final Memory memory;
-    private final ProgramCounter programCounter;
-    private final SoundTimer soundTimer;
+    protected final DelayTimer delayTimer;
+    protected final Graphics graphics;
+    protected final Keyboard keyboard;
+    protected final Memory memory;
+    protected final ProgramCounter programCounter;
+    protected final SoundTimer soundTimer;
 
     CentralProcessingUnit(AddressRegister addressRegister, CallStack callStack,
                           DataRegisters dataRegisters, DelayTimer delayTimer,
@@ -50,11 +50,25 @@ class CentralProcessingUnit {
         byte xValue = dataRegisters.read((byte) xAddress);
 
         dataRegisters.write((byte) 0xF, (byte) (xValue & 1));
+        dataRegisters.write((byte) xAddress, (byte) (xValue >> 1));
+    }
 
-        dataRegisters.write(
-                (byte) xAddress,
-                (byte) (xValue >> 1)
-        );
+    /**
+     * sets registers 0 to X to consecutive memory values
+     * beginning at registered memory address
+     *
+     * @see CentralProcessingUnitLegacy#executeFX65(short)
+     */
+    protected void executeFX65(short i) {
+        byte endRegister = (byte) ((i & 0x0F00) >> 8);
+        short memoryOffset = addressRegister.read();
+
+        for (byte j = 0; j <= endRegister; j++) {
+            dataRegisters.write(
+                    j,
+                    memory.read(memoryOffset++)
+            );
+        }
     }
 
     /**
@@ -300,22 +314,6 @@ class CentralProcessingUnit {
     }
 
     /**
-     * sets registers 0 to X to consecutive memory values
-     * beginning at registered memory address
-     */
-    private void executeFX65(short i) {
-        byte registerRange = (byte) ((i & 0x0F00) >> 8);
-        short memoryOffset = addressRegister.read();
-
-        for (byte j = 0; j < registerRange; j++) {
-            dataRegisters.write(
-                    j,
-                    memory.read(memoryOffset++)
-            );
-        }
-    }
-
-    /**
      * example:
      * <p>
      * first byte from memory : 00000111
@@ -332,22 +330,7 @@ class CentralProcessingUnit {
         short instruction = memory.read(address);
         instruction <<= 8;
 
-        /*
-            (short)(memory... & 0xFF) converts signed to unsigned:
-
-            It takes all the bits of a returned byte with a bitwise and
-            (0xFF is 1111_1111), and puts them into a bigger short.
-
-            So the following works:
-            byte1: 00000000 (dec 0, hex 0x0)
-            byte2: 11100000 (dec -32, hex 0xE0)
-            resulting instruction : 00000000_11100000 (dec 224, hex 0xE0)
-            => result matches opcode 00E0 (clear screen)
-
-            If I wouldn't do that, and used the byte directly:
-            resulting instruction: 11111111_11100000 (dec -32, hex 0xFFE0)
-            => result FFE0 is just useless
-         */
+        // & 0xFF removes sign bit
         instruction |= (short) (memory.read(++address) & 0xFF);
 
         programCounter.increment((short) 2);
