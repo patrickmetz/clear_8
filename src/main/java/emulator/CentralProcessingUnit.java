@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 16:51.
+ * Last modified 28.02.19 19:54.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,6 +15,8 @@ package emulator;
  * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
 class CentralProcessingUnit {
+
+    private static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
     protected final AddressRegister addressRegister;
     protected final DataRegisters dataRegisters;
@@ -130,6 +132,9 @@ class CentralProcessingUnit {
                     case 0x0000:
                         execute8XY0(instruction);
                         break;
+                    case 0x0004:
+                        execute8XY4(instruction);
+                        break;
                     case 0x0006:
                         execute8XY6(instruction);
                         break;
@@ -236,19 +241,22 @@ class CentralProcessingUnit {
     }
 
     /**
-     * adds value NN to data register X.
-     * if the new value exceeds maximum unsigned byte size,
-     * it is "wrapped around" (modulo) without setting carry flag.
+     * Adds the value NN to data register X.
+     * If the new value exceeds maximum unsigned byte size,
+     * it is "wrapped around" with modulo, but no carry
+     * flag is set.
      */
     private void execute7XNN(short i) {
-        byte address = (byte) ((i & 0x0F00) >> 8);
-        int newValue = dataRegisters.read(address) + (i & 0x00FF);
+        byte addressX = (byte) ((i & 0x0F00) >> 8);
 
-        if (newValue > 255) {
-            newValue %= 255;
+        int newValue = (short) (dataRegisters.read(addressX) & 0xFF) // unsigned X
+                       + (i & 0x00FF);                               // unsigned NN
+
+        if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
+            newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
         }
 
-        dataRegisters.write(address, (byte) newValue);
+        dataRegisters.write(addressX, (byte) newValue);
     }
 
     /**
@@ -260,6 +268,28 @@ class CentralProcessingUnit {
                 (byte) ((i & 0x0F00) >> 8),
                 dataRegisters.read((byte) ((i & 0x00F0) >> 4))
         );
+    }
+
+    /**
+     * Adds the value of register Y to register X.
+     * If the new value exceeds maximum unsigned byte size,
+     * it is "wrapped around" with modulo and the carry
+     * flag is set.
+     */
+    private void execute8XY4(short i) {
+        int newValue =
+                (dataRegisters.read((byte) ((i & 0x0F00) >> 8)) & 0x0FF)    // unsigned X
+                + (dataRegisters.read((byte) ((i & 0x00F0) >> 4)) & 0x0FF); // unsigned Y
+
+        byte carry = 0;
+
+        if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
+            newValue %= (UNSIGNED_BYTE_MAX_VALUE + 1);
+            carry = 1;
+        }
+
+        dataRegisters.write((byte) ((i & 0x0F00) >> 8), (byte) newValue);
+        dataRegisters.write((byte) 0xF, carry);
     }
 
     /**
