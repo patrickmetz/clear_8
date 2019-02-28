@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 20:37.
+ * Last modified 28.02.19 20:53.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -258,7 +258,7 @@ class CentralProcessingUnit {
     private void execute7XNN(short i) {
         byte addressX = (byte) ((i & EXPOSE_X) >> GET_X);
 
-        int newValue = (short) (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
+        int newValue = (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
                        + (i & GET_NN);
 
         if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
