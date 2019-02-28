@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 14:32.
+ * Last modified 28.02.19 16:24.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -140,6 +140,9 @@ class CentralProcessingUnit {
             case 0xA000:
                 executeANNN(instruction);
                 break;
+            case 0xC000:
+                executeCXNN(instruction);
+                break;
             case 0xD000:
                 executeDXYN(instruction);
                 break;
@@ -264,6 +267,23 @@ class CentralProcessingUnit {
      */
     private void executeANNN(short i) {
         addressRegister.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * sets address register X to a random value
+     * (between 0 and 255), which is masked with NN
+     */
+    private void executeCXNN(short i) {
+        // the result of every bit operation in java is an
+        // integer, therefore we cast bit operations on bytes
+        // to bytes again until the end of time :D
+        dataRegisters.write(
+                (byte) ((i & 0x0F00) >> 8),                // register X
+                (byte) (
+                        (byte) (Math.random() * (255 + 1)) // random value
+                        & (byte) (i & 0x00FF)              // mask NN
+                )
+        );
     }
 
     /**
