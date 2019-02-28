@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 20:02.
+ * Last modified 28.02.19 20:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,8 +16,15 @@ package emulator;
  */
 class CentralProcessingUnit {
 
-    public static final int EXPOSE_X = 0x0F00;
-    public static final int GET_X = 8;
+    protected static final int CARRY_FLAG = 0xF;
+    protected static final int EXPOSE_X = 0x0F00;
+    protected static final int EXPOSE_Y = 0x00F0;
+    protected static final int GET_NN = 0x00FF;
+    protected static final int GET_NNN = 0x0FFF;
+    protected static final int GET_UNSIGNED_BYTE = 0xFF;
+    protected static final int GET_X = 8;
+    protected static final int GET_Y = 4;
+
     private static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
     protected final AddressRegister addressRegister;
@@ -52,7 +59,7 @@ class CentralProcessingUnit {
      * (equivalent to dividing by two).
      * <p>
      * the least significant bit of the
-     * former value is stored in data register F
+     * former value is stored in the carry register
      * <p>
      *
      * @see CentralProcessingUnitLegacy#execute8XY6(short)
@@ -61,7 +68,7 @@ class CentralProcessingUnit {
         int xAddress = (i & EXPOSE_X) >> GET_X;
         byte xValue = dataRegisters.read((byte) xAddress);
 
-        dataRegisters.write((byte) 0xF, (byte) (xValue & 1));
+        dataRegisters.write((byte) CARRY_FLAG, (byte) (xValue & 1));
         dataRegisters.write((byte) xAddress, (byte) (xValue >> 1));
     }
 
@@ -205,7 +212,7 @@ class CentralProcessingUnit {
      * sets program counter to value NNN
      */
     private void execute1NNN(short i) {
-        programCounter.write((short) (i & 0x0FFF));
+        programCounter.write((short) (i & GET_NNN));
     }
 
     /**
@@ -215,7 +222,7 @@ class CentralProcessingUnit {
      */
     private void execute2NNN(short i) {
         callStack.push(programCounter.read());
-        programCounter.write((short) (i & 0x0FFF));
+        programCounter.write((short) (i & GET_NNN));
     }
 
     /**
@@ -225,7 +232,7 @@ class CentralProcessingUnit {
     private void execute3XNN(short i) {
         if (
                 dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X))
-                == (i & 0x00FF)
+                == (i & GET_NN)
         ) {
             // one instruction = 2 bytes
             programCounter.increment((short) 2);
@@ -238,7 +245,7 @@ class CentralProcessingUnit {
     private void execute6XNN(short i) {
         dataRegisters.write(
                 (byte) ((i & EXPOSE_X) >> GET_X),
-                (byte) (i & 0x00FF)
+                (byte) (i & GET_NN)
         );
     }
 
@@ -251,8 +258,8 @@ class CentralProcessingUnit {
     private void execute7XNN(short i) {
         byte addressX = (byte) ((i & EXPOSE_X) >> GET_X);
 
-        int newValue = (short) (dataRegisters.read(addressX) & 0xFF) // unsigned X
-                       + (i & 0x00FF);                               // unsigned NN
+        int newValue = (short) (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
+                       + (i & GET_NN);
 
         if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
             newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
@@ -268,7 +275,7 @@ class CentralProcessingUnit {
     private void execute8XY0(short i) {
         dataRegisters.write(
                 (byte) ((i & EXPOSE_X) >> GET_X),
-                dataRegisters.read((byte) ((i & 0x00F0) >> 4))
+                dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y))
         );
     }
 
@@ -280,8 +287,8 @@ class CentralProcessingUnit {
      */
     private void execute8XY4(short i) {
         int newValue =
-                (dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)) & 0x0FF)    // unsigned X
-                + (dataRegisters.read((byte) ((i & 0x00F0) >> 4)) & 0x0FF); // unsigned Y
+                (dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)) & GET_UNSIGNED_BYTE)
+                + (dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)) & GET_UNSIGNED_BYTE);
 
         byte carry = 0;
 
@@ -290,15 +297,18 @@ class CentralProcessingUnit {
             carry = 1;
         }
 
-        dataRegisters.write((byte) ((i & EXPOSE_X) >> GET_X), (byte) newValue);
-        dataRegisters.write((byte) 0xF, carry);
+        dataRegisters.write(
+                (byte) ((i & EXPOSE_X) >> GET_X),
+                (byte) newValue
+        );
+        dataRegisters.write((byte) CARRY_FLAG, carry);
     }
 
     /**
      * sets address register to value NNN
      */
     private void executeANNN(short i) {
-        addressRegister.write((short) (i & 0x0FFF));
+        addressRegister.write((short) (i & GET_NNN));
     }
 
     /**
@@ -310,10 +320,10 @@ class CentralProcessingUnit {
         // integer, therefore we cast bit operations on bytes
         // to bytes again until the end of time :D
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),                // register X
+                (byte) ((i & EXPOSE_X) >> GET_X),
                 (byte) (
-                        (byte) (Math.random() * (255 + 1)) // random value
-                        & (byte) (i & 0x00FF)              // mask NN
+                        (byte) (Math.random() * (255 + 1))
+                        & (byte) (i & GET_NN)
                 )
         );
     }
@@ -325,12 +335,12 @@ class CentralProcessingUnit {
     private void executeDXYN(short i) {
         boolean pixelCollision = graphics.drawSprite(
                 dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)),
-                dataRegisters.read((byte) ((i & 0x00F0) >> 4)),
+                dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)),
                 memory.read(addressRegister.read(), (i) & 0x000F)
         );
 
         dataRegisters.write(
-                (byte) 0xF,
+                (byte) CARRY_FLAG,
                 (byte) (pixelCollision ? 1 : 0)
         );
     }
@@ -377,14 +387,14 @@ class CentralProcessingUnit {
     private void executeFX33(short i) {
         short unsignedValue = (short) (
                 dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X))
-                & 0xFF
+                & GET_UNSIGNED_BYTE
         );
 
         short memoryOffset = addressRegister.read();
 
-        //example: 107
+        //example: 147
         memory.write(memoryOffset, (byte) (unsignedValue % 10));                    // 7
-        memory.write((short) (memoryOffset + 1), (byte) (unsignedValue / 10 % 10)); // 0
+        memory.write((short) (memoryOffset + 1), (byte) (unsignedValue / 10 % 10)); // 4
         memory.write((short) (memoryOffset + 2), (byte) (unsignedValue / 100));     // 1
     }
 
@@ -405,8 +415,7 @@ class CentralProcessingUnit {
         short instruction = memory.read(address);
         instruction <<= 8;
 
-        // & 0xFF removes sign bit
-        instruction |= (short) (memory.read(++address) & 0xFF);
+        instruction |= (short) (memory.read(++address) & GET_UNSIGNED_BYTE);
 
         programCounter.increment((short) 2);
 

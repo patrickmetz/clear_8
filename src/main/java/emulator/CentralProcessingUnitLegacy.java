@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 14:05.
+ * Last modified 28.02.19 20:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -33,7 +33,7 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * <p>
      * the least significant bit of the
      * former value of X is stored in
-     * data register F
+     * the carry register
      * <p>
      *
      * @see CentralProcessingUnit#execute8XY6(short)
@@ -41,13 +41,13 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     @Override
     protected void execute8XY6(short i) {
         dataRegisters.write(
-                (byte) 0xF,
-                (byte) (dataRegisters.read((byte) ((i & 0x0F00) >> 8)) & 1)
+                (byte) CARRY_FLAG,
+                (byte) (dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)) & 1)
         );
 
         dataRegisters.write(
                 (byte) ((i & 0x0F00) >> 8),
-                (byte) (dataRegisters.read((byte) ((i & 0x00F0) >> 4)) >> 1)
+                (byte) (dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)) >> 1)
         );
     }
 
@@ -66,7 +66,7 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
         addressRegister.write(
                 (short) (
                         addressRegister.read()
-                        + (byte) ((i & 0x0F00) >> 8)
+                        + (byte) ((i & EXPOSE_X) >> GET_X)
                 )
         );
     }
