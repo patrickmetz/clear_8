@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 20:53.
+ * Last modified 28.02.19 23:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -17,15 +17,17 @@ package emulator;
 class CentralProcessingUnit {
 
     protected static final int CARRY_FLAG = 0xF;
+
     protected static final int EXPOSE_X = 0x0F00;
     protected static final int EXPOSE_Y = 0x00F0;
+    protected static final int GET_N = 0x000F;
     protected static final int GET_NN = 0x00FF;
     protected static final int GET_NNN = 0x0FFF;
     protected static final int GET_UNSIGNED_BYTE = 0xFF;
     protected static final int GET_X = 8;
     protected static final int GET_Y = 4;
 
-    private static final int UNSIGNED_BYTE_MAX_VALUE = 255;
+    protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
     protected final AddressRegister addressRegister;
     protected final DataRegisters dataRegisters;
@@ -159,6 +161,18 @@ class CentralProcessingUnit {
                 break;
             case 0xD000:
                 executeDXYN(instruction);
+                break;
+            case 0xE000:
+                switch (instruction & 0x000F) {
+                    case 0x000E:
+                        executeEX9E(instruction);
+                        break;
+                    case 0x0001:
+                        executeEXA1(instruction);
+                        break;
+                    default:
+                        throwInstructionException(instruction);
+                }
                 break;
             case 0xF000:
                 switch (instruction & 0x00FF) {
@@ -336,13 +350,37 @@ class CentralProcessingUnit {
         boolean pixelCollision = graphics.drawSprite(
                 dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)),
                 dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)),
-                memory.read(addressRegister.read(), (i) & 0x000F)
+                memory.read(addressRegister.read(), (i) & GET_N)
         );
 
         dataRegisters.write(
                 (byte) CARRY_FLAG,
                 (byte) (pixelCollision ? 1 : 0)
         );
+    }
+
+    /**
+     * Skip an instruction if the key of the key code, in
+     * data register X, is being pressed
+     */
+    private void executeEX9E(short i) {
+        if (keyboard.isKeyPressed(
+                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)))
+        ) {
+            programCounter.increment((short) 2);
+        }
+    }
+
+    /**
+     * Skip an instruction if the key of the key code, in
+     * data register X, is NOT being pressed
+     */
+    private void executeEXA1(short i) {
+        if (!keyboard.isKeyPressed(
+                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)))
+        ) {
+            programCounter.increment((short) 2);
+        }
     }
 
     /**

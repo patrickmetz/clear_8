@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 01:18.
+ * Last modified 28.02.19 23:29.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,6 +15,10 @@ final class Keyboard extends Thread {
     Keyboard() {
         // 16 hexadecimal key codes, from 0 to F
         keys = new HashMap<>(16, 2);
+
+        for (int i = 0; i < 0xF; i++) {
+            keys.put((byte) i, false);
+        }
     }
 
     public void pressKey(byte keyCode) {
@@ -23,6 +27,10 @@ final class Keyboard extends Thread {
 
     public void releaseKey(byte keyCode) {
         keys.put(keyCode, false);
+    }
+
+    boolean isKeyPressed(byte keyCode) {
+        return keys.get(keyCode);
     }
 
     byte waitForKey() {
