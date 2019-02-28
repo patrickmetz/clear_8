@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 17:42.
+ * Last modified 28.02.19 11:52.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,33 +12,25 @@ import java.io.IOException;
 
 final public class Emulator {
 
+    private final String FONT_PATH = "src/main/resources/font.bytecode";
     private final int FRAMES_PER_SECOND = 60;
+    private final int INSTRUCTIONS_PER_FRAME;
+    private final int INSTRUCTIONS_PER_SECOND;
+    private final short MEMORY_OFFSET_FONT = 0;
+    private final short MEMORY_OFFSET_ROM = 512;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
     private final CentralProcessingUnit cpu;
-    private final int instructionsPerSecond;
 
     public Emulator(int instructionsPerSecond, boolean legacyMode) {
-        this.instructionsPerSecond = instructionsPerSecond;
+        INSTRUCTIONS_PER_SECOND = instructionsPerSecond;
+        INSTRUCTIONS_PER_FRAME = INSTRUCTIONS_PER_SECOND / FRAMES_PER_SECOND;
 
-        //todo: this looks quite ugly
-        // https://stackoverflow.com/questions/1268817/create-new-class-from-a-variable-in-java
-        if (legacyMode) {
-            cpu = new CentralProcessingUnitLegacy(
-                    new AddressRegister(), new CallStack(), new DataRegisters(),
-                    new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
-                    new ProgramCounter(), new SoundTimer(new Sound()));
-        } else {
-            cpu = new CentralProcessingUnit(
-                    new AddressRegister(), new CallStack(), new DataRegisters(),
-                    new DelayTimer(), new Graphics(), new Keyboard(), new Memory(),
-                    new ProgramCounter(), new SoundTimer(new Sound()));
-        }
+        cpu = CentralProcessingUnitFactory.getCpu(legacyMode);
     }
 
     public void run(String romPath) throws InterruptedException, IOException {
-        final int INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
-
-        cpu.loadRomIntoMemory(loadRom(romPath));
+        cpu.writeToMemory(loadByteFile(FONT_PATH), MEMORY_OFFSET_FONT);
+        cpu.writeToMemory(loadByteFile(romPath), MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
         long endOfFrameTime;
@@ -47,7 +39,7 @@ final public class Emulator {
             endOfFrameTime = now + MILLISECONDS_PER_FRAME;
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-                cpu.executeNextInstruction();
+                cpu.processNextInstruction();
             }
 
             while (System.currentTimeMillis() < endOfFrameTime) {
@@ -59,8 +51,8 @@ final public class Emulator {
         }
     }
 
-    private byte[] loadRom(String romPath) throws IOException {
-        File file = new File(romPath);
+    private byte[] loadByteFile(String filePath) throws IOException {
+        File file = new File(filePath);
         byte[] bytes = new byte[(int) file.length()];
         FileInputStream fileStream = new FileInputStream(file);
 

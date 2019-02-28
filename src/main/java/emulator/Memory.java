@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 15:21.
+ * Last modified 27.02.19 00:39.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,8 +9,6 @@ package emulator;
 import java.util.HashMap;
 
 final class Memory {
-
-    static final short OFFSET_ROM = 512;
 
     // hash map read and write access surpasses array:
     // algorithmic complexity of get() and put() is O(1)

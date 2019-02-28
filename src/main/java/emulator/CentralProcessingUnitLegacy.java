@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 17:46.
+ * Last modified 26.02.19 21:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -20,7 +20,9 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
                                 DataRegisters dataRegisters, DelayTimer delayTimer,
                                 Graphics graphics, Keyboard keyboard, Memory memory,
                                 ProgramCounter programCounter, SoundTimer soundTimer) {
-        super(addressRegister, callStack, dataRegisters, delayTimer, graphics, keyboard, memory,
+
+        super(addressRegister, callStack, dataRegisters,
+              delayTimer, graphics, keyboard, memory,
               programCounter, soundTimer);
     }
 

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 17:56.
+ * Last modified 28.02.19 12:10.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -57,39 +57,6 @@ class CentralProcessingUnit {
         );
     }
 
-    void loadRomIntoMemory(byte[] bytes) {
-        short offset = Memory.OFFSET_ROM;
-
-        for (byte b : bytes) {
-            memory.write(offset++, b);
-        }
-
-        programCounter.write(Memory.OFFSET_ROM);
-    }
-
-    /**
-     * clears the screen
-     */
-    private void execute00E0(short instruction) {
-        graphics.clearScreen();
-    }
-
-    /**
-     * sets program counter to value NNN
-     */
-    private void execute1NNN(short i) {
-        programCounter.write((short) (i & 0x0FFF));
-    }
-
-    /**
-     * execute subroutine by storing current memory
-     * location and jumping to the subroutine's location
-     */
-    private void execute2NNN(short i) {
-        callStack.push(programCounter.read());
-        programCounter.write((short) (i & 0x0FFF));
-    }
-
     /**
      * example:
      * <p>
@@ -105,7 +72,7 @@ class CentralProcessingUnit {
      * 1225 & 0x00F0 = 0020 (exposes 3rd digit) | 0020 >> 4  = 2
      * 1225 & 0x000F = 0005 (exposes 4th digit) | 0005       = 5
      */
-    void executeNextInstruction() throws UnsupportedOperationException {
+    void processNextInstruction() throws UnsupportedOperationException {
         short instruction = getNextInstruction();
 
         switch (instruction & 0xF000) {
@@ -159,6 +126,15 @@ class CentralProcessingUnit {
                     case 0x000A:
                         executeFX0A(instruction);
                         break;
+                    case 0x0029:
+                        executeFX29(instruction);
+                        break;
+                    case 0x0033:
+                        executeFX33(instruction);
+                        break;
+                    case 0x0065:
+                        executeFX65(instruction);
+                        break;
                     default:
                         throwInstructionException(instruction);
                 }
@@ -170,14 +146,33 @@ class CentralProcessingUnit {
 
     }
 
+    void writeToMemory(byte[] bytes, int offset) {
+        for (byte b : bytes) {
+            memory.write((short) offset++, b);
+        }
+    }
+
     /**
-     * sets data register X to value NN
+     * clears the screen
      */
-    private void execute6XNN(short i) {
-        dataRegisters.write(
-                (byte) ((i & 0x0F00) >> 8),
-                (byte) (i & 0x00FF)
-        );
+    private void execute00E0(short instruction) {
+        graphics.clearScreen();
+    }
+
+    /**
+     * sets program counter to value NNN
+     */
+    private void execute1NNN(short i) {
+        programCounter.write((short) (i & 0x0FFF));
+    }
+
+    /**
+     * execute subroutine by storing current memory
+     * location and jumping to the subroutine's location
+     */
+    private void execute2NNN(short i) {
+        callStack.push(programCounter.read());
+        programCounter.write((short) (i & 0x0FFF));
     }
 
     /**
@@ -192,6 +187,16 @@ class CentralProcessingUnit {
             // one instruction = 2 bytes
             programCounter.increment((short) 2);
         }
+    }
+
+    /**
+     * sets data register X to value NN
+     */
+    private void execute6XNN(short i) {
+        dataRegisters.write(
+                (byte) ((i & 0x0F00) >> 8),
+                (byte) (i & 0x00FF)
+        );
     }
 
     /**
@@ -269,6 +274,48 @@ class CentralProcessingUnit {
     }
 
     /**
+     * sets the address register to the memory location of the
+     * character corresponding to data register X's value
+     */
+    private void executeFX29(short i) {
+        // the packaged font file contains the sprites for 0-F
+        // in order from 0-F and was loaded to memory offset 0
+        // each character sprite contains 5 bytes.
+        // so the character B, for example, is at memory location 0xB * 5 = 55
+        addressRegister.write((short) (((i & 0x0F00) >> 8) * 5));
+    }
+
+    /**
+     * sets three consecutive bytes of memory to the last,
+     * middle and first digit of data register X's numerical value
+     */
+    private void executeFX33(short i) {
+        byte register = dataRegisters.read((byte) ((i & 0x0F00) >>> 8));
+        short memoryOffset = addressRegister.read();
+
+        //example: 107
+        memory.write(memoryOffset, (byte) (register % 10));                    // 7
+        memory.write((short) (memoryOffset + 1), (byte) (register / 10 % 10)); // 0
+        memory.write((short) (memoryOffset + 2), (byte) (register / 100));     // 1
+    }
+
+    /**
+     * sets registers 0 to X to consecutive memory values
+     * beginning at registered memory address
+     */
+    private void executeFX65(short i) {
+        byte registerRange = (byte) ((i & 0x0F00) >> 8);
+        short memoryOffset = addressRegister.read();
+
+        for (byte j = 0; j < registerRange; j++) {
+            dataRegisters.write(
+                    j,
+                    memory.read(memoryOffset++)
+            );
+        }
+    }
+
+    /**
      * example:
      * <p>
      * first byte from memory : 00000111
@@ -288,19 +335,17 @@ class CentralProcessingUnit {
         /*
             (short)(memory... & 0xFF) converts signed to unsigned:
 
-            It takes all the bits of the byte with a bitwise and
-            (0xFF is 1111_1111), puts them into a bigger short,
-            so that Java "forgets" the Two`s complement, when
-            converting
+            It takes all the bits of a returned byte with a bitwise and
+            (0xFF is 1111_1111), and puts them into a bigger short.
 
             So the following works:
             byte1: 00000000 (dec 0, hex 0x0)
             byte2: 11100000 (dec -32, hex 0xE0)
-            instruction : 00000000_11100000 (dec 224, hex 0xE0)
+            resulting instruction : 00000000_11100000 (dec 224, hex 0xE0)
             => result matches opcode 00E0 (clear screen)
 
-            But, if we didn't do that, and used the byte directly:
-            instruction: 11111111_11100000 (dec -32, hex 0xFFE0)
+            If I wouldn't do that, and used the byte directly:
+            resulting instruction: 11111111_11100000 (dec -32, hex 0xFFE0)
             => result FFE0 is just useless
          */
         instruction |= (short) (memory.read(++address) & 0xFF);
