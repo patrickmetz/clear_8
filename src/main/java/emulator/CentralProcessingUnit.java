@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 16:24.
+ * Last modified 28.02.19 16:48.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -343,13 +343,17 @@ class CentralProcessingUnit {
      * middle and first digit of data register X's numerical value
      */
     private void executeFX33(short i) {
-        byte register = dataRegisters.read((byte) ((i & 0x0F00) >>> 8));
+        short unsignedValue = (short) (
+                dataRegisters.read((byte) ((i & 0x0F00) >> 8))
+                & 0xFF
+        );
+
         short memoryOffset = addressRegister.read();
 
         //example: 107
-        memory.write(memoryOffset, (byte) (register % 10));                    // 7
-        memory.write((short) (memoryOffset + 1), (byte) (register / 10 % 10)); // 0
-        memory.write((short) (memoryOffset + 2), (byte) (register / 100));     // 1
+        memory.write(memoryOffset, (byte) (unsignedValue % 10));                    // 7
+        memory.write((short) (memoryOffset + 1), (byte) (unsignedValue / 10 % 10)); // 0
+        memory.write((short) (memoryOffset + 2), (byte) (unsignedValue / 100));     // 1
     }
 
     /**
