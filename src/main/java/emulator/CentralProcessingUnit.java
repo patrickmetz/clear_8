@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:15.
+ * Last modified 01.03.19 22:21.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -53,27 +53,27 @@ class CentralProcessingUnit {
         this.soundTimer = soundTimer;
     }
 
-    private static int N(int i) {
+    protected static int N(int i) {
         return i & GET_N;
     }
 
-    private static int NN(int i) {
+    protected static int NN(int i) {
         return i & GET_NN;
     }
 
-    private static int NNN(int i) {
+    protected static int NNN(int i) {
         return i & GET_NNN;
     }
 
-    private static int X(int i) {
+    protected static int X(int i) {
         return (i & EXPOSE_X) >> GET_X;
     }
 
-    private static int Y(int i) {
+    protected static int Y(int i) {
         return (i & EXPOSE_Y) >> GET_Y;
     }
 
-    private static int unsigned(int value) {
+    protected static int unsigned(int value) {
         return value & 0xFF;
     }
 

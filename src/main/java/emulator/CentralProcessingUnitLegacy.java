@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 17:35.
+ * Last modified 01.03.19 22:20.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -42,12 +42,12 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     protected void execute8XY6(int i) {
         dataRegisters.write(
                 CARRY_FLAG,
-                dataRegisters.read((i & EXPOSE_X) >> GET_X) & 1
+                dataRegisters.read(X(i)) & 1
         );
 
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
-                dataRegisters.read((i & EXPOSE_Y) >> GET_Y) >> 1
+                X(i),
+                dataRegisters.read(Y(i)) >> 1
         );
     }
 
@@ -65,7 +65,7 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
 
         addressRegister.write(
                 addressRegister.read()
-                + ((i & EXPOSE_X) >> GET_X)
+                + X(i)
         );
     }
 }
