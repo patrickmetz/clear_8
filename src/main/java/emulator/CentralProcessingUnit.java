@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 18:49.
+ * Last modified 01.03.19 20:31.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -135,6 +135,12 @@ class CentralProcessingUnit {
             case 0x3000:
                 execute3XNN(instruction);
                 break;
+            case 0x4000:
+                execute4XNN(instruction);
+                break;
+            case 0x5000:
+                execute5XY0(instruction);
+                break;
             case 0x6000:
                 execute6XNN(instruction);
                 break;
@@ -258,6 +264,33 @@ class CentralProcessingUnit {
                 == (i & GET_NN)
         ) {
             // one instruction = 2 bytes
+            programCounter.increment(2);
+        }
+    }
+
+    /**
+     * skip one instruction, if the value of data register X
+     * is not equal to the value NN
+     */
+    private void execute4XNN(int i) {
+        if (
+                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                != (i & GET_NN)
+        ) {
+            programCounter.increment(2);
+        }
+    }
+
+    /**
+     * skip one instruction, if the value of data register X
+     * is equal to the value of data register Y
+     */
+    private void execute5XY0(int i) {
+        if (
+                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                == dataRegisters.read((i & EXPOSE_Y) >> GET_Y)
+
+        ) {
             programCounter.increment(2);
         }
     }

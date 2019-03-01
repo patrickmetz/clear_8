@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 15:18.
+ * Last modified 01.03.19 20:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,7 +16,7 @@ final class CallStack {
         memory = new Stack<>();
     }
 
-    Integer pop() {
+    int pop() {
         return memory.pop();
     }
 

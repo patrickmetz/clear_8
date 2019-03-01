@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 19:25.
+ * Last modified 01.03.19 19:26.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -21,7 +21,7 @@ final class SoundTimer {
             value--;
         }
 
-        checkValue();
+        //checkValue();
     }
 
     void write(int value) {

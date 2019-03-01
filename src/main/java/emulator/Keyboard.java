@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 17:29.
+ * Last modified 01.03.19 20:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -33,7 +33,7 @@ final class Keyboard extends Thread {
         return keys.get(keyCode);
     }
 
-    Integer waitForKey() {
+    int waitForKey() {
         return 0xF; // just fake it for now ;-P
     }
 

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 15:28.
+ * Last modified 01.03.19 20:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,7 +18,7 @@ final class Memory {
         memory = new HashMap<>(4096, 2);
     }
 
-    Integer read(int address) {
+    int read(int address) {
         return memory.get(address);
     }
 
