@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:24.
+ * Last modified 01.03.19 23:56.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,7 +16,6 @@ package emulator;
  */
 class CentralProcessingUnit {
 
-    public static final int FONT_SIZE_IN_BYTES = 5;
     protected static final int CARRY = 0xF;
     protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
@@ -79,30 +78,30 @@ class CentralProcessingUnit {
      * former value is stored in the carry register
      * <p>
      *
-     * @see CentralProcessingUnitLegacy#execute8XY6(int)
+     * @see CentralProcessingUnitLegacy#opcode8XY6(int)
      */
-    protected void execute8XY6(int i) {
-        int xAddress = X(i);
-        int xValue = dataRegisters.read(xAddress);
+    protected void opcode8XY6(int i) {
+        int X = X(i);
+        int value = dataRegisters.read(X);
 
-        dataRegisters.write(CARRY, xValue & 1);
-        dataRegisters.write(xAddress, xValue >> 1);
+        dataRegisters.write(CARRY, value & 1);
+        dataRegisters.write(X, value >> 1);
     }
 
     /**
      * sets registers 0 to X to consecutive memory values
      * beginning at registered memory address
      *
-     * @see CentralProcessingUnitLegacy#executeFX65(int)
+     * @see CentralProcessingUnitLegacy#opcodeFX65(int)
      */
-    protected void executeFX65(int i) {
-        int endRegister = X(i);
-        int memoryOffset = addressRegister.read();
+    protected void opcodeFX65(int i) {
+        int X = X(i);
+        int address = addressRegister.read();
 
-        for (int j = 0; j <= endRegister; j++) {
+        for (int j = 0; j <= X; j++) {
             dataRegisters.write(
                     j,
-                    memory.read(memoryOffset++)
+                    memory.read(address++)
             );
         }
     }
@@ -112,92 +111,79 @@ class CentralProcessingUnit {
         soundTimer.decrement();
     }
 
-    /**
-     * example:
-     * <p>
-     * instruction = 4645 as int
-     * instruction = 1225 as hexadecimal
-     * <p>
-     * => 1NNN = jump to memory address NNN
-     * see https://en.wikipedia.org/wiki/CHIP-8#Opcode_table
-     * for all supported cpu instructions
-     * <p>
-     * 1225 & 0xF000 = 1000 (exposes 1st digit) | 1000 >> 12 = 1
-     * 1225 & 0x0F00 = 0200 (exposes 2nd digit  | 0200 >> 8  = 2
-     * 1225 & 0x00F0 = 0020 (exposes 3rd digit) | 0020 >> 4  = 2
-     * 1225 & 0x000F = 0005 (exposes 4th digit) | 0005       = 5
-     */
     void processNextInstruction() throws UnsupportedOperationException {
         int instruction = getNextInstruction();
 
+        // check first hex digit
         switch (instruction & 0xF000) {
             case 0x0000:
+                // check last two hex digits, etc...
                 switch (instruction & 0x00FF) {
                     case 0x00E0:
-                        execute00E0(instruction);
+                        opcode00E0(instruction);
                         break;
                     case 0x00EE:
-                        execute00EE(instruction);
+                        opcode00EE(instruction);
                         break;
                     default:
                         throwInstructionException(instruction);
                 }
                 break;
             case 0x1000:
-                execute1NNN(instruction);
+                opcode1NNN(instruction);
                 break;
             case 0x2000:
-                execute2NNN(instruction);
+                opcode2NNN(instruction);
                 break;
             case 0x3000:
-                execute3XNN(instruction);
+                opcode3XNN(instruction);
                 break;
             case 0x4000:
-                execute4XNN(instruction);
+                opcode4XNN(instruction);
                 break;
             case 0x5000:
-                execute5XY0(instruction);
+                opcode5XY0(instruction);
                 break;
             case 0x6000:
-                execute6XNN(instruction);
+                opcode6XNN(instruction);
                 break;
             case 0x7000:
-                execute7XNN(instruction);
+                opcode7XNN(instruction);
                 break;
             case 0x8000:
                 switch (instruction & 0x000F) {
                     case 0x0000:
-                        execute8XY0(instruction);
+                        opcode8XY0(instruction);
                         break;
                     case 0x0004:
-                        execute8XY4(instruction);
+                        opcode8XY4(instruction);
                         break;
                     case 0x0005:
-                        execute8XY5(instruction);
+                        opcode8XY5(instruction);
                         break;
                     case 0x0006:
-                        execute8XY6(instruction);
+                        opcode8XY6(instruction);
                         break;
                     default:
                         throwInstructionException(instruction);
                 }
                 break;
             case 0xA000:
-                executeANNN(instruction);
+                opcodeANNN(instruction);
                 break;
             case 0xC000:
-                executeCXNN(instruction);
+                opcodeCXNN(instruction);
                 break;
             case 0xD000:
-                executeDXYN(instruction);
+                opcodeDXYN(instruction);
                 break;
             case 0xE000:
                 switch (instruction & 0x000F) {
                     case 0x000E:
-                        executeEX9E(instruction);
+                        opcodeEX9E(instruction);
                         break;
                     case 0x0001:
-                        executeEXA1(instruction);
+                        opcodeEXA1(instruction);
                         break;
                     default:
                         throwInstructionException(instruction);
@@ -206,25 +192,25 @@ class CentralProcessingUnit {
             case 0xF000:
                 switch (instruction & 0x00FF) {
                     case 0x001E:
-                        executeFX1E(instruction);
+                        opcodeFX1E(instruction);
                         break;
                     case 0x0007:
-                        executeFX07(instruction);
+                        opcodeFX07(instruction);
                         break;
                     case 0x000A:
-                        executeFX0A(instruction);
+                        opcodeFX0A(instruction);
                         break;
                     case 0x0015:
-                        executeFX15(instruction);
+                        opcodeFX15(instruction);
                         break;
                     case 0x0029:
-                        executeFX29(instruction);
+                        opcodeFX29(instruction);
                         break;
                     case 0x0033:
-                        executeFX33(instruction);
+                        opcodeFX33(instruction);
                         break;
                     case 0x0065:
-                        executeFX65(instruction);
+                        opcodeFX65(instruction);
                         break;
                     default:
                         throwInstructionException(instruction);
@@ -236,305 +222,10 @@ class CentralProcessingUnit {
 
     }
 
-    void writeToMemory(int[] data, int offset) {
-        for (int b : data) {
-            memory.write(offset++, b);
+    void writeToMemory(int[] data, int address) {
+        for (int d : data) {
+            memory.write(address++, d);
         }
-    }
-
-    /**
-     * clears the screen
-     */
-    private void execute00E0(int i) {
-        graphics.clearScreen();
-    }
-
-    /**
-     * leaving subroutine by popping former memory
-     * location from the stack and jumping there
-     */
-    private void execute00EE(int i) {
-        programCounter.write(callStack.pop());
-    }
-
-    /**
-     * sets program counter to value NNN
-     */
-    private void execute1NNN(int i) {
-        programCounter.write(NNN(i));
-    }
-
-    /**
-     * execute subroutine by pushing current memory
-     * location to the stack and jumping to the
-     * subroutine's location
-     */
-    private void execute2NNN(int i) {
-        callStack.push(programCounter.read());
-        programCounter.write(NNN(i));
-    }
-
-    /**
-     * skips one instruction if the value of
-     * data register X is equal to NN
-     */
-    private void execute3XNN(int i) {
-        if (
-                dataRegisters.read(X(i))
-                == (NN(i))
-        ) {
-            // one instruction = 2 bytes
-            programCounter.increment(2);
-        }
-    }
-
-    /**
-     * skip one instruction, if the value of data register X
-     * is not equal to the value NN
-     */
-    private void execute4XNN(int i) {
-        if (
-                dataRegisters.read(X(i))
-                != (NN(i))
-        ) {
-            programCounter.increment(2);
-        }
-    }
-
-    /**
-     * skip one instruction, if the value of data register X
-     * is equal to the value of data register Y
-     */
-    private void execute5XY0(int i) {
-        if (
-                dataRegisters.read(X(i))
-                == dataRegisters.read(Y(i))
-
-        ) {
-            programCounter.increment(2);
-        }
-    }
-
-    /**
-     * sets data register X to value NN
-     */
-    private void execute6XNN(int i) {
-        dataRegisters.write(
-                X(i),
-                NN(i)
-        );
-    }
-
-    /**
-     * Adds the value NN to data register X.
-     * If the new value exceeds maximum unsigned byte size,
-     * it is "wrapped around" with modulo, but no carry
-     * flag is set.
-     */
-    private void execute7XNN(int i) {
-        int addressX = X(i);
-
-        int newValue = unsigned(dataRegisters.read(addressX))
-                       + NN(i);
-
-        //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
-        if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
-            newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
-        }
-
-        dataRegisters.write(addressX, newValue);
-    }
-
-    /**
-     * sets the value of data register X
-     * to the value of data register Y
-     */
-    private void execute8XY0(int i) {
-        dataRegisters.write(
-                X(i),
-                dataRegisters.read(Y(i))
-        );
-    }
-
-    /**
-     * Adds the value of register Y to register X.
-     * If the new value exceeds maximum unsigned byte size,
-     * it is "wrapped around" with modulo and the carry
-     * flag is set to 1 (0 otherwise).
-     */
-    private void execute8XY4(int i) {
-        int newValue =
-                unsigned(dataRegisters.read(X(i)))
-                + unsigned(dataRegisters.read(Y(i)));
-
-        int carry = 0;
-
-        //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
-        if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
-            newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
-            carry = 1;
-        }
-
-        dataRegisters.write(
-                X(i),
-                newValue
-        );
-        dataRegisters.write(CARRY, carry);
-    }
-
-    /**
-     * Reduce value of data register X by the value of data register Y.
-     * If the new value is lower than zero (a borrow occurs), the carry flag
-     * is set to 0 (1 otherwise).
-     */
-    private void execute8XY5(int i) {
-        byte newValue =
-                (byte) (
-                        unsigned(dataRegisters.read(X(i)))
-                        - unsigned(dataRegisters.read(Y(i)))
-                );
-
-        int carry = 1;
-
-        if (newValue < 0) {
-            carry = 0;
-        }
-
-        dataRegisters.write(
-                X(i),
-                newValue
-        );
-
-        dataRegisters.write(CARRY, carry);
-    }
-
-    /**
-     * sets address register to value NNN
-     */
-    private void executeANNN(int i) {
-        addressRegister.write(NNN(i));
-    }
-
-    /**
-     * sets address register X to a random value
-     * (between 0 and 255), which is masked with NN
-     */
-    private void executeCXNN(int i) {
-        // the result of every bit operation in java is an
-        // int, therefore we cast bit operations on bytes
-        // to bytes again until the end of time :D
-        dataRegisters.write(
-                X(i),
-                (int) (Math.random() * (255 + 1)) & NN(i)
-        );
-    }
-
-    /**
-     * draws a sprite at screen coordinates X,Y, using
-     * N sprite rows found at currently registered address
-     */
-    private void executeDXYN(int i) {
-        boolean pixelCollision = graphics.drawSprite(
-                dataRegisters.read(X(i)),
-                dataRegisters.read(Y(i)),
-                memory.read(addressRegister.read(), N(i))
-        );
-
-        dataRegisters.write(
-                CARRY,
-                pixelCollision ? 1 : 0
-        );
-    }
-
-    /**
-     * Skip an instruction if the key of the key code, in
-     * data register X, is being pressed
-     */
-    private void executeEX9E(int i) {
-        if (keyboard.isKeyPressed(
-                dataRegisters.read(X(i)))
-        ) {
-            programCounter.increment(2);
-        }
-    }
-
-    /**
-     * Skip an instruction if the key of the key code, in
-     * data register X, is NOT being pressed
-     */
-    private void executeEXA1(int i) {
-        if (!keyboard.isKeyPressed(
-                dataRegisters.read(X(i)))
-        ) {
-            programCounter.increment(2);
-        }
-    }
-
-    /**
-     * sets data register X to the value of the delay timer
-     */
-    private void executeFX07(int i) {
-        dataRegisters.write(
-                X(i),
-                delayTimer.read()
-        );
-    }
-
-    /**
-     * waits for a key press and stores
-     * the key code in data register x
-     */
-    private void executeFX0A(int i) {
-        dataRegisters.write(
-                X(i),
-                keyboard.waitForKey()
-        );
-    }
-
-    /**
-     * sets the delay timer to the value of data register X
-     */
-    private void executeFX15(int i) {
-        delayTimer.write(
-                dataRegisters.read(X(i))
-        );
-    }
-
-    /**
-     * adds value of data register X to the address register
-     */
-    private void executeFX1E(int i) {
-        addressRegister.write(
-                addressRegister.read()
-                + dataRegisters.read(X(i))
-        );
-    }
-
-    /**
-     * sets the address register to the memory location of the
-     * character corresponding to data register X's value
-     */
-    private void executeFX29(int i) {
-        // the packaged font file contains the sprites for 0-F
-        // in order from 0-F and was loaded to memory offset 0
-        // each character sprite contains 5 bytes.
-        // so the character B, for example, is at memory location 0xB * 5 = 55
-        addressRegister.write((X(i)) * FONT_SIZE_IN_BYTES);
-    }
-
-    /**
-     * sets three consecutive bytes of memory to the last,
-     * middle and first digit of data register X's numerical value
-     */
-    private void executeFX33(int i) {
-        int unsignedValue = unsigned(dataRegisters.read(X(i)));
-
-        int memoryOffset = addressRegister.read();
-
-        //example: 147
-        memory.write(memoryOffset, (unsignedValue % 10));            // 7
-        memory.write((memoryOffset + 1), (unsignedValue / 10 % 10)); // 4
-        memory.write((memoryOffset + 2), (unsignedValue / 100));     // 1
     }
 
     /**
@@ -556,9 +247,264 @@ class CentralProcessingUnit {
 
         instruction |= unsigned(memory.read(++address));
 
-        programCounter.increment((short) 2);
+        programCounter.skipInstruction();
 
         return instruction;
+    }
+
+    /**
+     * clears the screen
+     */
+    private void opcode00E0(int i) {
+        graphics.clearScreen();
+    }
+
+    /**
+     * leaving subroutine by popping former memory
+     * location from the stack and jumping there
+     */
+    private void opcode00EE(int i) {
+        programCounter.write(callStack.pop());
+    }
+
+    /**
+     * sets program counter to value NNN
+     */
+    private void opcode1NNN(int i) {
+        programCounter.write(NNN(i));
+    }
+
+    /**
+     * execute subroutine by pushing current memory
+     * location to the stack and jumping to the
+     * subroutine's location
+     */
+    private void opcode2NNN(int i) {
+        callStack.push(programCounter.read());
+        programCounter.write(NNN(i));
+    }
+
+    /**
+     * skips one instruction if the value of
+     * data register X is equal to NN
+     */
+    private void opcode3XNN(int i) {
+        if (dataRegisters.read(X(i)) == NN(i)) {
+            programCounter.skipInstruction();
+        }
+    }
+
+    /**
+     * skip one instruction, if the value of data register X
+     * is not equal to the value NN
+     */
+    private void opcode4XNN(int i) {
+        if (dataRegisters.read(X(i)) != NN(i)) {
+            programCounter.skipInstruction();
+        }
+    }
+
+    /**
+     * skip one instruction, if the value of data register X
+     * is equal to the value of data register Y
+     */
+    private void opcode5XY0(int i) {
+        if (dataRegisters.read(X(i)) == dataRegisters.read(Y(i))) {
+            programCounter.skipInstruction();
+        }
+    }
+
+    /**
+     * sets data register X to value NN
+     */
+    private void opcode6XNN(int i) {
+        dataRegisters.write(X(i), NN(i));
+    }
+
+    /**
+     * Adds the value NN to data register X.
+     * If the new value exceeds maximum unsigned byte size,
+     * it is "wrapped around" with modulo, but no carry
+     * flag is set.
+     */
+    private void opcode7XNN(int i) {
+        int X = X(i);
+
+        int result = unsigned(dataRegisters.read(X)) + NN(i);
+
+        //  256 = 0, 257 = 1, ...
+        if (result > UNSIGNED_BYTE_MAX_VALUE) {
+            result %= UNSIGNED_BYTE_MAX_VALUE + 1;
+        }
+
+        dataRegisters.write(X, result);
+    }
+
+    /**
+     * sets the value of data register X
+     * to the value of data register Y
+     */
+    private void opcode8XY0(int i) {
+        dataRegisters.write(X(i), dataRegisters.read(Y(i)));
+    }
+
+    /**
+     * Adds the value of register Y to register X.
+     * If the new value exceeds maximum unsigned byte size,
+     * it is "wrapped around" with modulo and the carry
+     * flag is set to 1 (0 otherwise).
+     */
+    private void opcode8XY4(int i) {
+        int result =
+                unsigned(dataRegisters.read(X(i)))
+                + unsigned(dataRegisters.read(Y(i)));
+
+        int carry = 0;
+
+        // 256 = 0, 257 = 1, ...
+        if (result > UNSIGNED_BYTE_MAX_VALUE) {
+            result %= UNSIGNED_BYTE_MAX_VALUE + 1;
+            carry = 1;
+        }
+
+        dataRegisters.write(X(i), result);
+        dataRegisters.write(CARRY, carry);
+    }
+
+    /**
+     * Reduce value of data register X by the value of data register Y.
+     * If the new value is lower than zero (a borrow occurs), the carry flag
+     * is set to 0 (1 otherwise).
+     */
+    private void opcode8XY5(int i) {
+        byte newValue =
+                (byte) (
+                        unsigned(dataRegisters.read(X(i)))
+                        - unsigned(dataRegisters.read(Y(i)))
+                );
+
+        dataRegisters.write(X(i), newValue);
+        dataRegisters.write(
+                CARRY,
+                (newValue < 0) ? 0 : 1
+        );
+    }
+
+    /**
+     * sets address register to value NNN
+     */
+    private void opcodeANNN(int i) {
+        addressRegister.write(NNN(i));
+    }
+
+    /**
+     * sets address register X to a random value
+     * (between 0 and 255), which is masked with NN
+     */
+    private void opcodeCXNN(int i) {
+        dataRegisters.write(
+                X(i),
+                (int) (Math.random() * (255 + 1)) & NN(i)
+        );
+    }
+
+    /**
+     * draws a sprite at screen coordinates X,Y, using
+     * N sprite rows found at currently registered address
+     */
+    private void opcodeDXYN(int i) {
+        boolean pixelCollision = graphics.drawSprite(
+                dataRegisters.read(X(i)),
+                dataRegisters.read(Y(i)),
+                memory.read(addressRegister.read(), N(i))
+        );
+
+        dataRegisters.write(
+                CARRY,
+                pixelCollision ? 1 : 0
+        );
+    }
+
+    /**
+     * Skip an instruction if the key of the key code, in
+     * data register X, is being pressed
+     */
+    private void opcodeEX9E(int i) {
+        if (keyboard.isKeyPressed(
+                dataRegisters.read(X(i))
+        )) {
+            programCounter.skipInstruction();
+        }
+    }
+
+    /**
+     * Skip an instruction if the key of the key code, in
+     * data register X, is NOT being pressed
+     */
+    private void opcodeEXA1(int i) {
+        if (!keyboard.isKeyPressed(
+                dataRegisters.read(X(i))
+        )) {
+            programCounter.skipInstruction();
+        }
+    }
+
+    /**
+     * sets data register X to the value of the delay timer
+     */
+    private void opcodeFX07(int i) {
+        dataRegisters.write(X(i), delayTimer.read());
+    }
+
+    /**
+     * waits for a key press and stores
+     * the key code in data register x
+     */
+    private void opcodeFX0A(int i) {
+        dataRegisters.write(X(i), keyboard.waitForKey());
+    }
+
+    /**
+     * sets the delay timer to the value of data register X
+     */
+    private void opcodeFX15(int i) {
+        delayTimer.write(dataRegisters.read(X(i)));
+    }
+
+    /**
+     * adds value of data register X to the address register
+     */
+    private void opcodeFX1E(int i) {
+        addressRegister.write(
+                addressRegister.read()
+                + dataRegisters.read(X(i))
+        );
+    }
+
+    /**
+     * sets the address register to the memory location of the
+     * character corresponding to data register X's value
+     */
+    private void opcodeFX29(int i) {
+        // the packaged font file contains the sprites for 0-F
+        // in order from 0-F and was loaded to memory offset 0
+        // each character sprite contains 5 bytes.
+        // so the character B, for example, is at memory location 0xB * 5 = 55
+        addressRegister.write((X(i)) * 5);
+    }
+
+    /**
+     * sets three consecutive bytes of memory to the last,
+     * middle and first digit of data register X's numerical value
+     */
+    private void opcodeFX33(int i) {
+        int X = unsigned(dataRegisters.read(X(i)));
+        int address = addressRegister.read();
+
+        //example: 137
+        memory.write(address, X % 10);          // 7
+        memory.write(address + 1, X / 10 % 10); // 3
+        memory.write(address + 2, X / 100);     // 1
     }
 
     private void throwInstructionException(int instruction) {

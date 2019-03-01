@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:24.
+ * Last modified 01.03.19 23:56.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -23,7 +23,8 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
 
         super(addressRegister, callStack, dataRegisters,
               delayTimer, graphics, keyboard, memory,
-              programCounter, soundTimer);
+              programCounter, soundTimer
+        );
     }
 
     /**
@@ -36,10 +37,10 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * the carry register
      * <p>
      *
-     * @see CentralProcessingUnit#execute8XY6(int)
+     * @see CentralProcessingUnit#opcode8XY6(int)
      */
     @Override
-    protected void execute8XY6(int i) {
+    protected void opcode8XY6(int i) {
         dataRegisters.write(
                 CARRY,
                 dataRegisters.read(X(i)) & 1
@@ -57,15 +58,12 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * <p>
      * additionally increments address register by X
      *
-     * @see CentralProcessingUnit#executeFX65(int)
+     * @see CentralProcessingUnit#opcodeFX65(int)
      */
     @Override
-    protected void executeFX65(int i) {
-        super.executeFX65(i);
+    protected void opcodeFX65(int i) {
+        super.opcodeFX65(i);
 
-        addressRegister.write(
-                addressRegister.read()
-                + X(i)
-        );
+        addressRegister.write(addressRegister.read() + X(i));
     }
 }

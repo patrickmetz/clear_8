@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 01.03.19 23:25.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -26,7 +26,8 @@ final class Sound extends Thread {
                 8,
                 1,
                 true,
-                false);
+                false
+        );
 
         try {
             sdl = AudioSystem.getSourceDataLine(audioFormat);

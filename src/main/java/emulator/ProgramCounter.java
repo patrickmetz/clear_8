@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 15:57.
+ * Last modified 01.03.19 23:43.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,24 +10,12 @@ final class ProgramCounter {
 
     private int value = 512;
 
-    void decrement(int value) {
-        this.value -= value;
-    }
-
-    void decrement() {
-        value--;
-    }
-
-    void increment(int value) {
-        this.value += value;
-    }
-
-    void increment() {
-        value++;
-    }
-
     int read() {
         return value;
+    }
+
+    void skipInstruction() {
+        this.value += 2;
     }
 
     void write(int value) {
