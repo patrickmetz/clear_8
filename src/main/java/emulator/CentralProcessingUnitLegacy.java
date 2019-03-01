@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:20.
+ * Last modified 01.03.19 22:24.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -41,7 +41,7 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     @Override
     protected void execute8XY6(int i) {
         dataRegisters.write(
-                CARRY_FLAG,
+                CARRY,
                 dataRegisters.read(X(i)) & 1
         );
 

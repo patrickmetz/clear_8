@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:21.
+ * Last modified 01.03.19 22:24.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -17,16 +17,9 @@ package emulator;
 class CentralProcessingUnit {
 
     public static final int FONT_SIZE_IN_BYTES = 5;
-    protected static final int CARRY_FLAG = 0xF;
-    protected static final int EXPOSE_X = 0x0F00;
-    protected static final int EXPOSE_Y = 0x00F0;
-    protected static final int GET_N = 0x000F;
-    protected static final int GET_NN = 0x00FF;
-    protected static final int GET_NNN = 0x0FFF;
-    protected static final int GET_UNSIGNED_BYTE = 0xFF;
-    protected static final int GET_X = 8;
-    protected static final int GET_Y = 4;
+    protected static final int CARRY = 0xF;
     protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
+
     protected final AddressRegister addressRegister;
     protected final DataRegisters dataRegisters;
     private final CallStack callStack;
@@ -54,23 +47,23 @@ class CentralProcessingUnit {
     }
 
     protected static int N(int i) {
-        return i & GET_N;
+        return i & 0x000F;
     }
 
     protected static int NN(int i) {
-        return i & GET_NN;
+        return i & 0x00FF;
     }
 
     protected static int NNN(int i) {
-        return i & GET_NNN;
+        return i & 0x0FFF;
     }
 
     protected static int X(int i) {
-        return (i & EXPOSE_X) >> GET_X;
+        return (i & 0x0F00) >> 8;
     }
 
     protected static int Y(int i) {
-        return (i & EXPOSE_Y) >> GET_Y;
+        return (i & 0x00F0) >> 4;
     }
 
     protected static int unsigned(int value) {
@@ -92,7 +85,7 @@ class CentralProcessingUnit {
         int xAddress = X(i);
         int xValue = dataRegisters.read(xAddress);
 
-        dataRegisters.write(CARRY_FLAG, xValue & 1);
+        dataRegisters.write(CARRY, xValue & 1);
         dataRegisters.write(xAddress, xValue >> 1);
     }
 
@@ -386,7 +379,7 @@ class CentralProcessingUnit {
                 X(i),
                 newValue
         );
-        dataRegisters.write(CARRY_FLAG, carry);
+        dataRegisters.write(CARRY, carry);
     }
 
     /**
@@ -412,7 +405,7 @@ class CentralProcessingUnit {
                 newValue
         );
 
-        dataRegisters.write(CARRY_FLAG, carry);
+        dataRegisters.write(CARRY, carry);
     }
 
     /**
@@ -448,7 +441,7 @@ class CentralProcessingUnit {
         );
 
         dataRegisters.write(
-                CARRY_FLAG,
+                CARRY,
                 pixelCollision ? 1 : 0
         );
     }
