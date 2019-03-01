@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 21:50.
+ * Last modified 01.03.19 21:57.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -53,6 +53,14 @@ class CentralProcessingUnit {
         this.soundTimer = soundTimer;
     }
 
+    private static int X(int i) {
+        return (i & EXPOSE_X) >> GET_X;
+    }
+
+    private static int Y(int i) {
+        return (i & EXPOSE_Y) >> GET_Y;
+    }
+
     /**
      * modifies the value of data register X
      * by shifting it to the right by one bit
@@ -65,7 +73,7 @@ class CentralProcessingUnit {
      * @see CentralProcessingUnitLegacy#execute8XY6(int)
      */
     protected void execute8XY6(int i) {
-        int xAddress = (i & EXPOSE_X) >> GET_X;
+        int xAddress = X(i);
         int xValue = dataRegisters.read(xAddress);
 
         dataRegisters.write(CARRY_FLAG, xValue & 1);
@@ -79,7 +87,7 @@ class CentralProcessingUnit {
      * @see CentralProcessingUnitLegacy#executeFX65(int)
      */
     protected void executeFX65(int i) {
-        int endRegister = (i & EXPOSE_X) >> GET_X;
+        int endRegister = X(i);
         int memoryOffset = addressRegister.read();
 
         for (int j = 0; j <= endRegister; j++) {
@@ -263,7 +271,7 @@ class CentralProcessingUnit {
      */
     private void execute3XNN(int i) {
         if (
-                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                dataRegisters.read(X(i))
                 == (i & GET_NN)
         ) {
             // one instruction = 2 bytes
@@ -277,7 +285,7 @@ class CentralProcessingUnit {
      */
     private void execute4XNN(int i) {
         if (
-                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                dataRegisters.read(X(i))
                 != (i & GET_NN)
         ) {
             programCounter.increment(2);
@@ -290,8 +298,8 @@ class CentralProcessingUnit {
      */
     private void execute5XY0(int i) {
         if (
-                dataRegisters.read((i & EXPOSE_X) >> GET_X)
-                == dataRegisters.read((i & EXPOSE_Y) >> GET_Y)
+                dataRegisters.read(X(i))
+                == dataRegisters.read(Y(i))
 
         ) {
             programCounter.increment(2);
@@ -303,7 +311,7 @@ class CentralProcessingUnit {
      */
     private void execute6XNN(int i) {
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 i & GET_NN
         );
     }
@@ -315,7 +323,7 @@ class CentralProcessingUnit {
      * flag is set.
      */
     private void execute7XNN(int i) {
-        int addressX = (i & EXPOSE_X) >> GET_X;
+        int addressX = X(i);
 
         int newValue = (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
                        + (i & GET_NN);
@@ -334,8 +342,8 @@ class CentralProcessingUnit {
      */
     private void execute8XY0(int i) {
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
-                dataRegisters.read((i & EXPOSE_Y) >> GET_Y)
+                X(i),
+                dataRegisters.read(Y(i))
         );
     }
 
@@ -347,8 +355,8 @@ class CentralProcessingUnit {
      */
     private void execute8XY4(int i) {
         int newValue =
-                (dataRegisters.read((i & EXPOSE_X) >> GET_X) & GET_UNSIGNED_BYTE)
-                + (dataRegisters.read((i & EXPOSE_Y) >> GET_Y) & GET_UNSIGNED_BYTE);
+                (dataRegisters.read(X(i)) & GET_UNSIGNED_BYTE)
+                + (dataRegisters.read(Y(i)) & GET_UNSIGNED_BYTE);
 
         int carry = 0;
 
@@ -359,7 +367,7 @@ class CentralProcessingUnit {
         }
 
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 newValue
         );
         dataRegisters.write(CARRY_FLAG, carry);
@@ -373,8 +381,8 @@ class CentralProcessingUnit {
     private void execute8XY5(int i) {
         byte newValue =
                 (byte) (
-                        (dataRegisters.read((i & EXPOSE_X) >> GET_X) & GET_UNSIGNED_BYTE)
-                        - (dataRegisters.read((i & EXPOSE_Y) >> GET_Y) & GET_UNSIGNED_BYTE)
+                        (dataRegisters.read(X(i)) & GET_UNSIGNED_BYTE)
+                        - (dataRegisters.read(Y(i)) & GET_UNSIGNED_BYTE)
                 );
 
         int carry = 1;
@@ -384,7 +392,7 @@ class CentralProcessingUnit {
         }
 
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 newValue
         );
 
@@ -407,7 +415,7 @@ class CentralProcessingUnit {
         // int, therefore we cast bit operations on bytes
         // to bytes again until the end of time :D
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 (int) (Math.random() * (255 + 1)) & (i & GET_NN)
         );
     }
@@ -418,8 +426,8 @@ class CentralProcessingUnit {
      */
     private void executeDXYN(int i) {
         boolean pixelCollision = graphics.drawSprite(
-                dataRegisters.read((i & EXPOSE_X) >> GET_X),
-                dataRegisters.read((i & EXPOSE_Y) >> GET_Y),
+                dataRegisters.read(X(i)),
+                dataRegisters.read(Y(i)),
                 memory.read(addressRegister.read(), i & GET_N)
         );
 
@@ -435,7 +443,7 @@ class CentralProcessingUnit {
      */
     private void executeEX9E(int i) {
         if (keyboard.isKeyPressed(
-                dataRegisters.read((i & EXPOSE_X) >> GET_X))
+                dataRegisters.read(X(i)))
         ) {
             programCounter.increment(2);
         }
@@ -447,7 +455,7 @@ class CentralProcessingUnit {
      */
     private void executeEXA1(int i) {
         if (!keyboard.isKeyPressed(
-                dataRegisters.read((i & EXPOSE_X) >> GET_X))
+                dataRegisters.read(X(i)))
         ) {
             programCounter.increment(2);
         }
@@ -458,7 +466,7 @@ class CentralProcessingUnit {
      */
     private void executeFX07(int i) {
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 delayTimer.read()
         );
     }
@@ -469,7 +477,7 @@ class CentralProcessingUnit {
      */
     private void executeFX0A(int i) {
         dataRegisters.write(
-                (i & EXPOSE_X) >> GET_X,
+                X(i),
                 keyboard.waitForKey()
         );
     }
@@ -479,7 +487,7 @@ class CentralProcessingUnit {
      */
     private void executeFX15(int i) {
         delayTimer.write(
-                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                dataRegisters.read(X(i))
         );
     }
 
@@ -489,7 +497,7 @@ class CentralProcessingUnit {
     private void executeFX1E(int i) {
         addressRegister.write(
                 addressRegister.read()
-                + dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                + dataRegisters.read(X(i))
         );
     }
 
@@ -502,7 +510,7 @@ class CentralProcessingUnit {
         // in order from 0-F and was loaded to memory offset 0
         // each character sprite contains 5 bytes.
         // so the character B, for example, is at memory location 0xB * 5 = 55
-        addressRegister.write(((i & EXPOSE_X) >> GET_X) * FONT_SIZE_IN_BYTES);
+        addressRegister.write((X(i)) * FONT_SIZE_IN_BYTES);
     }
 
     /**
@@ -511,7 +519,7 @@ class CentralProcessingUnit {
      */
     private void executeFX33(int i) {
         int unsignedValue = (
-                dataRegisters.read((i & EXPOSE_X) >> GET_X)
+                dataRegisters.read(X(i))
                 & GET_UNSIGNED_BYTE
         );
 
