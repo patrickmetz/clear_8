@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 14:32.
+ * Last modified 01.03.19 15:30.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -51,18 +51,18 @@ final public class Emulator {
         }
     }
 
-    private byte[] loadByteFile(String filePath) throws IOException {
+    private int[] loadByteFile(String filePath) throws IOException {
         File file = new File(filePath);
-        byte[] bytes = new byte[(int) file.length()];
+        int[] data = new int[(int) file.length()];
         FileInputStream fileStream = new FileInputStream(file);
 
         int byteCount = 0;
         int byteAsInteger;
 
         while ((byteAsInteger = fileStream.read()) != -1) {
-            bytes[byteCount++] = (byte) byteAsInteger;
+            data[byteCount++] = byteAsInteger;
         }
 
-        return bytes;
+        return data;
     }
 }

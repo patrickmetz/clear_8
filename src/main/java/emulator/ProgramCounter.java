@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 27.02.19 00:38.
+ * Last modified 01.03.19 15:57.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,9 +8,9 @@ package emulator;
 
 final class ProgramCounter {
 
-    private short value = 512;
+    private int value = 512;
 
-    void decrement(short value) {
+    void decrement(int value) {
         this.value -= value;
     }
 
@@ -18,7 +18,7 @@ final class ProgramCounter {
         value--;
     }
 
-    void increment(short value) {
+    void increment(int value) {
         this.value += value;
     }
 
@@ -26,11 +26,11 @@ final class ProgramCounter {
         value++;
     }
 
-    short read() {
+    int read() {
         return value;
     }
 
-    void write(short value) {
+    void write(int value) {
         this.value = value;
     }
 

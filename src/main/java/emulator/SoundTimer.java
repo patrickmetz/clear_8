@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 01.03.19 17:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,7 +10,7 @@ final class SoundTimer {
 
     private final Thread sound;
 
-    private byte value = 60;
+    private int value = 60;
 
     SoundTimer(Sound sound) {
         this.sound = new Thread(sound);
@@ -22,7 +22,7 @@ final class SoundTimer {
         checkValue();
     }
 
-    void write(byte value) {
+    void write(int value) {
         this.value = value;
 
         checkValue();

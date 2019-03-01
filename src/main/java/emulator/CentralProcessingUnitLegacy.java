@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 20:32.
+ * Last modified 01.03.19 17:35.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -36,18 +36,18 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * the carry register
      * <p>
      *
-     * @see CentralProcessingUnit#execute8XY6(short)
+     * @see CentralProcessingUnit#execute8XY6(int)
      */
     @Override
-    protected void execute8XY6(short i) {
+    protected void execute8XY6(int i) {
         dataRegisters.write(
-                (byte) CARRY_FLAG,
-                (byte) (dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)) & 1)
+                CARRY_FLAG,
+                dataRegisters.read((i & EXPOSE_X) >> GET_X) & 1
         );
 
         dataRegisters.write(
-                (byte) ((i & 0x0F00) >> 8),
-                (byte) (dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)) >> 1)
+                (i & EXPOSE_X) >> GET_X,
+                dataRegisters.read((i & EXPOSE_Y) >> GET_Y) >> 1
         );
     }
 
@@ -57,17 +57,15 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * <p>
      * additionally increments address register by X
      *
-     * @see CentralProcessingUnit#executeFX65(short)
+     * @see CentralProcessingUnit#executeFX65(int)
      */
     @Override
-    protected void executeFX65(short i) {
+    protected void executeFX65(int i) {
         super.executeFX65(i);
 
         addressRegister.write(
-                (short) (
-                        addressRegister.read()
-                        + (byte) ((i & EXPOSE_X) >> GET_X)
-                )
+                addressRegister.read()
+                + ((i & EXPOSE_X) >> GET_X)
         );
     }
 }

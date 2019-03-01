@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 23:42.
+ * Last modified 01.03.19 17:45.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,8 +16,8 @@ package emulator;
  */
 class CentralProcessingUnit {
 
+    public static final int FONT_SIZE_IN_BYTES = 5;
     protected static final int CARRY_FLAG = 0xF;
-
     protected static final int EXPOSE_X = 0x0F00;
     protected static final int EXPOSE_Y = 0x00F0;
     protected static final int GET_N = 0x000F;
@@ -26,9 +26,7 @@ class CentralProcessingUnit {
     protected static final int GET_UNSIGNED_BYTE = 0xFF;
     protected static final int GET_X = 8;
     protected static final int GET_Y = 4;
-
     protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
-
     protected final AddressRegister addressRegister;
     protected final DataRegisters dataRegisters;
     private final CallStack callStack;
@@ -64,27 +62,27 @@ class CentralProcessingUnit {
      * former value is stored in the carry register
      * <p>
      *
-     * @see CentralProcessingUnitLegacy#execute8XY6(short)
+     * @see CentralProcessingUnitLegacy#execute8XY6(int)
      */
-    protected void execute8XY6(short i) {
+    protected void execute8XY6(int i) {
         int xAddress = (i & EXPOSE_X) >> GET_X;
-        byte xValue = dataRegisters.read((byte) xAddress);
+        int xValue = dataRegisters.read(xAddress);
 
-        dataRegisters.write((byte) CARRY_FLAG, (byte) (xValue & 1));
-        dataRegisters.write((byte) xAddress, (byte) (xValue >> 1));
+        dataRegisters.write(CARRY_FLAG, xValue & 1);
+        dataRegisters.write(xAddress, xValue >> 1);
     }
 
     /**
      * sets registers 0 to X to consecutive memory values
      * beginning at registered memory address
      *
-     * @see CentralProcessingUnitLegacy#executeFX65(short)
+     * @see CentralProcessingUnitLegacy#executeFX65(int)
      */
-    protected void executeFX65(short i) {
-        byte endRegister = (byte) ((i & EXPOSE_X) >> GET_X);
-        short memoryOffset = addressRegister.read();
+    protected void executeFX65(int i) {
+        int endRegister = (i & EXPOSE_X) >> GET_X;
+        int memoryOffset = addressRegister.read();
 
-        for (byte j = 0; j <= endRegister; j++) {
+        for (int j = 0; j <= endRegister; j++) {
             dataRegisters.write(
                     j,
                     memory.read(memoryOffset++)
@@ -95,7 +93,7 @@ class CentralProcessingUnit {
     /**
      * example:
      * <p>
-     * instruction = 4645 as integer
+     * instruction = 4645 as int
      * instruction = 1225 as hexadecimal
      * <p>
      * => 1NNN = jump to memory address NNN
@@ -108,7 +106,7 @@ class CentralProcessingUnit {
      * 1225 & 0x000F = 0005 (exposes 4th digit) | 0005       = 5
      */
     void processNextInstruction() throws UnsupportedOperationException {
-        short instruction = getNextInstruction();
+        int instruction = getNextInstruction();
 
         switch (instruction & 0xF000) {
             case 0x0000:
@@ -201,16 +199,16 @@ class CentralProcessingUnit {
 
     }
 
-    void writeToMemory(byte[] bytes, int offset) {
-        for (byte b : bytes) {
-            memory.write((short) offset++, b);
+    void writeToMemory(int[] data, int offset) {
+        for (int b : data) {
+            memory.write(offset++, b);
         }
     }
 
     /**
      * clears the screen
      */
-    private void execute00E0(short i) {
+    private void execute00E0(int i) {
         graphics.clearScreen();
     }
 
@@ -218,15 +216,15 @@ class CentralProcessingUnit {
      * leaving subroutine by popping former memory
      * location from the stack and jumping there
      */
-    private void execute00EE(short i) {
+    private void execute00EE(int i) {
         programCounter.write(callStack.pop());
     }
 
     /**
      * sets program counter to value NNN
      */
-    private void execute1NNN(short i) {
-        programCounter.write((short) (i & GET_NNN));
+    private void execute1NNN(int i) {
+        programCounter.write(i & GET_NNN);
     }
 
     /**
@@ -234,32 +232,32 @@ class CentralProcessingUnit {
      * location to the stack and jumping to the
      * subroutine's location
      */
-    private void execute2NNN(short i) {
+    private void execute2NNN(int i) {
         callStack.push(programCounter.read());
-        programCounter.write((short) (i & GET_NNN));
+        programCounter.write(i & GET_NNN);
     }
 
     /**
      * skips one instruction if the value of
      * data register X is equal to NN
      */
-    private void execute3XNN(short i) {
+    private void execute3XNN(int i) {
         if (
-                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X))
+                dataRegisters.read((i & EXPOSE_X) >> GET_X)
                 == (i & GET_NN)
         ) {
             // one instruction = 2 bytes
-            programCounter.increment((short) 2);
+            programCounter.increment(2);
         }
     }
 
     /**
      * sets data register X to value NN
      */
-    private void execute6XNN(short i) {
+    private void execute6XNN(int i) {
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),
-                (byte) (i & GET_NN)
+                (i & EXPOSE_X) >> GET_X,
+                i & GET_NN
         );
     }
 
@@ -269,27 +267,28 @@ class CentralProcessingUnit {
      * it is "wrapped around" with modulo, but no carry
      * flag is set.
      */
-    private void execute7XNN(short i) {
-        byte addressX = (byte) ((i & EXPOSE_X) >> GET_X);
+    private void execute7XNN(int i) {
+        int addressX = (i & EXPOSE_X) >> GET_X;
 
         int newValue = (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
                        + (i & GET_NN);
 
+        //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
         if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
             newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
         }
 
-        dataRegisters.write(addressX, (byte) newValue);
+        dataRegisters.write(addressX, newValue);
     }
 
     /**
      * sets the value of data register X
      * to the value of data register Y
      */
-    private void execute8XY0(short i) {
+    private void execute8XY0(int i) {
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),
-                dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y))
+                (i & EXPOSE_X) >> GET_X,
+                dataRegisters.read((i & EXPOSE_Y) >> GET_Y)
         );
     }
 
@@ -299,46 +298,44 @@ class CentralProcessingUnit {
      * it is "wrapped around" with modulo and the carry
      * flag is set.
      */
-    private void execute8XY4(short i) {
+    private void execute8XY4(int i) {
         int newValue =
-                (dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)) & GET_UNSIGNED_BYTE)
-                + (dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)) & GET_UNSIGNED_BYTE);
+                (dataRegisters.read((i & EXPOSE_X) >> GET_X) & GET_UNSIGNED_BYTE)
+                + (dataRegisters.read((i & EXPOSE_Y) >> GET_Y) & GET_UNSIGNED_BYTE);
 
-        byte carry = 0;
+        int carry = 0;
 
+        //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
         if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
-            newValue %= (UNSIGNED_BYTE_MAX_VALUE + 1);
+            newValue %= UNSIGNED_BYTE_MAX_VALUE + 1;
             carry = 1;
         }
 
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),
-                (byte) newValue
+                (i & EXPOSE_X) >> GET_X,
+                newValue
         );
-        dataRegisters.write((byte) CARRY_FLAG, carry);
+        dataRegisters.write(CARRY_FLAG, carry);
     }
 
     /**
      * sets address register to value NNN
      */
-    private void executeANNN(short i) {
-        addressRegister.write((short) (i & GET_NNN));
+    private void executeANNN(int i) {
+        addressRegister.write(i & GET_NNN);
     }
 
     /**
      * sets address register X to a random value
      * (between 0 and 255), which is masked with NN
      */
-    private void executeCXNN(short i) {
+    private void executeCXNN(int i) {
         // the result of every bit operation in java is an
-        // integer, therefore we cast bit operations on bytes
+        // int, therefore we cast bit operations on bytes
         // to bytes again until the end of time :D
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),
-                (byte) (
-                        (byte) (Math.random() * (255 + 1))
-                        & (byte) (i & GET_NN)
-                )
+                (i & EXPOSE_X) >> GET_X,
+                (int) (Math.random() * (255 + 1)) & (i & GET_NN)
         );
     }
 
@@ -346,16 +343,16 @@ class CentralProcessingUnit {
      * draws a sprite at screen coordinates X,Y, using
      * N sprite rows found at currently registered address
      */
-    private void executeDXYN(short i) {
+    private void executeDXYN(int i) {
         boolean pixelCollision = graphics.drawSprite(
-                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)),
-                dataRegisters.read((byte) ((i & EXPOSE_Y) >> GET_Y)),
-                memory.read(addressRegister.read(), (i) & GET_N)
+                dataRegisters.read((i & EXPOSE_X) >> GET_X),
+                dataRegisters.read((i & EXPOSE_Y) >> GET_Y),
+                memory.read(addressRegister.read(), i & GET_N)
         );
 
         dataRegisters.write(
-                (byte) CARRY_FLAG,
-                (byte) (pixelCollision ? 1 : 0)
+                CARRY_FLAG,
+                pixelCollision ? 1 : 0
         );
     }
 
@@ -363,11 +360,11 @@ class CentralProcessingUnit {
      * Skip an instruction if the key of the key code, in
      * data register X, is being pressed
      */
-    private void executeEX9E(short i) {
+    private void executeEX9E(int i) {
         if (keyboard.isKeyPressed(
-                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)))
+                dataRegisters.read((i & EXPOSE_X) >> GET_X))
         ) {
-            programCounter.increment((short) 2);
+            programCounter.increment(2);
         }
     }
 
@@ -375,11 +372,11 @@ class CentralProcessingUnit {
      * Skip an instruction if the key of the key code, in
      * data register X, is NOT being pressed
      */
-    private void executeEXA1(short i) {
+    private void executeEXA1(int i) {
         if (!keyboard.isKeyPressed(
-                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X)))
+                dataRegisters.read((i & EXPOSE_X) >> GET_X))
         ) {
-            programCounter.increment((short) 2);
+            programCounter.increment(2);
         }
     }
 
@@ -387,9 +384,9 @@ class CentralProcessingUnit {
      * waits for a key press and stores
      * the key code in data register x
      */
-    private void executeFX0A(short i) {
+    private void executeFX0A(int i) {
         dataRegisters.write(
-                (byte) ((i & EXPOSE_X) >> GET_X),
+                (i & EXPOSE_X) >> GET_X,
                 keyboard.waitForKey()
         );
     }
@@ -397,12 +394,10 @@ class CentralProcessingUnit {
     /**
      * adds value of data register X to the address register
      */
-    private void executeFX1E(short i) {
+    private void executeFX1E(int i) {
         addressRegister.write(
-                (short) (
-                        addressRegister.read()
-                        + dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X))
-                )
+                addressRegister.read()
+                + dataRegisters.read((i & EXPOSE_X) >> GET_X)
         );
     }
 
@@ -410,30 +405,30 @@ class CentralProcessingUnit {
      * sets the address register to the memory location of the
      * character corresponding to data register X's value
      */
-    private void executeFX29(short i) {
+    private void executeFX29(int i) {
         // the packaged font file contains the sprites for 0-F
         // in order from 0-F and was loaded to memory offset 0
         // each character sprite contains 5 bytes.
         // so the character B, for example, is at memory location 0xB * 5 = 55
-        addressRegister.write((short) (((i & EXPOSE_X) >> GET_X) * 5));
+        addressRegister.write(((i & EXPOSE_X) >> GET_X) * FONT_SIZE_IN_BYTES);
     }
 
     /**
      * sets three consecutive bytes of memory to the last,
      * middle and first digit of data register X's numerical value
      */
-    private void executeFX33(short i) {
-        short unsignedValue = (short) (
-                dataRegisters.read((byte) ((i & EXPOSE_X) >> GET_X))
+    private void executeFX33(int i) {
+        int unsignedValue = (
+                dataRegisters.read((i & EXPOSE_X) >> GET_X)
                 & GET_UNSIGNED_BYTE
         );
 
-        short memoryOffset = addressRegister.read();
+        int memoryOffset = addressRegister.read();
 
         //example: 147
-        memory.write(memoryOffset, (byte) (unsignedValue % 10));                    // 7
-        memory.write((short) (memoryOffset + 1), (byte) (unsignedValue / 10 % 10)); // 4
-        memory.write((short) (memoryOffset + 2), (byte) (unsignedValue / 100));     // 1
+        memory.write(memoryOffset, (unsignedValue % 10));            // 7
+        memory.write((memoryOffset + 1), (unsignedValue / 10 % 10)); // 4
+        memory.write((memoryOffset + 2), (unsignedValue / 100));     // 1
     }
 
     /**
@@ -447,20 +442,20 @@ class CentralProcessingUnit {
      * instruction <<= 8         : 00000111|00000000
      * instruction |= second byte: 00000111|01010010
      */
-    private short getNextInstruction() {
-        short address = programCounter.read();
+    private int getNextInstruction() {
+        int address = programCounter.read();
 
-        short instruction = memory.read(address);
+        int instruction = memory.read(address);
         instruction <<= 8;
 
-        instruction |= (short) (memory.read(++address) & GET_UNSIGNED_BYTE);
+        instruction |= memory.read(++address) & GET_UNSIGNED_BYTE;
 
         programCounter.increment((short) 2);
 
         return instruction;
     }
 
-    private void throwInstructionException(short instruction) {
+    private void throwInstructionException(int instruction) {
         throw new UnsupportedOperationException(
                 "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
         );

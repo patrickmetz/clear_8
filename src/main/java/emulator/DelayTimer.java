@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 25.02.19 18:37.
+ * Last modified 01.03.19 17:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,17 +8,17 @@ package emulator;
 
 final class DelayTimer {
 
-    private byte value = 60;
+    private int value = 60;
 
     public void decrement() {
         value--;
     }
 
-    public byte read() {
+    public int read() {
         return value;
     }
 
-    public void write(byte value) {
+    public void write(int value) {
         this.value = value;
     }
 }

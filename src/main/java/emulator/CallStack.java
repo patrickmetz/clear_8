@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 13:41.
+ * Last modified 01.03.19 15:18.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,17 +10,17 @@ import java.util.Stack;
 
 final class CallStack {
 
-    private final Stack<Short> memory;
+    private final Stack<Integer> memory;
 
     CallStack() {
         memory = new Stack<>();
     }
 
-    Short pop() {
+    Integer pop() {
         return memory.pop();
     }
 
-    void push(Short value) {
+    void push(int value) {
         memory.push(value);
     }
 

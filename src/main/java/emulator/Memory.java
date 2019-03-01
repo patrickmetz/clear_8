@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 27.02.19 00:39.
+ * Last modified 01.03.19 15:28.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,27 +12,27 @@ final class Memory {
 
     // hash map read and write access surpasses array:
     // algorithmic complexity of get() and put() is O(1)
-    private final HashMap<Short, Byte> memory;
+    private final HashMap<Integer, Integer> memory;
 
     Memory() {
         memory = new HashMap<>(4096, 2);
     }
 
-    byte read(short address) {
+    Integer read(int address) {
         return memory.get(address);
     }
 
-    byte[] read(short address, int count) {
-        byte[] bytes = new byte[count];
+    int[] read(int address, int count) {
+        int[] data = new int[count];
 
-        for (short b = 0, m = address; m < address + count; b++, m++) {
-            bytes[b] = memory.get(m);
+        for (int b = 0, m = address; m < address + count; b++, m++) {
+            data[b] = memory.get(m);
         }
 
-        return bytes;
+        return data;
     }
 
-    void write(Short address, byte value) {
+    void write(int address, int value) {
         memory.put(address, value);
     }
 
