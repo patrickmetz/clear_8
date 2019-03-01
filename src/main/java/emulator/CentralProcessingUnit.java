@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 22:09.
+ * Last modified 01.03.19 22:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -51,6 +51,18 @@ class CentralProcessingUnit {
         this.memory = memory;
         this.programCounter = programCounter;
         this.soundTimer = soundTimer;
+    }
+
+    private static int N(int i) {
+        return i & GET_N;
+    }
+
+    private static int NN(int i) {
+        return i & GET_NN;
+    }
+
+    private static int NNN(int i) {
+        return i & GET_NNN;
     }
 
     private static int X(int i) {
@@ -256,7 +268,7 @@ class CentralProcessingUnit {
      * sets program counter to value NNN
      */
     private void execute1NNN(int i) {
-        programCounter.write(i & GET_NNN);
+        programCounter.write(NNN(i));
     }
 
     /**
@@ -266,7 +278,7 @@ class CentralProcessingUnit {
      */
     private void execute2NNN(int i) {
         callStack.push(programCounter.read());
-        programCounter.write(i & GET_NNN);
+        programCounter.write(NNN(i));
     }
 
     /**
@@ -276,7 +288,7 @@ class CentralProcessingUnit {
     private void execute3XNN(int i) {
         if (
                 dataRegisters.read(X(i))
-                == (i & GET_NN)
+                == (NN(i))
         ) {
             // one instruction = 2 bytes
             programCounter.increment(2);
@@ -290,7 +302,7 @@ class CentralProcessingUnit {
     private void execute4XNN(int i) {
         if (
                 dataRegisters.read(X(i))
-                != (i & GET_NN)
+                != (NN(i))
         ) {
             programCounter.increment(2);
         }
@@ -316,7 +328,7 @@ class CentralProcessingUnit {
     private void execute6XNN(int i) {
         dataRegisters.write(
                 X(i),
-                i & GET_NN
+                NN(i)
         );
     }
 
@@ -330,7 +342,7 @@ class CentralProcessingUnit {
         int addressX = X(i);
 
         int newValue = unsigned(dataRegisters.read(addressX))
-                       + (i & GET_NN);
+                       + NN(i);
 
         //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
         if (newValue > UNSIGNED_BYTE_MAX_VALUE) {
@@ -407,7 +419,7 @@ class CentralProcessingUnit {
      * sets address register to value NNN
      */
     private void executeANNN(int i) {
-        addressRegister.write(i & GET_NNN);
+        addressRegister.write(NNN(i));
     }
 
     /**
@@ -420,7 +432,7 @@ class CentralProcessingUnit {
         // to bytes again until the end of time :D
         dataRegisters.write(
                 X(i),
-                (int) (Math.random() * (255 + 1)) & (i & GET_NN)
+                (int) (Math.random() * (255 + 1)) & NN(i)
         );
     }
 
@@ -432,7 +444,7 @@ class CentralProcessingUnit {
         boolean pixelCollision = graphics.drawSprite(
                 dataRegisters.read(X(i)),
                 dataRegisters.read(Y(i)),
-                memory.read(addressRegister.read(), i & GET_N)
+                memory.read(addressRegister.read(), N(i))
         );
 
         dataRegisters.write(
