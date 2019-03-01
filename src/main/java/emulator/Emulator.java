@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 15:30.
+ * Last modified 01.03.19 18:48.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -41,6 +41,8 @@ final public class Emulator {
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
                 cpu.processNextInstruction();
             }
+
+            cpu.decrementTimers();
 
             while (System.currentTimeMillis() < endOfFrameTime) {
                 Thread.sleep(1);

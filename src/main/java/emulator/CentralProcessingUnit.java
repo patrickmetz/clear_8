@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 17:45.
+ * Last modified 01.03.19 18:49.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -90,6 +90,11 @@ class CentralProcessingUnit {
         }
     }
 
+    void decrementTimers() {
+        delayTimer.decrement();
+        soundTimer.decrement();
+    }
+
     /**
      * example:
      * <p>
@@ -177,8 +182,14 @@ class CentralProcessingUnit {
                     case 0x001E:
                         executeFX1E(instruction);
                         break;
+                    case 0x0007:
+                        executeFX07(instruction);
+                        break;
                     case 0x000A:
                         executeFX0A(instruction);
+                        break;
+                    case 0x0015:
+                        executeFX15(instruction);
                         break;
                     case 0x0029:
                         executeFX29(instruction);
@@ -381,6 +392,16 @@ class CentralProcessingUnit {
     }
 
     /**
+     * sets data register X to the value of the delay timer
+     */
+    private void executeFX07(int i) {
+        dataRegisters.write(
+                (i & EXPOSE_X) >> GET_X,
+                delayTimer.read()
+        );
+    }
+
+    /**
      * waits for a key press and stores
      * the key code in data register x
      */
@@ -388,6 +409,15 @@ class CentralProcessingUnit {
         dataRegisters.write(
                 (i & EXPOSE_X) >> GET_X,
                 keyboard.waitForKey()
+        );
+    }
+
+    /**
+     * sets the delay timer to the value of data register X
+     */
+    private void executeFX15(int i) {
+        delayTimer.write(
+                dataRegisters.read((i & EXPOSE_X) >> GET_X)
         );
     }
 
