@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 21:57.
+ * Last modified 01.03.19 22:09.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -59,6 +59,10 @@ class CentralProcessingUnit {
 
     private static int Y(int i) {
         return (i & EXPOSE_Y) >> GET_Y;
+    }
+
+    private static int unsigned(int value) {
+        return value & 0xFF;
     }
 
     /**
@@ -325,7 +329,7 @@ class CentralProcessingUnit {
     private void execute7XNN(int i) {
         int addressX = X(i);
 
-        int newValue = (dataRegisters.read(addressX) & GET_UNSIGNED_BYTE)
+        int newValue = unsigned(dataRegisters.read(addressX))
                        + (i & GET_NN);
 
         //  > 255 ? wrap around at 255+1 -> e.g. 256 = 0, 257 = 1, etc...
@@ -355,8 +359,8 @@ class CentralProcessingUnit {
      */
     private void execute8XY4(int i) {
         int newValue =
-                (dataRegisters.read(X(i)) & GET_UNSIGNED_BYTE)
-                + (dataRegisters.read(Y(i)) & GET_UNSIGNED_BYTE);
+                unsigned(dataRegisters.read(X(i)))
+                + unsigned(dataRegisters.read(Y(i)));
 
         int carry = 0;
 
@@ -381,8 +385,8 @@ class CentralProcessingUnit {
     private void execute8XY5(int i) {
         byte newValue =
                 (byte) (
-                        (dataRegisters.read(X(i)) & GET_UNSIGNED_BYTE)
-                        - (dataRegisters.read(Y(i)) & GET_UNSIGNED_BYTE)
+                        unsigned(dataRegisters.read(X(i)))
+                        - unsigned(dataRegisters.read(Y(i)))
                 );
 
         int carry = 1;
@@ -518,10 +522,7 @@ class CentralProcessingUnit {
      * middle and first digit of data register X's numerical value
      */
     private void executeFX33(int i) {
-        int unsignedValue = (
-                dataRegisters.read(X(i))
-                & GET_UNSIGNED_BYTE
-        );
+        int unsignedValue = unsigned(dataRegisters.read(X(i)));
 
         int memoryOffset = addressRegister.read();
 
@@ -548,7 +549,7 @@ class CentralProcessingUnit {
         int instruction = memory.read(address);
         instruction <<= 8;
 
-        instruction |= memory.read(++address) & GET_UNSIGNED_BYTE;
+        instruction |= unsigned(memory.read(++address));
 
         programCounter.increment((short) 2);
 
