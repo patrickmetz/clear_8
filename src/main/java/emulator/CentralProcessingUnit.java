@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 20:31.
+ * Last modified 01.03.19 21:50.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -154,6 +154,9 @@ class CentralProcessingUnit {
                         break;
                     case 0x0004:
                         execute8XY4(instruction);
+                        break;
+                    case 0x0005:
+                        execute8XY5(instruction);
                         break;
                     case 0x0006:
                         execute8XY6(instruction);
@@ -340,7 +343,7 @@ class CentralProcessingUnit {
      * Adds the value of register Y to register X.
      * If the new value exceeds maximum unsigned byte size,
      * it is "wrapped around" with modulo and the carry
-     * flag is set.
+     * flag is set to 1 (0 otherwise).
      */
     private void execute8XY4(int i) {
         int newValue =
@@ -359,6 +362,32 @@ class CentralProcessingUnit {
                 (i & EXPOSE_X) >> GET_X,
                 newValue
         );
+        dataRegisters.write(CARRY_FLAG, carry);
+    }
+
+    /**
+     * Reduce value of data register X by the value of data register Y.
+     * If the new value is lower than zero (a borrow occurs), the carry flag
+     * is set to 0 (1 otherwise).
+     */
+    private void execute8XY5(int i) {
+        byte newValue =
+                (byte) (
+                        (dataRegisters.read((i & EXPOSE_X) >> GET_X) & GET_UNSIGNED_BYTE)
+                        - (dataRegisters.read((i & EXPOSE_Y) >> GET_Y) & GET_UNSIGNED_BYTE)
+                );
+
+        int carry = 1;
+
+        if (newValue < 0) {
+            carry = 0;
+        }
+
+        dataRegisters.write(
+                (i & EXPOSE_X) >> GET_X,
+                newValue
+        );
+
         dataRegisters.write(CARRY_FLAG, carry);
     }
 
