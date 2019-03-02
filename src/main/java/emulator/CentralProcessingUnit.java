@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 13:12.
+ * Last modified 02.03.19 15:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -166,8 +166,26 @@ class CentralProcessingUnit {
     }
 
     /**
-     * Sets registers 0 to X to consecutive memory values,
-     * starting at currently registered memory address.
+     * Sets X consecutive memory values to the values of the data
+     * registers 0 to X, starting at the registered memory address.
+     *
+     * @see CentralProcessingUnitLegacy#opcodeFX55(int)
+     */
+    protected void opcodeFX55(int o) {
+        int X = X(o);
+        int address = addressRegister.read();
+
+        for (int register = 0; register <= X; register++) {
+            memory.write(
+                    address++,
+                    dataRegisters.read(register)
+            );
+        }
+    }
+
+    /**
+     * Sets data registers 0 to X to consecutive memory values,
+     * starting at the registered memory address.
      *
      * @see CentralProcessingUnitLegacy#opcodeFX65(int)
      */
@@ -175,9 +193,9 @@ class CentralProcessingUnit {
         int X = X(o);
         int address = addressRegister.read();
 
-        for (int j = 0; j <= X; j++) {
+        for (int register = 0; register <= X; register++) {
             dataRegisters.write(
-                    j,
+                    register,
                     memory.read(address++)
             );
         }
@@ -266,6 +284,9 @@ class CentralProcessingUnit {
                         throwInstructionException(o);
                 }
                 break;
+            case 0x9000:
+                opcode9XY0(o);
+                break;
             case 0xA000:
                 opcodeANNN(o);
                 break;
@@ -306,6 +327,9 @@ class CentralProcessingUnit {
                         break;
                     case 0x0033:
                         opcodeFX33(o);
+                        break;
+                    case 0x0055:
+                        opcodeFX55(o);
                         break;
                     case 0x0065:
                         opcodeFX65(o);
@@ -567,6 +591,19 @@ class CentralProcessingUnit {
                 X,
                 dataRegisters.read(X) << 1
         );
+    }
+
+    /**
+     * Skip one instruction if data register X
+     * is not equal to data register Y.
+     */
+    private void opcode9XY0(int o) {
+        if (
+                dataRegisters.read(X(o))
+                != dataRegisters.read(Y(o))
+        ) {
+            programCounter.skipOpcode();
+        }
     }
 
     /**

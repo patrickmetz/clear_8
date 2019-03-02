@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 13:09.
+ * Last modified 02.03.19 15:19.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -50,11 +50,30 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     }
 
     /**
-     * Sets data registers 0 to X to consecutive memory values
-     * beginning at the registered memory address.
+     * Sets X consecutive memory values to the values of the data
+     * registers 0 to X, starting at the registered memory address.
      * <p>
      * <p>
-     * Increments address register by X.
+     * Additionally increments address register by X.
+     *
+     * @see CentralProcessingUnit#opcodeFX55(int)
+     */
+    @Override
+    protected void opcodeFX55(int o) {
+        super.opcodeFX55(o);
+
+        addressRegister.write(
+                addressRegister.read()
+                + X(o)
+        );
+    }
+
+    /**
+     * Sets data registers 0 to X values to consecutive memory
+     * values beginning at the registered memory address.
+     * <p>
+     * <p>
+     * Additionally increments address register by X.
      *
      * @see CentralProcessingUnit#opcodeFX65(int)
      */
@@ -62,6 +81,9 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     protected void opcodeFX65(int o) {
         super.opcodeFX65(o);
 
-        addressRegister.write(addressRegister.read() + X(o));
+        addressRegister.write(
+                addressRegister.read()
+                + X(o)
+        );
     }
 }
