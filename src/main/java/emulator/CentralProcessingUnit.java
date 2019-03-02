@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 15:16.
+ * Last modified 02.03.19 15:54.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -227,7 +227,7 @@ class CentralProcessingUnit {
                         opcode00EE();
                         break;
                     default:
-                        throwInstructionException(o);
+                        throwUnknownOpcodeException(o);
                 }
                 break;
             case 0x1000:
@@ -281,7 +281,7 @@ class CentralProcessingUnit {
                         opcode8XYE(o);
                         break;
                     default:
-                        throwInstructionException(o);
+                        throwUnknownOpcodeException(o);
                 }
                 break;
             case 0x9000:
@@ -289,6 +289,9 @@ class CentralProcessingUnit {
                 break;
             case 0xA000:
                 opcodeANNN(o);
+                break;
+            case 0xB000:
+                opcodeBNNN(o);
                 break;
             case 0xC000:
                 opcodeCXNN(o);
@@ -305,7 +308,7 @@ class CentralProcessingUnit {
                         opcodeEXA1(o);
                         break;
                     default:
-                        throwInstructionException(o);
+                        throwUnknownOpcodeException(o);
                 }
                 break;
             case 0xF000:
@@ -322,6 +325,9 @@ class CentralProcessingUnit {
                     case 0x0015:
                         opcodeFX15(o);
                         break;
+                    case 0x0018:
+                        opcodeFX18(o);
+                        break;
                     case 0x0029:
                         opcodeFX29(o);
                         break;
@@ -335,11 +341,11 @@ class CentralProcessingUnit {
                         opcodeFX65(o);
                         break;
                     default:
-                        throwInstructionException(o);
+                        throwUnknownOpcodeException(o);
                 }
                 break;
             default:
-                throwInstructionException(o);
+                throwUnknownOpcodeException(o);
         }
     }
 
@@ -614,6 +620,19 @@ class CentralProcessingUnit {
     }
 
     /**
+     * Jump to the address made up of the sum of data
+     * register 0's value and value NNN.
+     * <p>
+     * todo: implement different versions for VIP and SCHIP?
+     */
+    private void opcodeBNNN(int o) {
+        programCounter.write(
+                dataRegisters.read(0)
+                + NNN(o)
+        );
+    }
+
+    /**
      * Set address register X to a random value
      * (between 0 and 255), which is masked with NN.
      */
@@ -688,6 +707,13 @@ class CentralProcessingUnit {
     }
 
     /**
+     * Sets the sound timer to the value of data register X.
+     */
+    private void opcodeFX18(int o) {
+        soundTimer.write(dataRegisters.read(X(o)));
+    }
+
+    /**
      * Adds the value of data register X to the address register.
      */
     private void opcodeFX1E(int o) {
@@ -723,7 +749,7 @@ class CentralProcessingUnit {
         memory.write(address + 2, X / 100);     // 1
     }
 
-    private void throwInstructionException(int instruction) {
+    private void throwUnknownOpcodeException(int instruction) {
         throw new UnsupportedOperationException(
                 "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
         );
