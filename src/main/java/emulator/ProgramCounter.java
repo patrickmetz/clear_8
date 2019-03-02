@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 23:43.
+ * Last modified 02.03.19 10:02.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,7 +14,7 @@ final class ProgramCounter {
         return value;
     }
 
-    void skipInstruction() {
+    void skipOpcode() {
         this.value += 2;
     }
 

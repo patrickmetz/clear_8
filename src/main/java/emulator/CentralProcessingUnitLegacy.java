@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 23:56.
+ * Last modified 02.03.19 10:02.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -40,15 +40,15 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * @see CentralProcessingUnit#opcode8XY6(int)
      */
     @Override
-    protected void opcode8XY6(int i) {
+    protected void opcode8XY6(int o) {
         dataRegisters.write(
                 CARRY,
-                dataRegisters.read(X(i)) & 1
+                dataRegisters.read(X(o)) & 1
         );
 
         dataRegisters.write(
-                X(i),
-                dataRegisters.read(Y(i)) >> 1
+                X(o),
+                dataRegisters.read(Y(o)) >> 1
         );
     }
 
@@ -61,9 +61,9 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
      * @see CentralProcessingUnit#opcodeFX65(int)
      */
     @Override
-    protected void opcodeFX65(int i) {
-        super.opcodeFX65(i);
+    protected void opcodeFX65(int o) {
+        super.opcodeFX65(o);
 
-        addressRegister.write(addressRegister.read() + X(i));
+        addressRegister.write(addressRegister.read() + X(o));
     }
 }

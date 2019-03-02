@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 19:06.
+ * Last modified 02.03.19 00:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,17 +10,17 @@ final class DelayTimer {
 
     private int value = 60;
 
-    public void decrement() {
+    void decrement() {
         if (value > 0) {
             value--;
         }
     }
 
-    public int read() {
+    int read() {
         return value;
     }
 
-    public void write(int value) {
+    void write(int value) {
         this.value = value;
     }
 }

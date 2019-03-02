@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 18:48.
+ * Last modified 02.03.19 01:02.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -19,6 +19,7 @@ final public class Emulator {
     private final short MEMORY_OFFSET_FONT = 0;
     private final short MEMORY_OFFSET_ROM = 512;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
+
     private final CentralProcessingUnit cpu;
 
     public Emulator(int instructionsPerSecond, boolean legacyMode) {
@@ -39,7 +40,7 @@ final public class Emulator {
             endOfFrameTime = now + MILLISECONDS_PER_FRAME;
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-                cpu.processNextInstruction();
+                cpu.processNextOpcode();
             }
 
             cpu.decrementTimers();
