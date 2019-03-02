@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 10:16.
+ * Last modified 02.03.19 11:51.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -89,15 +89,37 @@ class CentralProcessingUnit {
 
     /**
      * Retrieves the rightmost eight bits of a whole number,
-     * i.e. its value as a byte.
+     * in order to get a value from within an unsigned byte's
+     * value range. Just make sure to put the result into a
+     * whole number type which is bigger than a byte.
      * <p>
-     * chip8 works with unsigned bytes (0 to 255), but Java
-     * interprets those values as signed (-128 to 127).
      * <p>
-     * When we need to correctly interpret the meaning
-     * of a bytes bits we use this method.
+     * chip8 actually works with unsigned bytes (0 to 255),
+     * but Java interprets those values as signed (-128 to 127).
      * <p>
-     * The only thing to keep in mind is, to put the
+     * <p>
+     * When we need to correctly interpret the meaning of a whole
+     * numbers bits (i.e. the value chip8 would assume) we use this
+     * method.
+     * <p>
+     * <p>
+     * This emulator stores the bytes of chip8 programs into
+     * integers. So the following example is equivalent of reading
+     * a byte from memory.
+     * <p>
+     * <p>
+     * int a = memory.read(someAddress);<p>
+     * a is -32 or 11111111_11111111_11111111_11100000
+     * <p>
+     * <p>
+     * int b = unsigned(a);<p>
+     * b is 224 or 00000000_00000000_00000000_11100000
+     * <p>
+     * <p>
+     * but don't do this, or you'll get a signed value again:
+     * <p>
+     * byte c = (byte) unsigned(a);<p>
+     * c = -32 or 11100000
      */
     protected static int unsigned(int value) {
         return value & 0xFF;
@@ -193,6 +215,9 @@ class CentralProcessingUnit {
                 switch (o & 0x000F) {
                     case 0x0000:
                         opcode8XY0(o);
+                        break;
+                    case 0x0001:
+                        opcode8XY1(o);
                         break;
                     case 0x0004:
                         opcode8XY4(o);
@@ -389,6 +414,20 @@ class CentralProcessingUnit {
      */
     private void opcode8XY0(int o) {
         dataRegisters.write(X(o), dataRegisters.read(Y(o)));
+    }
+
+    /**
+     * Sets the value of data register X to its value
+     * "ORed" with the value of data register Y
+     */
+    private void opcode8XY1(int o) {
+        int X = X(o);
+
+        dataRegisters.write(
+                X,
+                unsigned(dataRegisters.read(X))
+                | unsigned(dataRegisters.read(Y(o)))
+        );
     }
 
     /**
