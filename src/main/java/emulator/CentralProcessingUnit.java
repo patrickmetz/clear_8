@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 11:51.
+ * Last modified 02.03.19 13:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,8 +18,29 @@ class CentralProcessingUnit {
 
     /**
      * The address of the carry register.
+     * <p>
+     * <p>
+     * A carry is used to signal that a value overflows
+     * its range, i.e. an unsigned byte bigger than 255
+     * (which is than actually wrapped around with the
+     * modulo operator, i.e. 256 becomes 0, 257 becomes
+     * 1, etc...).
+     * <p>
+     * <p>
+     * chip8 also uses the carry to signal borrows, i.e.
+     * value underflows.
      */
     protected static final int CARRY = 0xF;
+
+    /**
+     * Bitmask to get the first bit of a byte
+     */
+    protected static final int LEAST_SIGNIFICANT_BIT = 0b0000_0001;
+
+    /**
+     * Bitmask to get the last bit of a byte
+     */
+    protected static final int MOST_SIGNIFICANT_BIT = 0b1000_0000;
 
     /**
      * The maximum numerical value an unsigned byte can hold.
@@ -116,7 +137,8 @@ class CentralProcessingUnit {
      * b is 224 or 00000000_00000000_00000000_11100000
      * <p>
      * <p>
-     * but don't do this, or you'll get a signed value again:
+     * but don't put the result in an actual byte,
+     * or you'll get a signed value again:
      * <p>
      * byte c = (byte) unsigned(a);<p>
      * c = -32 or 11100000
@@ -139,7 +161,7 @@ class CentralProcessingUnit {
         int X = X(o);
         int value = dataRegisters.read(X);
 
-        dataRegisters.write(CARRY, value & 1);
+        dataRegisters.write(CARRY, value & LEAST_SIGNIFICANT_BIT);
         dataRegisters.write(X, value >> 1);
     }
 
@@ -219,6 +241,12 @@ class CentralProcessingUnit {
                     case 0x0001:
                         opcode8XY1(o);
                         break;
+                    case 0x0002:
+                        opcode8XY2(o);
+                        break;
+                    case 0x0003:
+                        opcode8XY3(o);
+                        break;
                     case 0x0004:
                         opcode8XY4(o);
                         break;
@@ -230,6 +258,9 @@ class CentralProcessingUnit {
                         break;
                     case 0x0007:
                         opcode8XY7(o);
+                        break;
+                    case 0x000E:
+                        opcode8XYE(o);
                         break;
                     default:
                         throwInstructionException(o);
@@ -298,16 +329,23 @@ class CentralProcessingUnit {
     }
 
     /**
-     * Retrieves the next opcode to be executed.
+     * Constructs the next opcode to be executed.
+     * <p>
+     * <p>
+     * Opcodes have a size of 16 bit. So we fetch
+     * 2 bytes from memory to build them.
+     * <p>
      * <p>
      * Example:
      * <p>
      * first byte from memory : 00000111
+     * <p>
      * second byte from memory: 01010010
      * <p>
-     * opcode               : 00000000|00000000
-     * opcode = first byte  : 00000000|00000111
-     * opcode <<= 8         : 00000111|00000000
+     * <p>
+     * opcode               : 00000000|00000000<p>
+     * opcode = first byte  : 00000000|00000111<p>
+     * opcode <<= 8         : 00000111|00000000<p>
      * opcode |= second byte: 00000111|01010010
      */
     private int getNextOpcode() {
@@ -400,7 +438,7 @@ class CentralProcessingUnit {
 
         int result = unsigned(dataRegisters.read(X)) + NN(o);
 
-        //  256 = 0, 257 = 1, ...
+        //  256 = 0, 257 = 1, 258 = 2, ...
         if (result > UNSIGNED_BYTE_MAX_VALUE) {
             result %= UNSIGNED_BYTE_MAX_VALUE + 1;
         }
@@ -417,16 +455,44 @@ class CentralProcessingUnit {
     }
 
     /**
-     * Sets the value of data register X to its value
-     * "ORed" with the value of data register Y
+     * Sets the value of data register X to the result of a
+     * bitwise or of X's and Y's values.
      */
     private void opcode8XY1(int o) {
         int X = X(o);
 
         dataRegisters.write(
                 X,
-                unsigned(dataRegisters.read(X))
-                | unsigned(dataRegisters.read(Y(o)))
+                dataRegisters.read(X)
+                | dataRegisters.read(Y(o))
+        );
+    }
+
+    /**
+     * Sets the value of data register X to the result of a
+     * bitwise and of X's and Y's values.
+     */
+    private void opcode8XY2(int o) {
+        int X = X(o);
+
+        dataRegisters.write(
+                X,
+                dataRegisters.read(X)
+                & dataRegisters.read(Y(o))
+        );
+    }
+
+    /**
+     * Sets the value of data register X to the result of a
+     * bitwise xor of X's and Y's values.
+     */
+    private void opcode8XY3(int o) {
+        int X = X(o);
+
+        dataRegisters.write(
+                X,
+                dataRegisters.read(X)
+                ^ dataRegisters.read(Y(o))
         );
     }
 
@@ -443,7 +509,7 @@ class CentralProcessingUnit {
 
         int carry = 0;
 
-        // 256 = 0, 257 = 1, ...
+        //  256 = 0, 257 = 1, 258 = 2, ...
         if (result > UNSIGNED_BYTE_MAX_VALUE) {
             result %= UNSIGNED_BYTE_MAX_VALUE + 1;
             carry = 1;
@@ -459,11 +525,9 @@ class CentralProcessingUnit {
      * is set to 0 (1 otherwise).
      */
     private void opcode8XY5(int o) {
-        byte result =
-                (byte) (
-                        unsigned(dataRegisters.read(X(o)))
-                        - unsigned(dataRegisters.read(Y(o)))
-                );
+        int result =
+                unsigned(dataRegisters.read(X(o)))
+                - unsigned(dataRegisters.read(Y(o)));
 
         dataRegisters.write(X(o), result);
         dataRegisters.write(
@@ -473,21 +537,35 @@ class CentralProcessingUnit {
     }
 
     /**
-     * Subtracts data register X from Y and stores the result in X.
-     * If the result is negative (a borrow occurs), the carry flag
-     * is set to 0 (1 otherwise).
+     * Subtracts data register X's value from Y's and stores the
+     * result in X. If the result is negative (a borrow occurs),
+     * the carry flag is set to 0 (1 otherwise).
      */
     private void opcode8XY7(int o) {
-        byte result =
-                (byte) (
-                        unsigned(dataRegisters.read(Y(o)))
-                        - unsigned(dataRegisters.read(X(o)))
-                );
+        int result =
+                unsigned(dataRegisters.read(Y(o)))
+                - unsigned(dataRegisters.read(X(o)));
 
         dataRegisters.write(X(o), result);
         dataRegisters.write(
                 CARRY,
                 (result < 0) ? 0 : 1
+        );
+    }
+
+    /**
+     * Sets the carry register to the most significant bit
+     * of data register X.
+     * <p>
+     * Shifts data register X to the left by 1 bit.
+     */
+    private void opcode8XYE(int o) {
+        int X = X(o);
+
+        dataRegisters.write(CARRY, X & MOST_SIGNIFICANT_BIT);
+        dataRegisters.write(
+                X,
+                dataRegisters.read(X) << 1
         );
     }
 
@@ -602,9 +680,9 @@ class CentralProcessingUnit {
         int X = unsigned(dataRegisters.read(X(o)));
         int address = addressRegister.read();
 
-        //example value: 137
+        //example value: 197
         memory.write(address, X % 10);          // 7
-        memory.write(address + 1, X / 10 % 10); // 3
+        memory.write(address + 1, X / 10 % 10); // 9
         memory.write(address + 2, X / 100);     // 1
     }
 
