@@ -19,3 +19,5 @@ https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigation
 http://www.koonsolo.com/news/dewitters-gameloop/
 
 https://gafferongames.com/post/fix_your_timestep/
+
+http://emulator101.com/
