@@ -16,3 +16,6 @@ http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
 
 https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
 
+http://www.koonsolo.com/news/dewitters-gameloop/
+
+https://gafferongames.com/post/fix_your_timestep/
