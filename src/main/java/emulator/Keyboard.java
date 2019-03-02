@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 01.03.19 20:06.
+ * Last modified 02.03.19 16:25.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package emulator;
 
 import java.util.HashMap;
 
-final class Keyboard extends Thread {
+final class Keyboard {
 
     private final HashMap<Integer, Boolean> keys;
 

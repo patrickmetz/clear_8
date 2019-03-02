@@ -1,20 +1,16 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 17:54.
+ * Last modified 02.03.19 20:42.
  * Copyright (c) 2019. All rights reserved.
  */
-
-import emulator.Emulator;
-
-import java.io.IOException;
 
 final public class Main {
 
     private static final int INSTRUCTIONS_PER_SECOND = 500;
 
     public static void main(String[] args) {
-        Arguments arg = new Arguments(args, "chip8-java");
-        arg.expect(String.class, true, "r", "rom", "Path of a ROM file.");
+        Arguments arg = new Arguments(args, "bean8");
+        arg.expect(String.class, false, "r", "rom", "Path of a ROM file.");
         arg.expect(Integer.class, false, "i", "ips", "Instructions per second.");
         arg.expect(Boolean.class, false, "l", "leg", "Legacy mode.");
 
@@ -22,17 +18,13 @@ final public class Main {
         int instructionsPerSecond = arg.toInteger("ips", INSTRUCTIONS_PER_SECOND);
         boolean legacyMode = arg.toBoolean("leg", false);
 
-        Emulator emulator = new Emulator(instructionsPerSecond, legacyMode);
+        Gui gui = new Gui();
+        gui.setRunner((new Runner(
+                romPath,
+                instructionsPerSecond,
+                legacyMode
+        )));
 
-        try {
-            emulator.run(romPath);
-        } catch (IOException e) {
-            //todo: log this
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            //todo: log this
-            e.printStackTrace();
-        }
+        gui.render();
     }
-
 }
