@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 21:16.
+ * Last modified 03.03.19 01:07.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,38 +13,44 @@ public class Gui {
     private JButton selectROMButton;
     private JPanel window;
 
-    Gui() {
+    private Gui(Runner runner) {
+        this.runner = runner;
+
         prepareSelectRomButton();
         prepareRunButton();
     }
 
-    void render() {
-        JPanel window = new Gui().window;
-        renderWindow(window);
-    }
-
-    void setRunner(Runner runner) {
-        this.runner = runner;
-    }
-
-    private void prepareRunButton() {
-        runButton.addActionListener(e -> {
-            System.err.println("run");
-        });
-    }
-
-    private void prepareSelectRomButton() {
-        selectROMButton.addActionListener(e -> {
-            System.err.println("select");
-        });
-    }
-
-    private void renderWindow(JPanel window) {
+    static void render(Runner runner) {
         JFrame frame = new JFrame("Gui");
-        frame.setContentPane(window);
+        frame.setContentPane(new Gui(runner).window);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    private String getRomPath() {
+        String romPath = "";
+
+        JFileChooser dialog = new JFileChooser();
+        int returnVal = dialog.showOpenDialog(window);
+
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            romPath = dialog.getSelectedFile().getPath();
+        }
+
+        return romPath;
+    }
+
+    private void prepareRunButton() {
+        runButton.addActionListener(
+                e -> runner.run()
+        );
+    }
+
+    private void prepareSelectRomButton() {
+        selectROMButton.addActionListener(
+                e -> runner.setRomPath(getRomPath())
+        );
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 20:42.
+ * Last modified 03.03.19 00:24.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,13 +18,10 @@ final public class Main {
         int instructionsPerSecond = arg.toInteger("ips", INSTRUCTIONS_PER_SECOND);
         boolean legacyMode = arg.toBoolean("leg", false);
 
-        Gui gui = new Gui();
-        gui.setRunner((new Runner(
+        Gui.render((new Runner(
                 romPath,
                 instructionsPerSecond,
                 legacyMode
         )));
-
-        gui.render();
     }
 }
