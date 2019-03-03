@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 14:08.
+ * Last modified 03.03.19 15:58.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,7 +9,6 @@ package de.patrickmetz.bean8.gui.action;
 import de.patrickmetz.bean8.Runner;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -30,7 +29,7 @@ public class SelectRomAction implements ActionListener {
         String romPath = "";
 
         JFileChooser dialog = new JFileChooser();
-        int returnVal = dialog.showOpenDialog((Component) e.getSource());
+        int returnVal = dialog.showOpenDialog(null);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             romPath = dialog.getSelectedFile().getPath();

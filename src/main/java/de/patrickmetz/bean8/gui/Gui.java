@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 14:54.
+ * Last modified 03.03.19 15:54.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,39 +15,44 @@ import java.awt.*;
 
 public class Gui {
 
-    private JPanel panel;
+    private JPanel bottomPanel;
+    private JPanel contentPane;
+    private JPanel menuPanel;
     private JButton runButton;
     private JPanel screen;
-    private JButton selectROMButton;
+    private JButton selectRomButton;
+    private JTextPane statusPane;
 
     private Gui(Runner runner) {
-        prepareSelectRomButton(runner);
-        prepareRunButton(runner);
+        setSelectRomButtonListener(runner);
+        setRunButtonListener(runner);
         prepareScreen();
     }
 
     public static void render(Runner runner) {
-        // enables swing to update the gui asynchronously
-        // and prevent deadlocks and race conditions
+        // using invokeLater prevents deadlocks and race conditions
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                createWindow(runner);
+                prepareWindow(
+                        createWindow(runner)
+                );
             }
         });
     }
 
-    private static void createWindow(Runner runner) {
+    private static JFrame createWindow(Runner runner) {
         JFrame window = new JFrame("bean8");
-        window.setContentPane(new Gui(runner).panel);
+        window.setContentPane(new Gui(runner).contentPane);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.pack();
-        window.setVisible(true);
+
+        return window;
     }
 
-    private void prepareRunButton(Runner runner) {
-        runButton.addActionListener(
-                new RunAction(runner)
-        );
+    private static void prepareWindow(JFrame window) {
+        window.setLocationRelativeTo(null);
+        window.setResizable(false);
+        window.setVisible(true);
     }
 
     private void prepareScreen() {
@@ -55,8 +60,14 @@ public class Gui {
         screen.setBackground(new Color(255, 255, 255));
     }
 
-    private void prepareSelectRomButton(Runner runner) {
-        selectROMButton.addActionListener(
+    private void setRunButtonListener(Runner runner) {
+        runButton.addActionListener(
+                new RunAction(runner)
+        );
+    }
+
+    private void setSelectRomButtonListener(Runner runner) {
+        selectRomButton.addActionListener(
                 new SelectRomAction(runner)
         );
     }
