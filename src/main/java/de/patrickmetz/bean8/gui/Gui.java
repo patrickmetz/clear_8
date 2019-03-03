@@ -1,27 +1,26 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:18.
+ * Last modified 03.03.19 14:07.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
+import de.patrickmetz.bean8.gui.action.RunAction;
+import de.patrickmetz.bean8.gui.action.SelectRomAction;
 
 import javax.swing.*;
 
 public class Gui {
 
     private JButton runButton;
-    private Runner runner;
     private JButton selectROMButton;
     private JPanel window;
 
     private Gui(Runner runner) {
-        this.runner = runner;
-
-        prepareSelectRomButton();
-        prepareRunButton();
+        prepareSelectRomButton(runner);
+        prepareRunButton(runner);
     }
 
     public static void render(Runner runner) {
@@ -32,28 +31,15 @@ public class Gui {
         frame.setVisible(true);
     }
 
-    private String getRomPath() {
-        String romPath = "";
-
-        JFileChooser dialog = new JFileChooser();
-        int returnVal = dialog.showOpenDialog(window);
-
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            romPath = dialog.getSelectedFile().getPath();
-        }
-
-        return romPath;
-    }
-
-    private void prepareRunButton() {
+    private void prepareRunButton(Runner runner) {
         runButton.addActionListener(
-                e -> runner.run()
+                new RunAction(runner)
         );
     }
 
-    private void prepareSelectRomButton() {
+    private void prepareSelectRomButton(Runner runner) {
         selectROMButton.addActionListener(
-                e -> runner.setRomPath(getRomPath())
+                new SelectRomAction(runner)
         );
     }
 
