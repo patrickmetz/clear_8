@@ -1,10 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 02:36.
+ * Last modified 03.03.19 13:18.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8;
+package de.patrickmetz.bean8.gui;
+
+import de.patrickmetz.bean8.Runner;
 
 import javax.swing.*;
 
@@ -22,7 +24,7 @@ public class Gui {
         prepareRunButton();
     }
 
-    static void render(Runner runner) {
+    public static void render(Runner runner) {
         JFrame frame = new JFrame("Gui");
         frame.setContentPane(new Gui(runner).window);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

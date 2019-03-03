@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 02:36.
+ * Last modified 03.03.19 13:18.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -34,7 +34,7 @@ public class Runner {
         this.romPath = romPath;
     }
 
-    void run() {
+    public void run() {
         Emulator emulator = new Emulator(
                 instructionsPerSecond,
                 legacyMode
