@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 15:54.
+ * Last modified 03.03.19 16:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -24,7 +24,7 @@ public class Gui {
     private JTextPane statusPane;
 
     private Gui(Runner runner) {
-        setSelectRomButtonListener(runner);
+        setSelectRomButtonListener(runner, this);
         setRunButtonListener(runner);
         prepareScreen();
     }
@@ -55,6 +55,10 @@ public class Gui {
         window.setVisible(true);
     }
 
+    public JTextPane getStatusPane() {
+        return statusPane;
+    }
+
     private void prepareScreen() {
         screen.setPreferredSize(new Dimension(640, 480));
         screen.setBackground(new Color(255, 255, 255));
@@ -66,9 +70,9 @@ public class Gui {
         );
     }
 
-    private void setSelectRomButtonListener(Runner runner) {
+    private void setSelectRomButtonListener(Runner runner, Gui gui) {
         selectRomButton.addActionListener(
-                new SelectRomAction(runner)
+                new SelectRomAction(runner, gui)
         );
     }
 
