@@ -1,14 +1,14 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 16:00.
+ * Last modified 03.03.19 20:24.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.action.RunAction;
-import de.patrickmetz.bean8.gui.action.SelectRomAction;
+import de.patrickmetz.bean8.gui.action.RunButtonAction;
+import de.patrickmetz.bean8.gui.action.SelectRomButtonAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,14 +19,14 @@ public class Gui {
     private JPanel contentPane;
     private JPanel menuPanel;
     private JButton runButton;
-    private JPanel screen;
+    private JPanel screenArea;
     private JButton selectRomButton;
     private JTextPane statusPane;
 
     private Gui(Runner runner) {
         setSelectRomButtonListener(runner, this);
         setRunButtonListener(runner);
-        prepareScreen();
+        prepareScreen(runner);
     }
 
     public static void render(Runner runner) {
@@ -38,6 +38,10 @@ public class Gui {
                 );
             }
         });
+    }
+
+    public JTextPane getStatusPane() {
+        return statusPane;
     }
 
     private static JFrame createWindow(Runner runner) {
@@ -55,24 +59,23 @@ public class Gui {
         window.setVisible(true);
     }
 
-    public JTextPane getStatusPane() {
-        return statusPane;
-    }
+    private void prepareScreen(Runner runner) {
+        screenArea.setPreferredSize(new Dimension(640, 480));
+        Screen screen = new Screen();
 
-    private void prepareScreen() {
-        screen.setPreferredSize(new Dimension(640, 480));
-        screen.setBackground(new Color(255, 255, 255));
+        screenArea.add(screen);
+        runner.setScreen(screen);
     }
 
     private void setRunButtonListener(Runner runner) {
         runButton.addActionListener(
-                new RunAction(runner)
+                new RunButtonAction(runner)
         );
     }
 
     private void setSelectRomButtonListener(Runner runner, Gui gui) {
         selectRomButton.addActionListener(
-                new SelectRomAction(runner, gui)
+                new SelectRomButtonAction(runner, gui)
         );
     }
 

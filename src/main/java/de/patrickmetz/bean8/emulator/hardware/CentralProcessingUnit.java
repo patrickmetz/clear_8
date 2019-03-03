@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:10.
+ * Last modified 03.03.19 20:29.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -74,139 +74,15 @@ public class CentralProcessingUnit {
     }
 
     /**
-     * Retrieves the rightmost hex digit (four bits) from an opcode.
-     */
-    protected static int N(int o) {
-        return o & 0x000F;
-    }
-
-    /**
-     * Retrieves the rightmost two hex digits (eight bits) from an opcode.
-     */
-    protected static int NN(int o) {
-        return o & 0x00FF;
-    }
-
-    /**
-     * Retrieves the rightmost three hex digits (twelve bits) from an opcode.
-     */
-    protected static int NNN(int o) {
-        return o & 0x0FFF;
-    }
-
-    /**
-     * Retrieves the X variable (bits 9 to 12) from an opcode.
-     */
-    protected static int X(int o) {
-        return (o & 0x0F00) >> 8;
-    }
-
-    /**
-     * Retrieves the Y variable (bits 5 to 8) from an opcode.
-     */
-    protected static int Y(int o) {
-        return (o & 0x00F0) >> 4;
-    }
-
-    /**
-     * Retrieves the rightmost eight bits of a whole number,
-     * in order to get a value from within an unsigned byte's
-     * value range. Just make sure to put the result into a
-     * whole number type which is bigger than a byte.
-     * <p>
-     * <p>
-     * chip8 actually works with unsigned bytes (0 to 255),
-     * but Java interprets those values as signed (-128 to 127).
-     * <p>
-     * <p>
-     * When we need to correctly interpret the meaning of a whole
-     * numbers bits (i.e. the value chip8 would assume) we use this
-     * method.
-     * <p>
-     * <p>
-     * This emulator stores the bytes of chip8 programs into
-     * integers. So the following example is equivalent of reading
-     * a byte from memory.
-     * <p>
-     * <p>
-     * int a = memory.read(someAddress);<p>
-     * a is -32 or 11111111_11111111_11111111_11100000
-     * <p>
-     * <p>
-     * int b = unsigned(a);<p>
-     * b is 224 or 00000000_00000000_00000000_11100000
-     * <p>
-     * <p>
-     * but don't put the result in an actual byte,
-     * or you'll get a signed value again:
-     * <p>
-     * byte c = (byte) unsigned(a);<p>
-     * c = -32 or 11100000
-     */
-    protected static int unsigned(int value) {
-        return value & 0xFF;
-    }
-
-    /**
-     * Shifts the value of data register X by one bit
-     * to the right (i.e. divides it by two).
-     * <p>
-     * The former value's least significant bit
-     * is stored in the carry register.
-     * <p>
-     *
-     * @see CentralProcessingUnitLegacy#opcode8XY6(int)
-     */
-    protected void opcode8XY6(int o) {
-        int X = X(o);
-        int value = dataRegisters.read(X);
-
-        dataRegisters.write(CARRY, value & LEAST_SIGNIFICANT_BIT);
-        dataRegisters.write(X, value >> 1);
-    }
-
-    /**
-     * Sets X consecutive memory values to the values of the data
-     * registers 0 to X, starting at the registered memory address.
-     *
-     * @see CentralProcessingUnitLegacy#opcodeFX55(int)
-     */
-    protected void opcodeFX55(int o) {
-        int X = X(o);
-        int address = addressRegister.read();
-
-        for (int register = 0; register <= X; register++) {
-            memory.write(
-                    address++,
-                    dataRegisters.read(register)
-            );
-        }
-    }
-
-    /**
-     * Sets data registers 0 to X to consecutive memory values,
-     * starting at the registered memory address.
-     *
-     * @see CentralProcessingUnitLegacy#opcodeFX65(int)
-     */
-    protected void opcodeFX65(int o) {
-        int X = X(o);
-        int address = addressRegister.read();
-
-        for (int register = 0; register <= X; register++) {
-            dataRegisters.write(
-                    register,
-                    memory.read(address++)
-            );
-        }
-    }
-
-    /**
      * Decreases both timers.
      */
     public void decrementTimers() {
         delayTimer.decrement();
         soundTimer.decrement();
+    }
+
+    public boolean[][] getScreenData() {
+        return graphics.getScreenData();
     }
 
     /**
@@ -355,6 +231,134 @@ public class CentralProcessingUnit {
     public void writeToMemory(int[] data, int address) {
         for (int d : data) {
             memory.write(address++, unsigned(d));
+        }
+    }
+
+    /**
+     * Retrieves the rightmost hex digit (four bits) from an opcode.
+     */
+    protected static int N(int o) {
+        return o & 0x000F;
+    }
+
+    /**
+     * Retrieves the rightmost two hex digits (eight bits) from an opcode.
+     */
+    protected static int NN(int o) {
+        return o & 0x00FF;
+    }
+
+    /**
+     * Retrieves the rightmost three hex digits (twelve bits) from an opcode.
+     */
+    protected static int NNN(int o) {
+        return o & 0x0FFF;
+    }
+
+    /**
+     * Retrieves the X variable (bits 9 to 12) from an opcode.
+     */
+    protected static int X(int o) {
+        return (o & 0x0F00) >> 8;
+    }
+
+    /**
+     * Retrieves the Y variable (bits 5 to 8) from an opcode.
+     */
+    protected static int Y(int o) {
+        return (o & 0x00F0) >> 4;
+    }
+
+    /**
+     * Retrieves the rightmost eight bits of a whole number,
+     * in order to get a value from within an unsigned byte's
+     * value range. Just make sure to put the result into a
+     * whole number type which is bigger than a byte.
+     * <p>
+     * <p>
+     * chip8 actually works with unsigned bytes (0 to 255),
+     * but Java interprets those values as signed (-128 to 127).
+     * <p>
+     * <p>
+     * When we need to correctly interpret the meaning of a whole
+     * numbers bits (i.e. the value chip8 would assume) we use this
+     * method.
+     * <p>
+     * <p>
+     * This emulator stores the bytes of chip8 programs into
+     * integers. So the following example is equivalent of reading
+     * a byte from memory.
+     * <p>
+     * <p>
+     * int a = memory.read(someAddress);<p>
+     * a is -32 or 11111111_11111111_11111111_11100000
+     * <p>
+     * <p>
+     * int b = unsigned(a);<p>
+     * b is 224 or 00000000_00000000_00000000_11100000
+     * <p>
+     * <p>
+     * but don't put the result in an actual byte,
+     * or you'll get a signed value again:
+     * <p>
+     * byte c = (byte) unsigned(a);<p>
+     * c = -32 or 11100000
+     */
+    protected static int unsigned(int value) {
+        return value & 0xFF;
+    }
+
+    /**
+     * Shifts the value of data register X by one bit
+     * to the right (i.e. divides it by two).
+     * <p>
+     * The former value's least significant bit
+     * is stored in the carry register.
+     * <p>
+     *
+     * @see CentralProcessingUnitLegacy#opcode8XY6(int)
+     */
+    protected void opcode8XY6(int o) {
+        int X = X(o);
+        int value = dataRegisters.read(X);
+
+        dataRegisters.write(CARRY, value & LEAST_SIGNIFICANT_BIT);
+        dataRegisters.write(X, value >> 1);
+    }
+
+    /**
+     * Sets X consecutive memory values to the values of the data
+     * registers 0 to X, starting at the registered memory address.
+     *
+     * @see CentralProcessingUnitLegacy#opcodeFX55(int)
+     */
+    protected void opcodeFX55(int o) {
+        int X = X(o);
+        int address = addressRegister.read();
+
+        for (int register = 0; register <= X; register++) {
+            memory.write(
+                    address++,
+                    dataRegisters.read(register)
+            );
+        }
+    }
+
+    /**
+     * Sets data registers 0 to X to consecutive memory values,
+     * starting at the registered memory address.
+     *
+     * @see CentralProcessingUnitLegacy#opcodeFX65(int)
+     */
+    protected void opcodeFX65(int o) {
+        int X = X(o);
+        int address = addressRegister.read();
+
+        for (int register = 0; register <= X; register++) {
+            dataRegisters.write(
+                    register,
+                    memory.read(address++)
+            );
         }
     }
 

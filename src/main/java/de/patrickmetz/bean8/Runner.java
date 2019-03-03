@@ -1,25 +1,36 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:18.
+ * Last modified 03.03.19 20:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8;
 
 import de.patrickmetz.bean8.emulator.Emulator;
-
-import java.io.IOException;
+import de.patrickmetz.bean8.emulator.Screen;
 
 public class Runner {
 
     private int instructionsPerSecond;
     private boolean legacyMode;
     private String romPath;
+    private Screen screen;
 
     Runner(String romPath, int instructionsPerSecond, boolean legacyMode) {
         this.romPath = romPath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.legacyMode = legacyMode;
+    }
+
+    public void run() {
+        Emulator emulator = new Emulator(
+                romPath,
+                instructionsPerSecond,
+                legacyMode,
+                screen
+        );
+
+        emulator.start();
     }
 
     public void setInstructionsPerSecond(int instructionsPerSecond) {
@@ -34,20 +45,7 @@ public class Runner {
         this.romPath = romPath;
     }
 
-    public void run() {
-        Emulator emulator = new Emulator(
-                instructionsPerSecond,
-                legacyMode
-        );
-
-        try {
-            emulator.run(romPath);
-        } catch (IOException e) {
-            //todo: log this
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            //todo: log this
-            e.printStackTrace();
-        }
+    public void setScreen(Screen screen) {
+        this.screen = screen;
     }
 }

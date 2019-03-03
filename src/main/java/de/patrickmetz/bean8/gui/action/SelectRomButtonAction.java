@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 16:01.
+ * Last modified 03.03.19 17:04.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,12 +13,12 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class SelectRomAction implements ActionListener {
+public class SelectRomButtonAction implements ActionListener {
 
     private final Gui gui;
     private final Runner runner;
 
-    public SelectRomAction(Runner runner, Gui gui) {
+    public SelectRomButtonAction(Runner runner, Gui gui) {
         this.runner = runner;
         this.gui = gui;
     }

@@ -41,7 +41,7 @@
           </component>
         </children>
       </grid>
-      <grid id="eb42d" binding="screen" layout-manager="BorderLayout" hgap="0" vgap="0">
+      <grid id="eb42d" binding="screenArea" layout-manager="GridBagLayout">
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>

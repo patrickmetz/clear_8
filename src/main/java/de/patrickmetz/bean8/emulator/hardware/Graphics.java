@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:09.
+ * Last modified 03.03.19 20:17.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,7 +12,7 @@ final class Graphics {
     private static final int SCREEN_WIDTH = 64;
     private static final int SPRITE_WIDTH = 8;
 
-    private int[][] screenData;
+    private boolean[][] screenData;
 
     Graphics() {
         initializeScreenData();
@@ -27,13 +27,13 @@ final class Graphics {
 
         for (int x = 0; x < SPRITE_WIDTH; x++) {
             for (int y = 0; y < rows.length; y++) {
-                int newPixelState = (rows[y] >> x) & 1;
+                boolean newPixelState = ((rows[y] >> x) & 1) == 1;
 
                 int positionX = (offsetX + x) % SCREEN_WIDTH;
                 int positionY = (offsetY + y) % SCREEN_HEIGHT;
 
-                if ((newPixelState == 1) && (screenData[positionX][positionY] == 1)) {
-                    newPixelState = 0;
+                if ((newPixelState) && (screenData[positionX][positionY])) {
+                    newPixelState = false;
                     collision = true;
                 }
 
@@ -44,12 +44,12 @@ final class Graphics {
         return collision;
     }
 
-    int[][] getScreenData() {
+    boolean[][] getScreenData() {
         return screenData;
     }
 
     private void initializeScreenData() {
-        screenData = new int[SCREEN_WIDTH][SCREEN_HEIGHT];
+        screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
     }
 
 }

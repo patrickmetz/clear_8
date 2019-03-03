@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:09.
+ * Last modified 03.03.19 20:23.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,12 +9,9 @@ package de.patrickmetz.bean8.emulator;
 import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnit;
 import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnitFactory;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
-final public class Emulator {
+final public class Emulator extends Thread {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int INSTRUCTIONS_PER_FRAME;
@@ -24,15 +21,20 @@ final public class Emulator {
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
 
     private final CentralProcessingUnit cpu;
+    private final Screen screen;
+    private String romPath;
 
-    public Emulator(int instructionsPerSecond, boolean legacyMode) {
+    public Emulator(String romPath, int instructionsPerSecond, boolean legacyMode, Screen screen) {
+        this.romPath = romPath;
+
         INSTRUCTIONS_PER_SECOND = instructionsPerSecond;
         INSTRUCTIONS_PER_FRAME = INSTRUCTIONS_PER_SECOND / FRAMES_PER_SECOND;
 
+        this.screen = screen;
         cpu = CentralProcessingUnitFactory.makeCpu(legacyMode);
     }
 
-    public void run(String romPath) throws InterruptedException, IOException {
+    public void run() {
         cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
         cpu.writeToMemory(loadByteFile(romPath), MEMORY_OFFSET_ROM);
 
@@ -49,25 +51,39 @@ final public class Emulator {
             cpu.decrementTimers();
 
             while (System.currentTimeMillis() < endOfFrameTime) {
-                Thread.sleep(1);
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
 
             now = System.currentTimeMillis();
-            // display.renderFrame();
+            screen.draw(cpu.getScreenData());
         }
     }
 
-    private int[] loadByteFile(String filePath) throws IOException {
+    private int[] loadByteFile(String filePath) {
         InputStream in = getClass().getResourceAsStream(filePath);
 
         File file = new File(filePath);
         int[] data = new int[(int) file.length()];
-        FileInputStream fileStream = new FileInputStream(file);
+        FileInputStream fileStream = null;
+        try {
+            fileStream = new FileInputStream(file);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
 
         int byteCount = 0;
-        int byteAsInteger;
+        int byteAsInteger = 0;
 
-        while ((byteAsInteger = fileStream.read()) != -1) {
+        while (true) {
+            try {
+                if (!((byteAsInteger = fileStream.read()) != -1)) break;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             data[byteCount++] = byteAsInteger;
         }
 
