@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 20:23.
+ * Last modified 03.03.19 23:40.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,9 +9,11 @@ package de.patrickmetz.bean8.emulator;
 import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnit;
 import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnitFactory;
 
+import javax.swing.*;
 import java.io.*;
+import java.util.List;
 
-final public class Emulator extends Thread {
+final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int INSTRUCTIONS_PER_FRAME;
@@ -34,14 +36,14 @@ final public class Emulator extends Thread {
         cpu = CentralProcessingUnitFactory.makeCpu(legacyMode);
     }
 
-    public void run() {
+    public Void doInBackground() {
         cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
         cpu.writeToMemory(loadByteFile(romPath), MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
         long endOfFrameTime;
 
-        while (true) {
+        while (!isCancelled()) {
             endOfFrameTime = now + MILLISECONDS_PER_FRAME;
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
@@ -59,7 +61,16 @@ final public class Emulator extends Thread {
             }
 
             now = System.currentTimeMillis();
-            screen.draw(cpu.getScreenData());
+            publish(cpu.getScreenData());
+        }
+
+        return null;
+    }
+
+    @Override
+    protected void process(List<boolean[][]> data) {
+        for (int i = 0; i < data.size(); i++) {
+            screen.draw(data.get(i));
         }
     }
 

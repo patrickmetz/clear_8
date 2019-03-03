@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 20:00.
+ * Last modified 03.03.19 23:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -23,6 +23,7 @@ public class Runner {
     }
 
     public void run() {
+
         Emulator emulator = new Emulator(
                 romPath,
                 instructionsPerSecond,
@@ -30,7 +31,7 @@ public class Runner {
                 screen
         );
 
-        emulator.start();
+        emulator.execute();
     }
 
     public void setInstructionsPerSecond(int instructionsPerSecond) {
