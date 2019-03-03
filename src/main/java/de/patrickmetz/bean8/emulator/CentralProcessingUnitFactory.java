@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 28.02.19 14:05.
+ * Last modified 03.03.19 02:35.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package emulator;
+package de.patrickmetz.bean8.emulator;
 
 class CentralProcessingUnitFactory {
 

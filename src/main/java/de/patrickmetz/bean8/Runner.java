@@ -1,10 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 02.03.19 19:34.
+ * Last modified 03.03.19 02:36.
  * Copyright (c) 2019. All rights reserved.
  */
 
-import emulator.Emulator;
+package de.patrickmetz.bean8;
+
+import de.patrickmetz.bean8.emulator.Emulator;
 
 import java.io.IOException;
 

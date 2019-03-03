@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 01:07.
+ * Last modified 03.03.19 02:36.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package de.patrickmetz.bean8;
 
 import javax.swing.*;
 

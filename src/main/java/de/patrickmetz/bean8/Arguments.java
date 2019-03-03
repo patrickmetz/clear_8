@@ -1,8 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 26.02.19 17:45.
+ * Last modified 03.03.19 02:36.
  * Copyright (c) 2019. All rights reserved.
  */
+
+package de.patrickmetz.bean8;
 
 import org.apache.commons.cli.*;
 
