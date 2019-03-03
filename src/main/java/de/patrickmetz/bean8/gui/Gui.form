@@ -34,7 +34,10 @@
         <children>
           <component id="daafb" class="javax.swing.JTextPane" binding="statusPane">
             <constraints border-constraint="South"/>
-            <properties/>
+            <properties>
+              <editable value="false"/>
+              <opaque value="false"/>
+            </properties>
           </component>
         </children>
       </grid>
