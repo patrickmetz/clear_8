@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 14:07.
+ * Last modified 03.03.19 14:28.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,9 +14,9 @@ import javax.swing.*;
 
 public class Gui {
 
+    private JPanel panel;
     private JButton runButton;
     private JButton selectROMButton;
-    private JPanel window;
 
     private Gui(Runner runner) {
         prepareSelectRomButton(runner);
@@ -24,11 +24,21 @@ public class Gui {
     }
 
     public static void render(Runner runner) {
-        JFrame frame = new JFrame("Gui");
-        frame.setContentPane(new Gui(runner).window);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        // enables swing to update the gui asynchronously
+        // and prevent deadlocks and race conditions
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createWindow(runner);
+            }
+        });
+    }
+
+    private static void createWindow(Runner runner) {
+        JFrame window = new JFrame("bean8");
+        window.setContentPane(new Gui(runner).panel);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.pack();
+        window.setVisible(true);
     }
 
     private void prepareRunButton(Runner runner) {
