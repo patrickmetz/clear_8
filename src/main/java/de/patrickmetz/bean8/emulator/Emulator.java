@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 02:35.
+ * Last modified 03.03.19 13:03.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,10 +9,10 @@ package de.patrickmetz.bean8.emulator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 final public class Emulator {
 
-    private final String FONT_PATH = "src/main/resources/font.bytecode";
     private final int FRAMES_PER_SECOND = 60;
     private final int INSTRUCTIONS_PER_FRAME;
     private final int INSTRUCTIONS_PER_SECOND;
@@ -30,7 +30,7 @@ final public class Emulator {
     }
 
     public void run(String romPath) throws InterruptedException, IOException {
-        cpu.writeToMemory(loadByteFile(FONT_PATH), MEMORY_OFFSET_FONT);
+        cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
         cpu.writeToMemory(loadByteFile(romPath), MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
@@ -55,6 +55,8 @@ final public class Emulator {
     }
 
     private int[] loadByteFile(String filePath) throws IOException {
+        InputStream in = getClass().getResourceAsStream(filePath);
+
         File file = new File(filePath);
         int[] data = new int[(int) file.length()];
         FileInputStream fileStream = new FileInputStream(file);
