@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 02:35.
+ * Last modified 03.03.19 13:10.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.emulator;
+package de.patrickmetz.bean8.emulator.hardware;
 
 /**
  * CPU implementation using opcodes of the SCHIP (Super Chip)
@@ -14,7 +14,7 @@ package de.patrickmetz.bean8.emulator;
  * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
  * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
-class CentralProcessingUnit {
+public class CentralProcessingUnit {
 
     /**
      * The address of the carry register.
@@ -204,7 +204,7 @@ class CentralProcessingUnit {
     /**
      * Decreases both timers.
      */
-    void decrementTimers() {
+    public void decrementTimers() {
         delayTimer.decrement();
         soundTimer.decrement();
     }
@@ -212,7 +212,7 @@ class CentralProcessingUnit {
     /**
      * Executes the next CPU instruction from memory.
      */
-    void processNextOpcode() throws UnsupportedOperationException {
+    public void processNextOpcode() throws UnsupportedOperationException {
         int o = getNextOpcode();
 
         // compare first hex digit (four bits)
@@ -352,7 +352,7 @@ class CentralProcessingUnit {
     /**
      * Writes a data field to memory.
      */
-    void writeToMemory(int[] data, int address) {
+    public void writeToMemory(int[] data, int address) {
         for (int d : data) {
             memory.write(address++, unsigned(d));
         }
