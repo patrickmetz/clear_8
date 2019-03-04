@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 04.03.19 20:00.
+ * Last modified 04.03.19 20:50.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,14 +10,15 @@ import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnit;
 import de.patrickmetz.bean8.emulator.hardware.CentralProcessingUnitFactory;
 
 import javax.swing.*;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     private final int FRAMES_PER_SECOND = 60;
     private final int INSTRUCTIONS_PER_FRAME;
-    private final int INSTRUCTIONS_PER_SECOND;
     private final short MEMORY_OFFSET_FONT = 0;
     private final short MEMORY_OFFSET_ROM = 512;
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
@@ -28,17 +29,17 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     public Emulator(String romPath, int instructionsPerSecond, boolean legacyMode, Screen screen) {
         this.romPath = romPath;
-
-        INSTRUCTIONS_PER_SECOND = instructionsPerSecond;
-        INSTRUCTIONS_PER_FRAME = INSTRUCTIONS_PER_SECOND / FRAMES_PER_SECOND;
-
         this.screen = screen;
+
+        INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
+
         cpu = CentralProcessingUnitFactory.makeCpu(legacyMode);
     }
 
-    public Void doInBackground() {
+    @Override
+    public Void doInBackground() throws InterruptedException, IOException {
         cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
-        cpu.writeToMemory(loadByteFile(romPath), MEMORY_OFFSET_ROM);
+        cpu.writeToMemory(loadFileAsBytes(romPath), MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
         long endOfFrameTime;
@@ -53,11 +54,7 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
             cpu.decrementTimers();
 
             while (System.currentTimeMillis() < endOfFrameTime) {
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                Thread.sleep(1);
             }
 
             now = System.currentTimeMillis();
@@ -68,33 +65,21 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
     }
 
     @Override
-    protected void process(List<boolean[][]> data) {
-        for (int i = 0; i < data.size(); i++) {
-            screen.update(data.get(i));
+    protected void process(List<boolean[][]> screenData) {
+        for (boolean[][] data : screenData) {
+            screen.update(data);
         }
     }
 
-    private int[] loadByteFile(String filePath) {
-        InputStream in = getClass().getResourceAsStream(filePath);
-
+    private int[] loadFileAsBytes(String filePath) throws IOException {
         File file = new File(filePath);
         int[] data = new int[(int) file.length()];
-        FileInputStream fileStream = null;
-        try {
-            fileStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        FileInputStream fileStream = new FileInputStream(file);
 
         int byteCount = 0;
-        int byteAsInteger = 0;
+        int byteAsInteger;
 
-        while (true) {
-            try {
-                if (!((byteAsInteger = fileStream.read()) != -1)) break;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        while ((byteAsInteger = fileStream.read()) != -1) {
             data[byteCount++] = byteAsInteger;
         }
 
