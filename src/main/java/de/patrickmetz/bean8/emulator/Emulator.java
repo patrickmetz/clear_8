@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 23:40.
+ * Last modified 04.03.19 20:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -70,7 +70,7 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
     @Override
     protected void process(List<boolean[][]> data) {
         for (int i = 0; i < data.size(); i++) {
-            screen.draw(data.get(i));
+            screen.update(data.get(i));
         }
     }
 

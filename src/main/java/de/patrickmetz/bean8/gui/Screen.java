@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 04.03.19 19:03.
+ * Last modified 04.03.19 20:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -11,13 +11,17 @@ import java.awt.*;
 
 public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Screen {
 
+    private static final Color COLOR_BACKGROUND = Color.white;
+    private static final Color COLOR_PIXEL = Color.darkGray;
+
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;
-    private boolean[][] data;
-    private int screenFactor = 8;
+
+    private boolean[][] screenData;
+    private int screenScale = 8;
 
     Screen() {
-        data = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
+        screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
 
         setBorder(BorderFactory.createLineBorder(Color.gray));
 
@@ -25,33 +29,36 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
         setAlignmentY(Component.CENTER_ALIGNMENT);
 
         setPreferredSize(new Dimension(
-                SCREEN_WIDTH * screenFactor,
-                SCREEN_HEIGHT * screenFactor
+                SCREEN_WIDTH * screenScale,
+                SCREEN_HEIGHT * screenScale
         ));
 
         setDoubleBuffered(true);
     }
 
-    @Override
-    public void draw(boolean[][] data) {
-        this.data = data;
-        repaint();
-    }
-
     public void paintComponent(java.awt.Graphics graphics) {
-        drawScreen(graphics);
+        drawScreen(graphics); // prepares the graphics
     }
 
-    private void drawScreen(java.awt.Graphics graphics) {
+    @Override
+    public void update(boolean[][] data) {
+        this.screenData = data;
+        repaint(); // shows the prepared graphics
+    }
+
+    private void drawScreen(Graphics graphics) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
             for (int y = 0; y < SCREEN_HEIGHT; y++) {
-                graphics.setColor(data[x][y] ? Color.darkGray : Color.white);
+                graphics.setColor(
+                        screenData[x][y] ? COLOR_PIXEL : COLOR_BACKGROUND
+                );
 
+                // one scaled pixel
                 graphics.fillRect(
-                        x * screenFactor,
-                        y * screenFactor,
-                        screenFactor,
-                        screenFactor
+                        x * screenScale,
+                        y * screenScale,
+                        screenScale,
+                        screenScale
                 );
             }
         }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 18:53.
+ * Last modified 04.03.19 20:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,5 +8,5 @@ package de.patrickmetz.bean8.emulator;
 
 public interface Screen {
 
-    void draw(boolean[][] data);
+    void update(boolean[][] data);
 }
