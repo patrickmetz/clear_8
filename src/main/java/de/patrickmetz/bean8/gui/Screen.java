@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 04.03.19 18:53.
+ * Last modified 04.03.19 19:03.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -19,10 +19,7 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
     Screen() {
         data = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
 
-        setBackground(new Color(200, 200, 200));
         setBorder(BorderFactory.createLineBorder(Color.gray));
-
-        setDoubleBuffered(true);
 
         setAlignmentX(Component.CENTER_ALIGNMENT);
         setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -31,6 +28,8 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
                 SCREEN_WIDTH * screenFactor,
                 SCREEN_HEIGHT * screenFactor
         ));
+
+        setDoubleBuffered(true);
     }
 
     @Override
@@ -43,21 +42,17 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
         drawScreen(graphics);
     }
 
-    private void drawPixel(java.awt.Graphics graphics, int x, int y, boolean state) {
-        graphics.setColor(state ? Color.black : Color.white);
-
-        graphics.fillRect(
-                x * screenFactor,
-                y * screenFactor,
-                screenFactor,
-                screenFactor
-        );
-    }
-
     private void drawScreen(java.awt.Graphics graphics) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
             for (int y = 0; y < SCREEN_HEIGHT; y++) {
-                drawPixel(graphics, x, y, data[x][y]);
+                graphics.setColor(data[x][y] ? Color.darkGray : Color.white);
+
+                graphics.fillRect(
+                        x * screenFactor,
+                        y * screenFactor,
+                        screenFactor,
+                        screenFactor
+                );
             }
         }
     }
