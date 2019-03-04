@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 23:35.
+ * Last modified 04.03.19 18:53.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,7 +14,6 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;
     private boolean[][] data;
-    private java.awt.Graphics graphics;
     private int screenFactor = 8;
 
     Screen() {
@@ -37,17 +36,14 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
     @Override
     public void draw(boolean[][] data) {
         this.data = data;
-    }
-
-    public void paintComponent(java.awt.Graphics g) {
-        super.paintComponent(g);
-        graphics = g;
-
-        drawScreen();
         repaint();
     }
 
-    private void drawPixel(int x, int y, boolean state) {
+    public void paintComponent(java.awt.Graphics graphics) {
+        drawScreen(graphics);
+    }
+
+    private void drawPixel(java.awt.Graphics graphics, int x, int y, boolean state) {
         graphics.setColor(state ? Color.black : Color.white);
 
         graphics.fillRect(
@@ -58,10 +54,10 @@ public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Scre
         );
     }
 
-    private void drawScreen() {
+    private void drawScreen(java.awt.Graphics graphics) {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
             for (int y = 0; y < SCREEN_HEIGHT; y++) {
-                drawPixel(x, y, data[x][y]);
+                drawPixel(graphics, x, y, data[x][y]);
             }
         }
     }
