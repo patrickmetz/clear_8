@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 17:20.
+ * Last modified 05.03.19 19:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,21 +15,24 @@ import java.awt.*;
 
 public class Gui {
 
+    private static Runner runner;
+
     private JPanel bottomPanel;
     private JPanel contentPane;
     private JPanel menuPanel;
     private JButton runButton;
+    private Screen screen;
     private JPanel screenArea;
     private JButton selectRomButton;
     private JTextPane statusPane;
 
-    private Gui(Runner runner) {
-        setSelectRomButtonListener(runner, this);
-        setRunButtonListener(runner);
+    private Gui() {
+        setSelectRomButtonListener();
+        setRunButtonListener();
 
-        prepareStatusPane(runner);
-        prepareScreen(runner);
-        prepareRunButton(runner);
+        prepareStatusPane();
+        prepareScreen();
+        prepareRunButton();
     }
 
     /**
@@ -40,24 +43,28 @@ public class Gui {
      * see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
      */
     public static void render(Runner runner) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                prepareGui(runner);
-            }
-        });
+        Gui.runner = runner;
+
+        SwingUtilities.invokeLater(Gui::prepareGui);
     }
 
-    private static JFrame createWindow(Runner runner) {
+    private static JFrame createWindow(JPanel contentPane) {
         JFrame window = new JFrame("bean8");
-        window.setContentPane(new Gui(runner).contentPane);
+        window.setContentPane(contentPane);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.pack();
 
         return window;
     }
 
-    private static void prepareGui(Runner runner) {
-        prepareWindow(createWindow(runner));
+    private static void prepareGui() {
+        Gui gui = new Gui();
+
+        prepareWindow(
+                createWindow(
+                        gui.contentPane
+                )
+        );
     }
 
     private static void prepareWindow(JFrame window) {
@@ -66,14 +73,14 @@ public class Gui {
         window.setVisible(true);
     }
 
-    private void prepareRunButton(Runner runner) {
+    private void prepareRunButton() {
         if (!runner.getRomPath().isBlank()) {
             runButton.setEnabled(true);
             runButton.doClick();
         }
     }
 
-    private void prepareScreen(Runner runner) {
+    private void prepareScreen() {
         screenArea.setPreferredSize(new Dimension(640, 480));
         Screen screen = new Screen();
 
@@ -81,19 +88,21 @@ public class Gui {
         runner.setScreen(screen);
     }
 
-    private void prepareStatusPane(Runner runner) {
-        if (!runner.getRomPath().isBlank()) {
-            statusPane.setText(runner.getRomPath());
+    private void prepareStatusPane() {
+        String romPath = runner.getRomPath();
+
+        if (!romPath.isBlank()) {
+            statusPane.setText(romPath);
         }
     }
 
-    private void setRunButtonListener(Runner runner) {
+    private void setRunButtonListener() {
         runButton.addActionListener(
                 new RunButtonAction(runner)
         );
     }
 
-    private void setSelectRomButtonListener(Runner runner, Gui gui) {
+    private void setSelectRomButtonListener() {
         selectRomButton.addActionListener(
                 new SelectRomButtonAction(runner, statusPane, runButton)
         );

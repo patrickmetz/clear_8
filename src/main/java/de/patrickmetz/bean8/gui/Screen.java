@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 10:52.
+ * Last modified 05.03.19 19:07.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,8 +15,10 @@ public class Screen extends JPanel implements iScreen {
 
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;
+
     private static Color colorBackground;
     private static Color colorPixel;
+
     private boolean[][] screenData;
     private int screenScale = 8;
 
