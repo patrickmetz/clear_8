@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 01:11.
+ * Last modified 05.03.19 10:52.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,17 +13,17 @@ import java.awt.*;
 
 public class Screen extends JPanel implements iScreen {
 
-    private static final Color COLOR_BACKGROUND = Color.white;
-    private static final Color COLOR_PIXEL = Color.darkGray;
-
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;
-
+    private static Color colorBackground;
+    private static Color colorPixel;
     private boolean[][] screenData;
     private int screenScale = 8;
 
     Screen() {
         screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
+        colorBackground = new Color(224, 248, 208);
+        colorPixel = new Color(8, 24, 32);
 
         setBorder(BorderFactory.createLineBorder(Color.gray));
 
@@ -36,6 +36,7 @@ public class Screen extends JPanel implements iScreen {
         ));
 
         setDoubleBuffered(true);
+
     }
 
     public void paintComponent(java.awt.Graphics graphics) {
@@ -52,7 +53,7 @@ public class Screen extends JPanel implements iScreen {
         for (int x = 0; x < SCREEN_WIDTH; x++) {
             for (int y = 0; y < SCREEN_HEIGHT; y++) {
                 graphics.setColor(
-                        screenData[x][y] ? COLOR_PIXEL : COLOR_BACKGROUND
+                        screenData[x][y] ? colorPixel : colorBackground
                 );
 
                 // one scaled pixel
