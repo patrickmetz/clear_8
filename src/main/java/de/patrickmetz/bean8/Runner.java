@@ -1,20 +1,20 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 23:16.
+ * Last modified 05.03.19 01:11.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8;
 
 import de.patrickmetz.bean8.emulator.Emulator;
-import de.patrickmetz.bean8.emulator.Screen;
+import de.patrickmetz.bean8.emulator.iScreen;
 
 public class Runner {
 
     private int instructionsPerSecond;
     private boolean legacyMode;
     private String romPath;
-    private Screen screen;
+    private iScreen screen;
 
     Runner(String romPath, int instructionsPerSecond, boolean legacyMode) {
         this.romPath = romPath;
@@ -46,7 +46,7 @@ public class Runner {
         this.romPath = romPath;
     }
 
-    public void setScreen(Screen screen) {
+    public void setScreen(iScreen screen) {
         this.screen = screen;
     }
 }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 20:17.
+ * Last modified 05.03.19 09:58.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -27,7 +27,11 @@ final class Graphics {
 
         for (int x = 0; x < SPRITE_WIDTH; x++) {
             for (int y = 0; y < rows.length; y++) {
-                boolean newPixelState = ((rows[y] >> x) & 1) == 1;
+                // subsequently shifts each sprite bit, from index 7 to 0,
+                // to the rightmost position, and grabs and compares it from there with 1
+                boolean newPixelState =
+                        ((rows[y] >> (SPRITE_WIDTH - x - 1)) & 1) == 1;
+
 
                 int positionX = (offsetX + x) % SCREEN_WIDTH;
                 int positionY = (offsetY + y) % SCREEN_HEIGHT;

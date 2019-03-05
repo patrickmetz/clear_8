@@ -1,15 +1,17 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 04.03.19 20:00.
+ * Last modified 05.03.19 01:11.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
+import de.patrickmetz.bean8.emulator.iScreen;
+
 import javax.swing.*;
 import java.awt.*;
 
-public class Screen extends JPanel implements de.patrickmetz.bean8.emulator.Screen {
+public class Screen extends JPanel implements iScreen {
 
     private static final Color COLOR_BACKGROUND = Color.white;
     private static final Color COLOR_PIXEL = Color.darkGray;
