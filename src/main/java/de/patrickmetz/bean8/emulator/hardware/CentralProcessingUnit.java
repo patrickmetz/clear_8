@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 20:29.
+ * Last modified 05.03.19 15:01.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,8 +10,6 @@ package de.patrickmetz.bean8.emulator.hardware;
  * CPU implementation using opcodes of the SCHIP (Super Chip)
  * <p>
  * see:
- * http://www.mattmik.com/files/chip8/mastering/chip8.html
- * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
  * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
 public class CentralProcessingUnit {
@@ -33,14 +31,19 @@ public class CentralProcessingUnit {
     protected static final int CARRY = 0xF;
 
     /**
-     * Bitmask to get the first bit of a byte
+     * Bitmask to get the least significant (i.e. first) bit of a byte
      */
-    protected static final int LEAST_SIGNIFICANT_BIT = 0b0000_0001;
+    protected static final int LSB = 0b0000_0001;
 
     /**
-     * Bitmask to get the last bit of a byte
+     * Bitmask to get the most significant (i.e. last) bit of a byte
      */
-    protected static final int MOST_SIGNIFICANT_BIT = 0b1000_0000;
+    protected static final int MSB = 0b1000_0000;
+
+    /**
+     * One opcode consists of two bytes
+     */
+    protected static final int OPCODE_SIZE = 2;
 
     /**
      * The maximum numerical value an unsigned byte can hold.
@@ -225,6 +228,10 @@ public class CentralProcessingUnit {
         }
     }
 
+    public void setProgramCounter(short memoryPosition) {
+        programCounter.write(memoryPosition);
+    }
+
     /**
      * Writes a data field to memory.
      */
@@ -322,7 +329,7 @@ public class CentralProcessingUnit {
         int X = X(o);
         int value = dataRegisters.read(X);
 
-        dataRegisters.write(CARRY, value & LEAST_SIGNIFICANT_BIT);
+        dataRegisters.write(CARRY, value & LSB);
         dataRegisters.write(X, value >> 1);
     }
 
@@ -390,7 +397,7 @@ public class CentralProcessingUnit {
 
         opcode |= unsigned(memory.read(++address));
 
-        programCounter.skipOpcode();
+        programCounter.increment(OPCODE_SIZE);
 
         return opcode;
     }
@@ -430,7 +437,7 @@ public class CentralProcessingUnit {
      */
     private void opcode3XNN(int o) {
         if (dataRegisters.read(X(o)) == NN(o)) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 
@@ -440,7 +447,7 @@ public class CentralProcessingUnit {
      */
     private void opcode4XNN(int o) {
         if (dataRegisters.read(X(o)) != NN(o)) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 
@@ -450,7 +457,7 @@ public class CentralProcessingUnit {
      */
     private void opcode5XY0(int o) {
         if (dataRegisters.read(X(o)) == dataRegisters.read(Y(o))) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 
@@ -596,7 +603,7 @@ public class CentralProcessingUnit {
     private void opcode8XYE(int o) {
         int X = X(o);
 
-        dataRegisters.write(CARRY, X & MOST_SIGNIFICANT_BIT);
+        dataRegisters.write(CARRY, X & MSB);
         dataRegisters.write(
                 X,
                 dataRegisters.read(X) << 1
@@ -612,7 +619,7 @@ public class CentralProcessingUnit {
                 dataRegisters.read(X(o))
                 != dataRegisters.read(Y(o))
         ) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 
@@ -672,7 +679,7 @@ public class CentralProcessingUnit {
         if (keyboard.isKeyPressed(
                 dataRegisters.read(X(o))
         )) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 
@@ -684,7 +691,7 @@ public class CentralProcessingUnit {
         if (!keyboard.isKeyPressed(
                 dataRegisters.read(X(o))
         )) {
-            programCounter.skipOpcode();
+            programCounter.increment(OPCODE_SIZE);
         }
     }
 

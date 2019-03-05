@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 20:24.
+ * Last modified 05.03.19 17:20.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -26,22 +26,25 @@ public class Gui {
     private Gui(Runner runner) {
         setSelectRomButtonListener(runner, this);
         setRunButtonListener(runner);
+
+        prepareStatusPane(runner);
         prepareScreen(runner);
+        prepareRunButton(runner);
     }
 
+    /**
+     * Creates the Graphical User Interface (GUI) and keeps
+     * it responsive by putting it on Swings Event Dispatch
+     * Thread (EDT).
+     *
+     * see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
+     */
     public static void render(Runner runner) {
-        // using invokeLater prevents deadlocks and race conditions
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                prepareWindow(
-                        createWindow(runner)
-                );
+                prepareGui(runner);
             }
         });
-    }
-
-    public JTextPane getStatusPane() {
-        return statusPane;
     }
 
     private static JFrame createWindow(Runner runner) {
@@ -53,10 +56,21 @@ public class Gui {
         return window;
     }
 
+    private static void prepareGui(Runner runner) {
+        prepareWindow(createWindow(runner));
+    }
+
     private static void prepareWindow(JFrame window) {
-        window.setLocationRelativeTo(null);
+        window.setLocationRelativeTo(null); // centers window
         window.setResizable(false);
         window.setVisible(true);
+    }
+
+    private void prepareRunButton(Runner runner) {
+        if (!runner.getRomPath().isBlank()) {
+            runButton.setEnabled(true);
+            runButton.doClick();
+        }
     }
 
     private void prepareScreen(Runner runner) {
@@ -67,6 +81,12 @@ public class Gui {
         runner.setScreen(screen);
     }
 
+    private void prepareStatusPane(Runner runner) {
+        if (!runner.getRomPath().isBlank()) {
+            statusPane.setText(runner.getRomPath());
+        }
+    }
+
     private void setRunButtonListener(Runner runner) {
         runButton.addActionListener(
                 new RunButtonAction(runner)
@@ -75,7 +95,7 @@ public class Gui {
 
     private void setSelectRomButtonListener(Runner runner, Gui gui) {
         selectRomButton.addActionListener(
-                new SelectRomButtonAction(runner, gui)
+                new SelectRomButtonAction(runner, statusPane, runButton)
         );
     }
 

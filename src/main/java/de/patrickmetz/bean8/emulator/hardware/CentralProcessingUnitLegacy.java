@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 13:09.
+ * Last modified 05.03.19 15:00.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,8 +10,6 @@ package de.patrickmetz.bean8.emulator.hardware;
  * CPU implementation using opcodes of the Cosmac VIP
  * <p>
  * see:
- * http://www.mattmik.com/files/chip8/mastering/chip8.html
- * http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
  * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
 public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
@@ -40,7 +38,7 @@ public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
     protected void opcode8XY6(int o) {
         dataRegisters.write(
                 CARRY,
-                dataRegisters.read(X(o)) & LEAST_SIGNIFICANT_BIT
+                dataRegisters.read(X(o)) & LSB
         );
 
         dataRegisters.write(

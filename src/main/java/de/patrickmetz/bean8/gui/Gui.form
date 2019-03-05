@@ -22,10 +22,17 @@
           <component id="79335" class="javax.swing.JButton" binding="runButton">
             <constraints/>
             <properties>
+              <enabled value="false"/>
               <text value="Run"/>
             </properties>
           </component>
         </children>
+      </grid>
+      <grid id="eb42d" binding="screenArea" layout-manager="GridBagLayout">
+        <constraints border-constraint="Center"/>
+        <properties/>
+        <border type="none"/>
+        <children/>
       </grid>
       <grid id="af52b" binding="bottomPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="South"/>
@@ -40,12 +47,6 @@
             </properties>
           </component>
         </children>
-      </grid>
-      <grid id="eb42d" binding="screenArea" layout-manager="GridBagLayout">
-        <constraints border-constraint="Center"/>
-        <properties/>
-        <border type="none"/>
-        <children/>
       </grid>
     </children>
   </grid>

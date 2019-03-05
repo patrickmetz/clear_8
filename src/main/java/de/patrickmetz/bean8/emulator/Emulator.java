@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 01:11.
+ * Last modified 05.03.19 11:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -40,6 +40,7 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
     public Void doInBackground() throws InterruptedException, IOException {
         cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
         cpu.writeToMemory(loadFileAsBytes(romPath), MEMORY_OFFSET_ROM);
+        cpu.setProgramCounter(MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
         long endOfFrameTime;
