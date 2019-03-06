@@ -16,14 +16,14 @@
             <constraints/>
             <properties>
               <enabled value="true"/>
-              <text value="Select ROM"/>
+              <text value="Load ROM"/>
             </properties>
           </component>
-          <component id="79335" class="javax.swing.JButton" binding="runButton">
+          <component id="79335" class="javax.swing.JButton" binding="pauseButton">
             <constraints/>
             <properties>
               <enabled value="false"/>
-              <text value="Run"/>
+              <text value="Pause"/>
             </properties>
           </component>
         </children>

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 11:14.
+ * Last modified 06.03.19 15:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,6 +25,7 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     private final CentralProcessingUnit cpu;
     private final iScreen screen;
+    private boolean isPaused;
     private String romPath;
 
     public Emulator(String romPath, int instructionsPerSecond, boolean legacyMode, iScreen screen) {
@@ -46,6 +47,14 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         long endOfFrameTime;
 
         while (!isCancelled()) {
+
+            // see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
+            synchronized (this) {
+                while (isPaused) {
+                    wait();
+                }
+            }
+
             endOfFrameTime = now + MILLISECONDS_PER_FRAME;
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
@@ -63,6 +72,16 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         }
 
         return null;
+    }
+
+    /**
+     * Reverses the current pause state in a synchronized (thread safe) way, and wakes the thread up
+     * from a possible waiting phase.
+     */
+    public synchronized void togglePause() {
+        isPaused = !isPaused;
+
+        notify();
     }
 
     @Override
@@ -86,4 +105,5 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
         return data;
     }
+
 }

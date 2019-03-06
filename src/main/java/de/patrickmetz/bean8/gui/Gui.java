@@ -1,14 +1,14 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 19:06.
+ * Last modified 06.03.19 15:51.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.action.RunButtonAction;
-import de.patrickmetz.bean8.gui.action.SelectRomButtonAction;
+import de.patrickmetz.bean8.gui.action.LoadGameButtonAction;
+import de.patrickmetz.bean8.gui.action.PauseButtonAction;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,7 +20,7 @@ public class Gui {
     private JPanel bottomPanel;
     private JPanel contentPane;
     private JPanel menuPanel;
-    private JButton runButton;
+    private JButton pauseButton;
     private Screen screen;
     private JPanel screenArea;
     private JButton selectRomButton;
@@ -36,16 +36,21 @@ public class Gui {
     }
 
     /**
-     * Creates the Graphical User Interface (GUI) and keeps
-     * it responsive by putting it on Swings Event Dispatch
-     * Thread (EDT).
-     *
+     * Creates the Graphical User Interface (GUI) and keeps it responsive by putting it on Swings
+     * Event Dispatch Thread (EDT).
+     * <p>
      * see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
      */
     public static void render(Runner runner) {
         Gui.runner = runner;
 
-        SwingUtilities.invokeLater(Gui::prepareGui);
+        SwingUtilities.invokeLater(() -> {
+            prepareGui();
+
+            if (runner.getRomPath() != null) {
+                runner.run();
+            }
+        });
     }
 
     private static JFrame createWindow(JPanel contentPane) {
@@ -75,8 +80,7 @@ public class Gui {
 
     private void prepareRunButton() {
         if (!runner.getRomPath().isBlank()) {
-            runButton.setEnabled(true);
-            runButton.doClick();
+            pauseButton.setEnabled(true);
         }
     }
 
@@ -91,20 +95,20 @@ public class Gui {
     private void prepareStatusPane() {
         String romPath = runner.getRomPath();
 
-        if (!romPath.isBlank()) {
+        if (romPath != null) {
             statusPane.setText(romPath);
         }
     }
 
     private void setRunButtonListener() {
-        runButton.addActionListener(
-                new RunButtonAction(runner)
+        pauseButton.addActionListener(
+                new PauseButtonAction(runner)
         );
     }
 
     private void setSelectRomButtonListener() {
         selectRomButton.addActionListener(
-                new SelectRomButtonAction(runner, statusPane, runButton)
+                new LoadGameButtonAction(runner, statusPane, pauseButton)
         );
     }
 
