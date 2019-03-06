@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 21:39.
+ * Last modified 06.03.19 22:09.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -32,11 +32,14 @@ public class LoadGameButtonAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String romPath = getFile(e).getPath();
+        File file = getFile(e);
+        String romPath = file.getPath();
 
         if (!romPath.isBlank()) {
             pauseButton.setEnabled(true);
-            statusPane.setText(getFile(e).getName());
+
+            String name = file.getName();
+            statusPane.setText(name);
 
             if (runner.isRunning()) {
                 runner.stop();
