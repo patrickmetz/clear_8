@@ -9,7 +9,9 @@
     <children>
       <grid id="6134e" binding="menuPanel" layout-manager="FlowLayout" hgap="5" vgap="5" flow-align="0">
         <constraints border-constraint="North"/>
-        <properties/>
+        <properties>
+          <minimumSize width="176" height="48"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="de1c5" class="javax.swing.JButton" binding="selectRomButton">
@@ -36,14 +38,27 @@
       </grid>
       <grid id="af52b" binding="bottomPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
         <constraints border-constraint="South"/>
-        <properties/>
+        <properties>
+          <minimumSize width="6" height="48"/>
+        </properties>
         <border type="none"/>
         <children>
           <component id="daafb" class="javax.swing.JTextPane" binding="statusPane">
-            <constraints border-constraint="South"/>
+            <constraints border-constraint="West"/>
             <properties>
               <editable value="false"/>
+              <foreground color="-8355712"/>
               <opaque value="false"/>
+              <text value=""/>
+            </properties>
+          </component>
+          <component id="4e40b" class="javax.swing.JTextPane" binding="fpsPane">
+            <constraints border-constraint="East"/>
+            <properties>
+              <editable value="false"/>
+              <foreground color="-8355712"/>
+              <opaque value="false"/>
+              <text value=""/>
             </properties>
           </component>
         </children>

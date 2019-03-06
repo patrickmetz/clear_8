@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 13:51.
+ * Last modified 06.03.19 21:39.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class LoadGameButtonAction implements ActionListener {
 
@@ -31,11 +32,11 @@ public class LoadGameButtonAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String romPath = getRomPath(e);
+        String romPath = getFile(e).getPath();
 
-        if (romPath != null) {
+        if (!romPath.isBlank()) {
             pauseButton.setEnabled(true);
-            statusPane.setText(romPath);
+            statusPane.setText(getFile(e).getName());
 
             if (runner.isRunning()) {
                 runner.stop();
@@ -46,8 +47,8 @@ public class LoadGameButtonAction implements ActionListener {
         }
     }
 
-    private String getRomPath(ActionEvent e) {
-        String romPath = null;
+    private File getFile(ActionEvent e) {
+        File file = null;
 
         JFileChooser dialog = new JFileChooser();
 
@@ -59,9 +60,9 @@ public class LoadGameButtonAction implements ActionListener {
         );
 
         if (dialog.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            romPath = dialog.getSelectedFile().getPath();
+            file = dialog.getSelectedFile();
         }
 
-        return romPath;
+        return file;
     }
 }

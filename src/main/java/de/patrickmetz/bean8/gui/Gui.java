@@ -1,17 +1,19 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 15:51.
+ * Last modified 06.03.19 21:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
+import de.patrickmetz.bean8.gui.action.FpsTimerAction;
 import de.patrickmetz.bean8.gui.action.LoadGameButtonAction;
 import de.patrickmetz.bean8.gui.action.PauseButtonAction;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class Gui {
 
@@ -19,6 +21,8 @@ public class Gui {
 
     private JPanel bottomPanel;
     private JPanel contentPane;
+    private JTextPane fpsPane;
+    private Timer fpsTimer;
     private JPanel menuPanel;
     private JButton pauseButton;
     private Screen screen;
@@ -33,6 +37,8 @@ public class Gui {
         prepareStatusPane();
         prepareScreen();
         prepareRunButton();
+
+        prepareFpsTimer();
     }
 
     /**
@@ -78,6 +84,15 @@ public class Gui {
         window.setVisible(true);
     }
 
+    private void prepareFpsTimer() {
+        fpsTimer = new Timer(
+                1000,
+                new FpsTimerAction(screen, fpsPane)
+        );
+
+        fpsTimer.start();
+    }
+
     private void prepareRunButton() {
         if (!runner.getRomPath().isBlank()) {
             pauseButton.setEnabled(true);
@@ -86,7 +101,7 @@ public class Gui {
 
     private void prepareScreen() {
         screenArea.setPreferredSize(new Dimension(640, 480));
-        Screen screen = new Screen();
+        screen = new Screen();
 
         screenArea.add(screen);
         runner.setScreen(screen);
@@ -96,7 +111,9 @@ public class Gui {
         String romPath = runner.getRomPath();
 
         if (romPath != null) {
-            statusPane.setText(romPath);
+            statusPane.setText(
+                    new File(romPath).getName()
+            );
         }
     }
 

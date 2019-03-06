@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 19:07.
+ * Last modified 06.03.19 21:52.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -21,6 +21,7 @@ public class Screen extends JPanel implements iScreen {
 
     private boolean[][] screenData;
     private int screenScale = 8;
+    private int updateCount;
 
     Screen() {
         screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
@@ -41,14 +42,26 @@ public class Screen extends JPanel implements iScreen {
 
     }
 
-    public void paintComponent(java.awt.Graphics graphics) {
-        drawScreen(graphics); // prepares the graphics
+    @Override
+    public int getUpdateCount() {
+        return updateCount;
     }
 
+    /**
+     * prepares the graphics for drawing
+     */
+    public void paintComponent(java.awt.Graphics graphics) {
+        drawScreen(graphics);
+    }
+
+    /**
+     * draws the prepared graphics as soon as Swing allows it
+     */
     @Override
     public void update(boolean[][] data) {
+        updateCount++;
         this.screenData = data;
-        repaint(); // shows the prepared graphics
+        repaint();
     }
 
     private void drawScreen(Graphics graphics) {

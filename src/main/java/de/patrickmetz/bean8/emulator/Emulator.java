@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 15:42.
+ * Last modified 06.03.19 21:22.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,6 +15,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * The emulator runs on a separate thread, as a so called SwingWorker, in order to keep the GUI
+ * responsive while updating the screen
+ * <p>
+ * see https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
+ */
 final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     private final int FRAMES_PER_SECOND = 60;
@@ -48,6 +54,7 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
         while (!isCancelled()) {
 
+            // the emulator runs as a separate thread so we use thread safe pausing
             // see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
             synchronized (this) {
                 while (isPaused) {
