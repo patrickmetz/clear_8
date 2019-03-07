@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 20:40.
+ * Last modified 07.03.19 21:09.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,6 +8,7 @@ package de.patrickmetz.bean8.gui.action;
 
 import de.patrickmetz.bean8.Runner;
 
+import javax.swing.*;
 import java.awt.event.ItemEvent;
 
 public class CpuComboBoxListener implements java.awt.event.ItemListener {
@@ -16,6 +17,7 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener {
     public final static String TEXT_SUPER_CHIP = "Super Chip";
 
     private final Runner runner;
+    private String selectedItem;
 
     public CpuComboBoxListener(Runner runner) {
         this.runner = runner;
@@ -30,8 +32,18 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener {
                 runner.setLegacyMode(true);
             } else if (item == TEXT_SUPER_CHIP) {
                 runner.setLegacyMode(false);
+            } else {
+                System.out.println(item);
+                JComboBox<String> comboBox = (JComboBox<String>) e.getItemSelectable();
+
+                System.out.println(comboBox.getItemCount());
+
+                if (selectedItem != null) {
+                    comboBox.setSelectedItem(selectedItem);
+                }
             }
 
+            selectedItem = (String) item;
         }
     }
 }

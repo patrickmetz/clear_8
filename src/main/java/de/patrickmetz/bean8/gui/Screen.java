@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 21:52.
+ * Last modified 07.03.19 21:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,8 +25,8 @@ public class Screen extends JPanel implements iScreen {
 
     Screen() {
         screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
-        colorBackground = new Color(224, 248, 208);
-        colorPixel = new Color(8, 24, 32);
+        colorBackground = new Color(255, 255, 255);
+        colorPixel = new Color(45, 71, 141);
 
         setBorder(BorderFactory.createLineBorder(Color.gray));
 
