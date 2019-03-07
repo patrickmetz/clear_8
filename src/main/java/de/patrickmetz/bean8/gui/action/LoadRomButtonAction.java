@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 22:09.
+ * Last modified 07.03.19 11:51.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,7 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class LoadGameButtonAction implements ActionListener {
+public class LoadRomButtonAction implements ActionListener {
 
     private static final String FILE_EXTENSION = "ch8";
     private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";
@@ -22,12 +22,15 @@ public class LoadGameButtonAction implements ActionListener {
     private final JButton pauseButton;
     private final Runner runner;
     private final JTextPane statusPane;
+    private final JButton stopButton;
 
-    public LoadGameButtonAction(Runner runner, JTextPane statusPane, JButton pauseButton) {
+    public LoadRomButtonAction(Runner runner, JTextPane statusPane, JButton pauseButton,
+                               JButton stopButton) {
         this.runner = runner;
 
         this.statusPane = statusPane;
         this.pauseButton = pauseButton;
+        this.stopButton = stopButton;
     }
 
     @Override
@@ -37,6 +40,7 @@ public class LoadGameButtonAction implements ActionListener {
 
         if (!romPath.isBlank()) {
             pauseButton.setEnabled(true);
+            stopButton.setEnabled(true);
 
             String name = file.getName();
             statusPane.setText(name);

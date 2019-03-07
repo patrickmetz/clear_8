@@ -14,7 +14,7 @@
         </properties>
         <border type="none"/>
         <children>
-          <component id="de1c5" class="javax.swing.JButton" binding="selectRomButton">
+          <component id="de1c5" class="javax.swing.JButton" binding="loadRomButton">
             <constraints/>
             <properties>
               <enabled value="true"/>
@@ -26,6 +26,13 @@
             <properties>
               <enabled value="false"/>
               <text value="Pause"/>
+            </properties>
+          </component>
+          <component id="468a4" class="javax.swing.JButton" binding="stopButton" default-binding="true">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <text value="Stop"/>
             </properties>
           </component>
         </children>

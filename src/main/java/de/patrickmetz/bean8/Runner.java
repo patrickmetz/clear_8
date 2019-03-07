@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 15:56.
+ * Last modified 07.03.19 13:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,6 +12,7 @@ import de.patrickmetz.bean8.emulator.iScreen;
 public class Runner {
 
     private Emulator emulator;
+
     private int instructionsPerSecond;
     private boolean isPaused;
     private boolean isRunning;
@@ -38,6 +39,10 @@ public class Runner {
     }
 
     public void run() {
+        if (isRunning) {
+            return;
+        }
+
         isRunning = true;
 
         emulator = new Emulator(
@@ -67,11 +72,19 @@ public class Runner {
     }
 
     public void stop() {
+        if (!isRunning) {
+            return;
+        }
+
         emulator.cancel(true);
         isRunning = false;
     }
 
     public void togglePause() {
+        if (!isRunning) {
+            return;
+        }
+
         emulator.togglePause();
         isPaused = !isPaused;
     }
