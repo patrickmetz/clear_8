@@ -1,16 +1,13 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 18:35.
+ * Last modified 07.03.19 20:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.action.FpsTimerAction;
-import de.patrickmetz.bean8.gui.action.LoadRomButtonAction;
-import de.patrickmetz.bean8.gui.action.PauseButtonAction;
-import de.patrickmetz.bean8.gui.action.StopButtonAction;
+import de.patrickmetz.bean8.gui.action.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -22,6 +19,7 @@ public class Gui {
 
     private JPanel bottomPanel;
     private JPanel contentPane;
+    private JComboBox<String> cpuComboBox;
     private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
@@ -36,9 +34,11 @@ public class Gui {
         setLoadRomButtonListener();
         setPauseButtonListener();
         setStopButtonListener();
+        setCpuComboBoxListener();
 
         preparePauseButton();
         prepareStopButton();
+        prepareCpuComboBox();
         prepareStatusPane();
         prepareScreen();
 
@@ -99,6 +99,19 @@ public class Gui {
         window.setVisible(true);
     }
 
+    private void prepareCpuComboBox() {
+        cpuComboBox.addItem("CPU");
+
+        cpuComboBox.addItem(CpuComboBoxListener.TEXT_SUPER_CHIP);
+        cpuComboBox.addItem(CpuComboBoxListener.TEXT_COSMAC_VIP);
+
+        if (runner.getLegacyMode()) {
+            cpuComboBox.setSelectedItem(CpuComboBoxListener.TEXT_COSMAC_VIP);
+        } else {
+            cpuComboBox.setSelectedItem(CpuComboBoxListener.TEXT_SUPER_CHIP);
+        }
+    }
+
     private void prepareFpsTimer() {
         fpsTimer = new Timer(
                 1000,
@@ -138,9 +151,15 @@ public class Gui {
         }
     }
 
+    private void setCpuComboBoxListener() {
+        cpuComboBox.addItemListener(
+                new CpuComboBoxListener(runner)
+        );
+    }
+
     private void setLoadRomButtonListener() {
         loadRomButton.addActionListener(
-                new LoadRomButtonAction(runner, statusPane, pauseButton, stopButton)
+                new LoadRomButtonAction(runner, statusPane, pauseButton, stopButton, cpuComboBox)
         );
     }
 
@@ -152,7 +171,7 @@ public class Gui {
 
     private void setStopButtonListener() {
         stopButton.addActionListener(
-                new StopButtonAction(runner, pauseButton, this, fpsTimer)
+                new StopButtonAction(runner, pauseButton, this, fpsTimer, cpuComboBox)
         );
     }
 

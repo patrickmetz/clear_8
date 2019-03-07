@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 11:51.
+ * Last modified 07.03.19 20:31.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -19,38 +19,45 @@ public class LoadRomButtonAction implements ActionListener {
     private static final String FILE_EXTENSION = "ch8";
     private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";
 
+    private final JComboBox<String> cpuComboBox;
     private final JButton pauseButton;
     private final Runner runner;
     private final JTextPane statusPane;
     private final JButton stopButton;
 
     public LoadRomButtonAction(Runner runner, JTextPane statusPane, JButton pauseButton,
-                               JButton stopButton) {
+                               JButton stopButton,
+                               JComboBox<String> cpuComboBox) {
         this.runner = runner;
 
         this.statusPane = statusPane;
         this.pauseButton = pauseButton;
         this.stopButton = stopButton;
+        this.cpuComboBox = cpuComboBox;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         File file = getFile(e);
-        String romPath = file.getPath();
 
-        if (!romPath.isBlank()) {
-            pauseButton.setEnabled(true);
-            stopButton.setEnabled(true);
+        if (file != null) {
+            String romPath = file.getPath();
 
-            String name = file.getName();
-            statusPane.setText(name);
+            if (!romPath.isBlank()) {
+                pauseButton.setEnabled(true);
+                stopButton.setEnabled(true);
+                cpuComboBox.setEnabled(false);
 
-            if (runner.isRunning()) {
-                runner.stop();
+                String name = file.getName();
+                statusPane.setText(name);
+
+                if (runner.isRunning()) {
+                    runner.stop();
+                }
+
+                runner.setRomPath(romPath);
+                runner.run();
             }
-
-            runner.setRomPath(romPath);
-            runner.run();
         }
     }
 

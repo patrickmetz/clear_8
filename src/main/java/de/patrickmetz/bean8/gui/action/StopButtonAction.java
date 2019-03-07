@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 18:35.
+ * Last modified 07.03.19 20:39.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,17 +15,19 @@ import java.awt.event.ActionListener;
 
 public class StopButtonAction implements ActionListener {
 
+    private final JComboBox<String> cpuComboBox;
     private final Timer fpsTimer;
     private final Gui gui;
     private final JButton pauseButton;
     private final Runner runner;
 
-    public StopButtonAction(Runner runner, JButton pauseButton, Gui gui, Timer fpsTimer) {
+    public StopButtonAction(Runner runner, JButton pauseButton, Gui gui, Timer fpsTimer,
+                            JComboBox<String> cpuComboBox) {
         this.runner = runner;
         this.pauseButton = pauseButton;
         this.gui = gui;
-
         this.fpsTimer = fpsTimer;
+        this.cpuComboBox = cpuComboBox;
     }
 
     @Override
@@ -39,11 +41,8 @@ public class StopButtonAction implements ActionListener {
 
             stopButton.setEnabled(false);
             pauseButton.setEnabled(false);
+            cpuComboBox.setEnabled(true);
 
-        } else {
-            stopButton.setEnabled(true);
-            pauseButton.setEnabled(true);
         }
-
     }
 }

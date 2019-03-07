@@ -35,6 +35,13 @@
               <text value="Stop"/>
             </properties>
           </component>
+          <component id="54ca4" class="javax.swing.JComboBox" binding="cpuComboBox">
+            <constraints/>
+            <properties>
+              <enabled value="false"/>
+              <model/>
+            </properties>
+          </component>
         </children>
       </grid>
       <grid id="eb42d" binding="screenArea" layout-manager="GridBagLayout">

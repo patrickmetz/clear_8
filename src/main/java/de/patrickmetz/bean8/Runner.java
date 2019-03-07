@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 13:12.
+ * Last modified 07.03.19 20:27.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -24,6 +24,10 @@ public class Runner {
         this.romPath = romPath == null ? "" : romPath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.legacyMode = legacyMode;
+    }
+
+    public boolean getLegacyMode() {
+        return legacyMode;
     }
 
     public String getRomPath() {
@@ -61,6 +65,7 @@ public class Runner {
 
     public void setLegacyMode(boolean legacyMode) {
         this.legacyMode = legacyMode;
+        System.out.println("legacyMode:" + legacyMode);
     }
 
     public void setRomPath(String romPath) {
