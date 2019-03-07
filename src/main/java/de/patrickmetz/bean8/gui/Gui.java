@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 20:32.
+ * Last modified 07.03.19 20:47.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -53,6 +53,14 @@ public class Gui {
      */
     public static void render(Runner runner) {
         Gui.runner = runner;
+
+        try {
+            // Set System L&F
+            UIManager.setLookAndFeel(
+                    UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            // handle exception
+        }
 
         SwingUtilities.invokeLater(() -> {
             prepareGui();

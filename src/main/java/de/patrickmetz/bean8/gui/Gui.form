@@ -38,6 +38,7 @@
           <component id="54ca4" class="javax.swing.JComboBox" binding="cpuComboBox">
             <constraints/>
             <properties>
+              <editable value="false"/>
               <enabled value="false"/>
               <model/>
             </properties>
