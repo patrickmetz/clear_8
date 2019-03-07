@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 21:09.
+ * Last modified 07.03.19 22:08.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -33,10 +33,7 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener {
             } else if (item == TEXT_SUPER_CHIP) {
                 runner.setLegacyMode(false);
             } else {
-                System.out.println(item);
                 JComboBox<String> comboBox = (JComboBox<String>) e.getItemSelectable();
-
-                System.out.println(comboBox.getItemCount());
 
                 if (selectedItem != null) {
                     comboBox.setSelectedItem(selectedItem);
