@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 20:58.
+ * Last modified 08.03.19 23:56.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -159,6 +159,7 @@ public class Gui {
 
             pauseButton.setEnabled(true);
             stopButton.setEnabled(true);
+            cpuComboBox.setEnabled(false);
         }
 
         if (runner.getLegacyMode()) {

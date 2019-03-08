@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 20:58.
+ * Last modified 08.03.19 23:49.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -43,6 +43,14 @@ public class LoadRomButtonListener implements ActionListener {
         if (file != null) {
 
             if (!file.getPath().isBlank()) {
+                if (runner.isRunning()) {
+                    runner.stop();
+                }
+
+                runner.setRomPath(file.getPath());
+                runner.run();
+
+
                 pauseButton.setEnabled(true);
                 stopButton.setEnabled(true);
                 cpuComboBox.setEnabled(false);
@@ -51,12 +59,6 @@ public class LoadRomButtonListener implements ActionListener {
                         file.getName()
                 );
 
-                if (runner.isRunning()) {
-                    runner.stop();
-                }
-
-                runner.setRomPath(file.getPath());
-                runner.run();
             }
         }
     }
