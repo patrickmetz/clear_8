@@ -1,17 +1,17 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 13:36.
+ * Last modified 08.03.19 15:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.component;
 
 import javax.swing.*;
+import java.awt.*;
 
-public class FpsPane extends JTextPane {
+public class WindowContent extends JPanel {
 
-    public FpsPane() {
-        setEditable(false);
-        setOpaque(false);
+    public WindowContent() {
+        setLayout(new BorderLayout(0, 0));
     }
 }

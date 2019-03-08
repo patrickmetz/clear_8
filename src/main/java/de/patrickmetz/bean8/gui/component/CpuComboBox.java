@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 13:38.
+ * Last modified 08.03.19 19:58.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -17,8 +17,8 @@ public class CpuComboBox extends JComboBox<String> {
         setEditable(false);
         setEnabled(false);
 
-        addItem("CPU");
-        addItem(CpuComboBox.CPU_SUPER_CHIP);
-        addItem(CpuComboBox.CPU_COSMAC_VIP);
+        addItem(CPU_SUPER_CHIP);
+        addItem(CPU_COSMAC_VIP);
     }
+
 }

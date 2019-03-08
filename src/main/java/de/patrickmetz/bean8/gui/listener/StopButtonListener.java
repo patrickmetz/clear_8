@@ -1,33 +1,35 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 11:06.
+ * Last modified 08.03.19 19:27.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui.action;
+package de.patrickmetz.bean8.gui.listener;
 
 import de.patrickmetz.bean8.Runner;
 import de.patrickmetz.bean8.gui.Gui;
+import de.patrickmetz.bean8.gui.component.StatusPane;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class StopButtonAction implements ActionListener {
+public class StopButtonListener implements ActionListener {
 
     private final JComboBox<String> cpuComboBox;
-    private final Timer fpsTimer;
     private final Gui gui;
     private final JButton pauseButton;
     private final Runner runner;
+    private final StatusPane statusPane;
 
-    public StopButtonAction(Runner runner, JButton pauseButton, Gui gui, Timer fpsTimer,
-                            JComboBox<String> cpuComboBox) {
+    public StopButtonListener(Runner runner, JButton pauseButton, Gui gui,
+                              JComboBox<String> cpuComboBox,
+                              StatusPane statusPane) {
         this.runner = runner;
         this.pauseButton = pauseButton;
         this.gui = gui;
-        this.fpsTimer = fpsTimer;
         this.cpuComboBox = cpuComboBox;
+        this.statusPane = statusPane;
     }
 
     @Override
@@ -42,6 +44,8 @@ public class StopButtonAction implements ActionListener {
             pauseButton.setEnabled(false);
             cpuComboBox.setEnabled(true);
 
+            statusPane.setFps(null);
+            statusPane.setFileName(null);
         }
     }
 }

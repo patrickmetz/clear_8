@@ -1,12 +1,13 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 20:31.
+ * Last modified 08.03.19 19:52.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui.action;
+package de.patrickmetz.bean8.gui.listener;
 
 import de.patrickmetz.bean8.Runner;
+import de.patrickmetz.bean8.gui.component.StatusPane;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -14,7 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-public class LoadRomButtonAction implements ActionListener {
+public class LoadRomButtonListener implements ActionListener {
 
     private static final String FILE_EXTENSION = "ch8";
     private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";
@@ -22,15 +23,15 @@ public class LoadRomButtonAction implements ActionListener {
     private final JComboBox<String> cpuComboBox;
     private final JButton pauseButton;
     private final Runner runner;
-    private final JTextPane statusPane;
+    private final StatusPane statusPane;
     private final JButton stopButton;
 
-    public LoadRomButtonAction(Runner runner, JTextPane statusPane, JButton pauseButton,
-                               JButton stopButton,
-                               JComboBox<String> cpuComboBox) {
+    public LoadRomButtonListener(Runner runner, StatusPane statusPane, JButton pauseButton,
+                                 JButton stopButton,
+                                 JComboBox<String> cpuComboBox) {
         this.runner = runner;
-
         this.statusPane = statusPane;
+
         this.pauseButton = pauseButton;
         this.stopButton = stopButton;
         this.cpuComboBox = cpuComboBox;
@@ -41,21 +42,21 @@ public class LoadRomButtonAction implements ActionListener {
         File file = getFile(e);
 
         if (file != null) {
-            String romPath = file.getPath();
 
-            if (!romPath.isBlank()) {
+            if (!file.getPath().isBlank()) {
                 pauseButton.setEnabled(true);
                 stopButton.setEnabled(true);
                 cpuComboBox.setEnabled(false);
 
-                String name = file.getName();
-                statusPane.setText(name);
+                statusPane.setFileName(
+                        file.getName().split("\\.")[0].toLowerCase()
+                );
 
                 if (runner.isRunning()) {
                     runner.stop();
                 }
 
-                runner.setRomPath(romPath);
+                runner.setRomPath(file.getPath());
                 runner.run();
             }
         }
@@ -79,4 +80,5 @@ public class LoadRomButtonAction implements ActionListener {
 
         return file;
     }
+
 }

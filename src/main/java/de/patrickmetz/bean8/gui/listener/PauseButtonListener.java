@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 16:30.
+ * Last modified 08.03.19 19:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui.action;
+package de.patrickmetz.bean8.gui.listener;
 
 import de.patrickmetz.bean8.Runner;
 
@@ -12,14 +12,14 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PauseButtonAction implements ActionListener {
+public class PauseButtonListener implements ActionListener {
 
     private static final String TEXT_IS_PAUSED = "Resume";
     private static final String TEXT_IS_RUNNING = "Pause";
 
     private final Runner runner;
 
-    public PauseButtonAction(Runner runner) {
+    public PauseButtonListener(Runner runner) {
         this.runner = runner;
     }
 

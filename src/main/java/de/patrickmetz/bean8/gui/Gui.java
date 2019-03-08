@@ -1,15 +1,15 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 14:50.
+ * Last modified 08.03.19 19:54.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.action.*;
 import de.patrickmetz.bean8.gui.component.Window;
 import de.patrickmetz.bean8.gui.component.*;
+import de.patrickmetz.bean8.gui.listener.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,22 +17,20 @@ import java.io.File;
 
 public class Gui {
 
-    private static final String APPLICATION_TITLE = "bean8";
-
     private static Runner runner;
-    private static JFrame window;
+    private static Window window;
 
     private JPanel bottomPanel;
+    private JPanel centerPanel;
     private JComboBox<String> cpuComboBox;
     private Display display;
     private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
-    private JPanel menuPanel;
     private JButton pauseButton;
-    private JPanel screen;
-    private JTextPane statusPane;
+    private StatusPane statusPane;
     private JButton stopButton;
+    private JPanel topPanel;
     private JPanel windowContent;
 
     private Gui() {
@@ -56,11 +54,15 @@ public class Gui {
     }
 
     public void resetDisplay() {
-        screen.remove(display);
+        centerPanel.remove(display);
 
         display = new Display();
-        screen.add(display);
+        centerPanel.add(display);
+
         runner.setDisplay(display);
+
+        stopTimers();
+        createTimers();
     }
 
     private static void createGui() {
@@ -70,56 +72,59 @@ public class Gui {
         } catch (Exception ignored) {
         }
 
-        window = new Window(APPLICATION_TITLE);
+        window = new Window();
         window.setContentPane(new Gui().windowContent);
         window.pack();
     }
 
     private void createComponents() {
-        windowContent = new windowContent();
+        windowContent = new WindowContent();
 
-        menuPanel = new MenuPanel();
-        windowContent.add(menuPanel, BorderLayout.NORTH);
+        // top panel
 
-        screen = new Screen();
-        windowContent.add(screen, BorderLayout.CENTER);
+        topPanel = new TopPanel();
+        windowContent.add(topPanel, BorderLayout.NORTH);
+
+        loadRomButton = new LoadRomButton();
+        topPanel.add(loadRomButton);
+
+        pauseButton = new PauseButton();
+        topPanel.add(pauseButton);
+
+        stopButton = new StopButton();
+        topPanel.add(stopButton);
+
+        cpuComboBox = new CpuComboBox();
+        topPanel.add(cpuComboBox);
+
+        // center panel
+
+        centerPanel = new CenterPanel();
+        windowContent.add(centerPanel, BorderLayout.CENTER);
 
         display = new Display();
-        screen.add(display);
+        centerPanel.add(display);
+
+        // bottom panel
 
         bottomPanel = new BottomPanel();
         windowContent.add(bottomPanel, BorderLayout.SOUTH);
 
-        loadRomButton = new LoadRomButton();
-        menuPanel.add(loadRomButton);
-
-        pauseButton = new PauseButton();
-        menuPanel.add(pauseButton);
-
-        stopButton = new StopButton();
-        menuPanel.add(stopButton);
-
-        cpuComboBox = new CpuComboBox();
-        menuPanel.add(cpuComboBox);
-
         statusPane = new StatusPane();
-        bottomPanel.add(statusPane, BorderLayout.WEST);
-
-        fpsPane = new FpsPane();
-        bottomPanel.add(fpsPane, BorderLayout.EAST);
+        bottomPanel.add(statusPane);
     }
 
     private void createListeners() {
         loadRomButton.addActionListener(
-                new LoadRomButtonAction(runner, statusPane, pauseButton, stopButton, cpuComboBox)
+                new LoadRomButtonListener(runner, statusPane, pauseButton, stopButton, cpuComboBox)
         );
 
         pauseButton.addActionListener(
-                new PauseButtonAction(runner)
+                new PauseButtonListener(runner)
         );
 
         stopButton.addActionListener(
-                new StopButtonAction(runner, pauseButton, this, fpsTimer, cpuComboBox)
+                new StopButtonListener(runner, pauseButton, this, cpuComboBox, statusPane)
         );
 
         cpuComboBox.addItemListener(
@@ -130,7 +135,7 @@ public class Gui {
     private void createTimers() {
         fpsTimer = new Timer(
                 1000,
-                new FpsTimerAction(display, fpsPane)
+                new FpsTimerListener(display, statusPane)
         );
 
         fpsTimer.start();
@@ -140,8 +145,8 @@ public class Gui {
         String romPath = runner.getRomPath();
 
         if (!romPath.isBlank()) {
-            statusPane.setText(
-                    new File(romPath).getName()
+            statusPane.setFileName(
+                    (new File(romPath).getName().split("\\."))[0].toLowerCase()
             );
 
             pauseButton.setEnabled(true);
@@ -149,9 +154,18 @@ public class Gui {
         }
 
         if (runner.getLegacyMode()) {
-            cpuComboBox.setSelectedItem(CpuComboBox.CPU_COSMAC_VIP);
+            cpuComboBox.setSelectedItem(
+                    CpuComboBox.CPU_COSMAC_VIP
+            );
         } else {
-            cpuComboBox.setSelectedItem(CpuComboBox.CPU_SUPER_CHIP);
+            cpuComboBox.setSelectedItem(
+                    CpuComboBox.CPU_SUPER_CHIP
+            );
         }
     }
+
+    private void stopTimers() {
+        fpsTimer.stop();
+    }
+
 }
