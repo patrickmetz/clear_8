@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 19:57.
+ * Last modified 08.03.19 20:59.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui.component;
+package de.patrickmetz.bean8.gui.component.output;
 
 import javax.swing.*;
 
@@ -21,7 +21,9 @@ public class StatusPane extends JTextPane {
     }
 
     public void setFileName(String fileName) {
-        this.fileName = fileName;
+        if (fileName != null) {
+            this.fileName = fileName.split("\\.")[0].toLowerCase();
+        }
 
         updateText();
     }
@@ -41,4 +43,5 @@ public class StatusPane extends JTextPane {
 
         setText(status);
     }
+
 }

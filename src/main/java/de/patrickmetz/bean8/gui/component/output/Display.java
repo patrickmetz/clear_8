@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 13:36.
+ * Last modified 08.03.19 20:46.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui.component;
+package de.patrickmetz.bean8.gui.component.output;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +23,12 @@ public class Display extends JPanel implements de.patrickmetz.bean8.emulator.Dis
 
     public Display() {
         screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
+        setDoubleBuffered(true);
+
         colorBackground = new Color(255, 255, 255);
         colorPixel = new Color(45, 71, 141);
 
-        setBorder(BorderFactory.createLineBorder(Color.gray));
+        setBorder(BorderFactory.createLineBorder(Color.lightGray));
 
         setAlignmentX(Component.CENTER_ALIGNMENT);
         setAlignmentY(Component.CENTER_ALIGNMENT);
@@ -35,9 +37,6 @@ public class Display extends JPanel implements de.patrickmetz.bean8.emulator.Dis
                 SCREEN_WIDTH * screenScale,
                 SCREEN_HEIGHT * screenScale
         ));
-
-        setDoubleBuffered(true);
-
     }
 
     @Override
@@ -79,4 +78,5 @@ public class Display extends JPanel implements de.patrickmetz.bean8.emulator.Dis
             }
         }
     }
+
 }

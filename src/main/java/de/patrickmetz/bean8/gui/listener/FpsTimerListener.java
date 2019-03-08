@@ -1,13 +1,13 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 19:36.
+ * Last modified 08.03.19 20:10.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.listener;
 
-import de.patrickmetz.bean8.gui.component.Display;
-import de.patrickmetz.bean8.gui.component.StatusPane;
+import de.patrickmetz.bean8.gui.component.output.Display;
+import de.patrickmetz.bean8.gui.component.output.StatusPane;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

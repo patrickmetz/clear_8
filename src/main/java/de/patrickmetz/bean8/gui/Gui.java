@@ -1,14 +1,18 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 19:54.
+ * Last modified 08.03.19 20:58.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.component.Window;
-import de.patrickmetz.bean8.gui.component.*;
+import de.patrickmetz.bean8.gui.component.interaction.FileDialog;
+import de.patrickmetz.bean8.gui.component.interaction.*;
+import de.patrickmetz.bean8.gui.component.output.Display;
+import de.patrickmetz.bean8.gui.component.output.StatusPane;
+import de.patrickmetz.bean8.gui.component.structure.Window;
+import de.patrickmetz.bean8.gui.component.structure.*;
 import de.patrickmetz.bean8.gui.listener.*;
 
 import javax.swing.*;
@@ -24,6 +28,7 @@ public class Gui {
     private JPanel centerPanel;
     private JComboBox<String> cpuComboBox;
     private Display display;
+    private FileDialog fileDialog;
     private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
@@ -42,10 +47,10 @@ public class Gui {
         runner.setDisplay(display);
     }
 
+    // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
     public static void show(Runner runner) {
         Gui.runner = runner;
 
-        // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
         SwingUtilities.invokeLater(Gui::createGui);
 
         if (runner.getRomPath() != null) {
@@ -78,12 +83,22 @@ public class Gui {
     }
 
     private void createComponents() {
-        windowContent = new WindowContent();
+        // structure
 
-        // top panel
+        windowContent = new WindowContent();
 
         topPanel = new TopPanel();
         windowContent.add(topPanel, BorderLayout.NORTH);
+
+        centerPanel = new CenterPanel();
+        windowContent.add(centerPanel, BorderLayout.CENTER);
+
+        bottomPanel = new BottomPanel();
+        windowContent.add(bottomPanel, BorderLayout.SOUTH);
+
+        // interaction
+
+        fileDialog = new FileDialog();
 
         loadRomButton = new LoadRomButton();
         topPanel.add(loadRomButton);
@@ -97,18 +112,10 @@ public class Gui {
         cpuComboBox = new CpuComboBox();
         topPanel.add(cpuComboBox);
 
-        // center panel
-
-        centerPanel = new CenterPanel();
-        windowContent.add(centerPanel, BorderLayout.CENTER);
+        // output
 
         display = new Display();
         centerPanel.add(display);
-
-        // bottom panel
-
-        bottomPanel = new BottomPanel();
-        windowContent.add(bottomPanel, BorderLayout.SOUTH);
 
         statusPane = new StatusPane();
         bottomPanel.add(statusPane);
@@ -116,7 +123,8 @@ public class Gui {
 
     private void createListeners() {
         loadRomButton.addActionListener(
-                new LoadRomButtonListener(runner, statusPane, pauseButton, stopButton, cpuComboBox)
+                new LoadRomButtonListener(
+                        runner, statusPane, pauseButton, stopButton, cpuComboBox, fileDialog)
         );
 
         pauseButton.addActionListener(
@@ -146,7 +154,7 @@ public class Gui {
 
         if (!romPath.isBlank()) {
             statusPane.setFileName(
-                    (new File(romPath).getName().split("\\."))[0].toLowerCase()
+                    new File(romPath).getName()
             );
 
             pauseButton.setEnabled(true);

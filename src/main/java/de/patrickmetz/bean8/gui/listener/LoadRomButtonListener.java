@@ -1,26 +1,24 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 19:52.
+ * Last modified 08.03.19 20:58.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.listener;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.component.StatusPane;
+import de.patrickmetz.bean8.gui.component.interaction.FileDialog;
+import de.patrickmetz.bean8.gui.component.output.StatusPane;
 
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
 public class LoadRomButtonListener implements ActionListener {
 
-    private static final String FILE_EXTENSION = "ch8";
-    private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";
-
     private final JComboBox<String> cpuComboBox;
+    private final FileDialog fileDialog;
     private final JButton pauseButton;
     private final Runner runner;
     private final StatusPane statusPane;
@@ -28,18 +26,19 @@ public class LoadRomButtonListener implements ActionListener {
 
     public LoadRomButtonListener(Runner runner, StatusPane statusPane, JButton pauseButton,
                                  JButton stopButton,
-                                 JComboBox<String> cpuComboBox) {
+                                 JComboBox<String> cpuComboBox, FileDialog fileDialog) {
         this.runner = runner;
         this.statusPane = statusPane;
 
         this.pauseButton = pauseButton;
         this.stopButton = stopButton;
         this.cpuComboBox = cpuComboBox;
+        this.fileDialog = fileDialog;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        File file = getFile(e);
+        File file = fileDialog.getFile();
 
         if (file != null) {
 
@@ -49,7 +48,7 @@ public class LoadRomButtonListener implements ActionListener {
                 cpuComboBox.setEnabled(false);
 
                 statusPane.setFileName(
-                        file.getName().split("\\.")[0].toLowerCase()
+                        file.getName()
                 );
 
                 if (runner.isRunning()) {
@@ -60,25 +59,6 @@ public class LoadRomButtonListener implements ActionListener {
                 runner.run();
             }
         }
-    }
-
-    private File getFile(ActionEvent e) {
-        File file = null;
-
-        JFileChooser dialog = new JFileChooser();
-
-        dialog.setFileFilter(
-                new FileNameExtensionFilter(
-                        FILE_EXTENSION_DESCRIPTION,
-                        FILE_EXTENSION
-                )
-        );
-
-        if (dialog.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            file = dialog.getSelectedFile();
-        }
-
-        return file;
     }
 
 }

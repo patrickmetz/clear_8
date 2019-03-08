@@ -1,13 +1,13 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 19:59.
+ * Last modified 08.03.19 20:22.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.listener;
 
 import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.component.CpuComboBox;
+import de.patrickmetz.bean8.gui.component.interaction.CpuComboBox;
 
 import java.awt.event.ItemEvent;
 
