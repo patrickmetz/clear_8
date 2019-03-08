@@ -1,17 +1,15 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 21:15.
+ * Last modified 08.03.19 13:36.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui;
-
-import de.patrickmetz.bean8.emulator.iScreen;
+package de.patrickmetz.bean8.gui.component;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Screen extends JPanel implements iScreen {
+public class Display extends JPanel implements de.patrickmetz.bean8.emulator.Display {
 
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;
@@ -23,7 +21,7 @@ public class Screen extends JPanel implements iScreen {
     private int screenScale = 8;
     private int updateCount;
 
-    Screen() {
+    public Display() {
         screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
         colorBackground = new Color(255, 255, 255);
         colorPixel = new Color(45, 71, 141);

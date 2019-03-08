@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 20:47.
+ * Last modified 08.03.19 14:50.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,6 +8,8 @@ package de.patrickmetz.bean8.gui;
 
 import de.patrickmetz.bean8.Runner;
 import de.patrickmetz.bean8.gui.action.*;
+import de.patrickmetz.bean8.gui.component.Window;
+import de.patrickmetz.bean8.gui.component.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,172 +17,141 @@ import java.io.File;
 
 public class Gui {
 
+    private static final String APPLICATION_TITLE = "bean8";
+
     private static Runner runner;
+    private static JFrame window;
 
     private JPanel bottomPanel;
-    private JPanel contentPane;
     private JComboBox<String> cpuComboBox;
+    private Display display;
     private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
     private JPanel menuPanel;
     private JButton pauseButton;
-    private Screen screen;
-    private JPanel screenArea;
+    private JPanel screen;
     private JTextPane statusPane;
     private JButton stopButton;
+    private JPanel windowContent;
 
     private Gui() {
-        setLoadRomButtonListener();
-        setPauseButtonListener();
-        setStopButtonListener();
-        setCpuComboBoxListener();
+        createComponents();
+        setComponentsUp();
+        createListeners();
+        createTimers();
 
-        preparePauseButton();
-        prepareStopButton();
-        prepareCpuComboBox();
-        prepareStatusPane();
-        prepareScreen();
-
-        prepareFpsTimer();
+        runner.setDisplay(display);
     }
 
-    /**
-     * Creates the Graphical User Interface (GUI) and keeps it responsive by putting it on Swings
-     * Event Dispatch Thread (EDT).
-     * <p>
-     * see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
-     */
-    public static void render(Runner runner) {
+    public static void show(Runner runner) {
         Gui.runner = runner;
 
+        // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
+        SwingUtilities.invokeLater(Gui::createGui);
+
+        if (runner.getRomPath() != null) {
+            SwingUtilities.invokeLater(runner::run);
+        }
+    }
+
+    public void resetDisplay() {
+        screen.remove(display);
+
+        display = new Display();
+        screen.add(display);
+        runner.setDisplay(display);
+    }
+
+    private static void createGui() {
         try {
-            // Set System L&F
             UIManager.setLookAndFeel(
                     UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            // handle exception
+        } catch (Exception ignored) {
         }
 
-        SwingUtilities.invokeLater(() -> {
-            prepareGui();
-
-            if (runner.getRomPath() != null) {
-                runner.run();
-            }
-        });
-    }
-
-    public void resetFpsTimer() {
-        fpsTimer.stop();
-        prepareFpsTimer();
-    }
-
-    public void resetScreen() {
-        screenArea.remove(screen);
-
-        screen = new Screen();
-        screenArea.add(screen);
-        runner.setScreen(screen);
-    }
-
-    private static JFrame createWindow(JPanel contentPane) {
-        JFrame window = new JFrame("bean8");
-        window.setContentPane(contentPane);
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window = new Window(APPLICATION_TITLE);
+        window.setContentPane(new Gui().windowContent);
         window.pack();
-
-        return window;
     }
 
-    private static void prepareGui() {
-        prepareWindow(
-                createWindow(
-                        new Gui().contentPane
-                )
-        );
-    }
+    private void createComponents() {
+        windowContent = new windowContent();
 
-    private static void prepareWindow(JFrame window) {
-        window.setLocationRelativeTo(null); // centers window
-        window.setResizable(false);
-        window.setVisible(true);
-    }
+        menuPanel = new MenuPanel();
+        windowContent.add(menuPanel, BorderLayout.NORTH);
 
-    private void prepareCpuComboBox() {
-        cpuComboBox.addItem("CPU");
-
-        cpuComboBox.addItem(CpuComboBoxListener.TEXT_SUPER_CHIP);
-        cpuComboBox.addItem(CpuComboBoxListener.TEXT_COSMAC_VIP);
-
-        if (runner.getLegacyMode()) {
-            cpuComboBox.setSelectedItem(CpuComboBoxListener.TEXT_COSMAC_VIP);
-        } else {
-            cpuComboBox.setSelectedItem(CpuComboBoxListener.TEXT_SUPER_CHIP);
-        }
-    }
-
-    private void prepareFpsTimer() {
-        fpsTimer = new Timer(
-                1000,
-                new FpsTimerAction(screen, fpsPane)
-        );
-
-        fpsTimer.start();
-    }
-
-    private void preparePauseButton() {
-        if (!runner.getRomPath().isBlank()) {
-            pauseButton.setEnabled(true);
-        }
-    }
-
-    private void prepareScreen() {
-        screenArea.setPreferredSize(new Dimension(640, 480));
         screen = new Screen();
+        windowContent.add(screen, BorderLayout.CENTER);
 
-        screenArea.add(screen);
-        runner.setScreen(screen);
+        display = new Display();
+        screen.add(display);
+
+        bottomPanel = new BottomPanel();
+        windowContent.add(bottomPanel, BorderLayout.SOUTH);
+
+        loadRomButton = new LoadRomButton();
+        menuPanel.add(loadRomButton);
+
+        pauseButton = new PauseButton();
+        menuPanel.add(pauseButton);
+
+        stopButton = new StopButton();
+        menuPanel.add(stopButton);
+
+        cpuComboBox = new CpuComboBox();
+        menuPanel.add(cpuComboBox);
+
+        statusPane = new StatusPane();
+        bottomPanel.add(statusPane, BorderLayout.WEST);
+
+        fpsPane = new FpsPane();
+        bottomPanel.add(fpsPane, BorderLayout.EAST);
     }
 
-    private void prepareStatusPane() {
-        String romPath = runner.getRomPath();
+    private void createListeners() {
+        loadRomButton.addActionListener(
+                new LoadRomButtonAction(runner, statusPane, pauseButton, stopButton, cpuComboBox)
+        );
 
-        if (romPath != null) {
-            statusPane.setText(
-                    new File(romPath).getName()
-            );
-        }
-    }
+        pauseButton.addActionListener(
+                new PauseButtonAction(runner)
+        );
 
-    private void prepareStopButton() {
-        if (!runner.getRomPath().isBlank()) {
-            stopButton.setEnabled(true);
-        }
-    }
+        stopButton.addActionListener(
+                new StopButtonAction(runner, pauseButton, this, fpsTimer, cpuComboBox)
+        );
 
-    private void setCpuComboBoxListener() {
         cpuComboBox.addItemListener(
                 new CpuComboBoxListener(runner)
         );
     }
 
-    private void setLoadRomButtonListener() {
-        loadRomButton.addActionListener(
-                new LoadRomButtonAction(runner, statusPane, pauseButton, stopButton, cpuComboBox)
+    private void createTimers() {
+        fpsTimer = new Timer(
+                1000,
+                new FpsTimerAction(display, fpsPane)
         );
+
+        fpsTimer.start();
     }
 
-    private void setPauseButtonListener() {
-        pauseButton.addActionListener(
-                new PauseButtonAction(runner)
-        );
-    }
+    private void setComponentsUp() {
+        String romPath = runner.getRomPath();
 
-    private void setStopButtonListener() {
-        stopButton.addActionListener(
-                new StopButtonAction(runner, pauseButton, this, fpsTimer, cpuComboBox)
-        );
-    }
+        if (!romPath.isBlank()) {
+            statusPane.setText(
+                    new File(romPath).getName()
+            );
 
+            pauseButton.setEnabled(true);
+            stopButton.setEnabled(true);
+        }
+
+        if (runner.getLegacyMode()) {
+            cpuComboBox.setSelectedItem(CpuComboBox.CPU_COSMAC_VIP);
+        } else {
+            cpuComboBox.setSelectedItem(CpuComboBox.CPU_SUPER_CHIP);
+        }
+    }
 }

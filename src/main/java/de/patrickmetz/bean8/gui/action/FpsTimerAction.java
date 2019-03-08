@@ -1,12 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 21:34.
+ * Last modified 08.03.19 13:36.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.action;
 
-import de.patrickmetz.bean8.gui.Screen;
+import de.patrickmetz.bean8.gui.component.Display;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -17,11 +17,11 @@ public class FpsTimerAction implements ActionListener {
     private static final String text = "FPS: ";
 
     private final JTextPane fpsPane;
-    private final Screen screen;
+    private final Display screen;
 
     private int updateCount = 0;
 
-    public FpsTimerAction(Screen screen, JTextPane fpsPane) {
+    public FpsTimerAction(Display screen, JTextPane fpsPane) {
         this.screen = screen;
         this.fpsPane = fpsPane;
     }

@@ -1,20 +1,18 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 22:08.
+ * Last modified 08.03.19 13:36.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.action;
 
 import de.patrickmetz.bean8.Runner;
+import de.patrickmetz.bean8.gui.component.CpuComboBox;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
 
 public class CpuComboBoxListener implements java.awt.event.ItemListener {
-
-    public final static String TEXT_COSMAC_VIP = "Cosmac VIP";
-    public final static String TEXT_SUPER_CHIP = "Super Chip";
 
     private final Runner runner;
     private String selectedItem;
@@ -28,9 +26,9 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             Object item = e.getItem();
 
-            if (item == TEXT_COSMAC_VIP) {
+            if (item == CpuComboBox.CPU_COSMAC_VIP) {
                 runner.setLegacyMode(true);
-            } else if (item == TEXT_SUPER_CHIP) {
+            } else if (item == CpuComboBox.CPU_SUPER_CHIP) {
                 runner.setLegacyMode(false);
             } else {
                 JComboBox<String> comboBox = (JComboBox<String>) e.getItemSelectable();

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 07.03.19 20:39.
+ * Last modified 08.03.19 11:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -36,8 +36,7 @@ public class StopButtonAction implements ActionListener {
 
         if (runner.isRunning()) {
             runner.stop();
-            gui.resetScreen();
-            gui.resetFpsTimer();
+            gui.resetDisplay();
 
             stopButton.setEnabled(false);
             pauseButton.setEnabled(false);

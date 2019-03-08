@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 06.03.19 21:22.
+ * Last modified 08.03.19 11:11.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -30,11 +30,11 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
     private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
 
     private final CentralProcessingUnit cpu;
-    private final iScreen screen;
+    private final Display screen;
     private boolean isPaused;
     private String romPath;
 
-    public Emulator(String romPath, int instructionsPerSecond, boolean legacyMode, iScreen screen) {
+    public Emulator(String romPath, int instructionsPerSecond, boolean legacyMode, Display screen) {
         this.romPath = romPath;
         this.screen = screen;
 
