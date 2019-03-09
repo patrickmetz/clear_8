@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 15:59.
+ * Last modified 09.03.19 16:35.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -26,7 +26,6 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener {
                     e.getItem() == CpuComboBox.CPU_VIP
             );
         }
-
     }
 
 }

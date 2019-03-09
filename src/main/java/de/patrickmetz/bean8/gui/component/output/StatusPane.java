@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:17.
+ * Last modified 09.03.19 16:30.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,7 +16,7 @@ import java.io.File;
 
 public class StatusPane extends JTextPane implements RunnerEventListener {
 
-    private static final String FPS = " fps";
+    private static final String TEXT_FPS = " fps";
 
     private String fileName;
     private String fps;
@@ -37,7 +37,8 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
                     new File(runner.getRomPath()).getName()
             );
         } else if (status == RunnerStatus.STOPPED) {
-            setText("");
+            fps = fileName = null;
+            updateText();
         }
     }
 
@@ -48,7 +49,7 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
     }
 
     private void setFileName(String fileName) {
-        if (fileName != null) {
+        if ((fileName != null) && (fileName.indexOf('.') > -1)) {
             this.fileName = fileName.split("\\.")[0].toLowerCase();
         }
 
@@ -59,7 +60,7 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
         String status = "";
 
         if ((fileName != null) && (fps != null)) {
-            status = fileName + " | " + fps + FPS;
+            status = fileName + " | " + fps + TEXT_FPS;
         }
 
         setText(status);

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 14:49.
+ * Last modified 09.03.19 16:28.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,9 +14,11 @@ import javax.swing.*;
 
 public class StopButton extends JButton implements RunnerEventListener {
 
+    private static final String TEXT_STOP = "Stop";
+
     public StopButton() {
         setEnabled(false);
-        setText("Stop");
+        setText(TEXT_STOP);
     }
 
     @Override

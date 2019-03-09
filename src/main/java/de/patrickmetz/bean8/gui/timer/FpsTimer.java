@@ -1,10 +1,10 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 15:29.
+ * Last modified 09.03.19 16:38.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8.gui;
+package de.patrickmetz.bean8.gui.timer;
 
 import de.patrickmetz.bean8.gui.component.output.Display;
 import de.patrickmetz.bean8.gui.component.output.StatusPane;
@@ -18,6 +18,8 @@ import java.awt.event.ActionListener;
 
 public class FpsTimer implements RunnerEventListener {
 
+    private static final int DELAY = 1000;
+
     private final Display display;
     private final StatusPane statusPane;
 
@@ -28,7 +30,7 @@ public class FpsTimer implements RunnerEventListener {
         this.statusPane = statusPane;
 
         timer = new Timer(
-                1000,
+                DELAY,
                 new FpsTimerListener()
         );
     }

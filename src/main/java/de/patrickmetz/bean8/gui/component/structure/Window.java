@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 20:10.
+ * Last modified 09.03.19 16:33.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class Window extends JFrame {
 
-    private static final String APPLICATION_TITLE = "bean8";
+    private static final String APPLICATION_TITLE = "clear8";
 
     public Window() throws HeadlessException {
         setTitle(APPLICATION_TITLE);
@@ -26,4 +26,5 @@ public class Window extends JFrame {
         setLocationRelativeTo(null); // centers window
         setVisible(true);
     }
+
 }

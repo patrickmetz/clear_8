@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:19.
+ * Last modified 09.03.19 16:38.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,6 +15,7 @@ import de.patrickmetz.bean8.gui.listener.CpuComboBoxListener;
 import de.patrickmetz.bean8.gui.listener.LoadRomButtonListener;
 import de.patrickmetz.bean8.gui.listener.PauseButtonListener;
 import de.patrickmetz.bean8.gui.listener.StopButtonListener;
+import de.patrickmetz.bean8.gui.timer.FpsTimer;
 import de.patrickmetz.bean8.runner.Runner;
 import de.patrickmetz.bean8.runner.event.RunnerEvent;
 import de.patrickmetz.bean8.runner.event.RunnerEventListener;
