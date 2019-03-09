@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:14.
+ * Last modified 09.03.19 17:50.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -129,17 +129,22 @@ public class Gui implements RunnerEventListener {
                 new LoadRomButtonListener(runner, fileChooser)
         );
 
-        PauseButtonListener pauseButtonListener = new PauseButtonListener(runner, pauseButton);
-        StopButtonListener stopButtonListener = new StopButtonListener(runner, stopButton);
-        CpuComboBoxListener cpuComboBoxListener = new CpuComboBoxListener(runner, cpuComboBox);
+        PauseButtonListener pauseButtonListener =
+                new PauseButtonListener(runner, pauseButton);
+
+        StopButtonListener stopButtonListener =
+                new StopButtonListener(runner, stopButton);
+
+        CpuComboBoxListener cpuComboBoxListener =
+                new CpuComboBoxListener(runner, cpuComboBox);
 
         pauseButton.addActionListener(pauseButtonListener);
         stopButton.addActionListener(stopButtonListener);
         cpuComboBox.addItemListener(cpuComboBoxListener);
 
-        runner.addListener(cpuComboBoxListener);
         runner.addListener(pauseButtonListener);
         runner.addListener(stopButtonListener);
+        runner.addListener(cpuComboBoxListener);
 
         runner.addListener(statusPane);
         runner.addListener(fpsTimer);
@@ -161,6 +166,7 @@ public class Gui implements RunnerEventListener {
         centerPanel.add(display);
 
         runner.setDisplay(display);
+        fpsTimer.setDisplay(display);
     }
 
 }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:06.
+ * Last modified 09.03.19 17:49.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -20,10 +20,10 @@ public class FpsTimer implements RunnerEventListener {
 
     private static final int DELAY = 1000;
 
-    private final Display display;
     private final StatusPane statusPane;
-
     private final Timer timer;
+
+    private Display display;
 
     public FpsTimer(Display display, StatusPane statusPane) {
         this.display = display;
@@ -44,6 +44,11 @@ public class FpsTimer implements RunnerEventListener {
         } else if (status == RunnerStatus.STOPPED) {
             timer.stop();
         }
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+
     }
 
     private class FpsTimerListener implements ActionListener {

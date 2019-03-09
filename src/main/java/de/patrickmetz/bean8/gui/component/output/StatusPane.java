@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:06.
+ * Last modified 09.03.19 17:45.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -59,8 +59,12 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
     private void updateText() {
         String status = "";
 
-        if ((fileName != null) && (fps != null)) {
-            status = fileName + " | " + fps + TEXT_FPS;
+        if (fileName != null) {
+            status = fileName;
+        }
+
+        if (fps != null) {
+            status += " | " + fps + TEXT_FPS;
         }
 
         setText(status);
