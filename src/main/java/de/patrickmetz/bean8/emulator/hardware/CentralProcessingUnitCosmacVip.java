@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 15:00.
+ * Last modified 09.03.19 17:17.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,12 +12,12 @@ package de.patrickmetz.bean8.emulator.hardware;
  * see:
  * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
-public class CentralProcessingUnitLegacy extends CentralProcessingUnit {
+public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
 
-    CentralProcessingUnitLegacy(AddressRegister addressRegister, CallStack callStack,
-                                DataRegisters dataRegisters, DelayTimer delayTimer,
-                                Graphics graphics, Keyboard keyboard, Memory memory,
-                                ProgramCounter programCounter, SoundTimer soundTimer) {
+    CentralProcessingUnitCosmacVip(AddressRegister addressRegister, CallStack callStack,
+                                   DataRegisters dataRegisters, DelayTimer delayTimer,
+                                   Graphics graphics, Keyboard keyboard, Memory memory,
+                                   ProgramCounter programCounter, SoundTimer soundTimer) {
 
         super(addressRegister, callStack, dataRegisters,
               delayTimer, graphics, keyboard, memory,

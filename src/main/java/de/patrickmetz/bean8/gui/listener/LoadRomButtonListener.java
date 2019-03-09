@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 15:55.
+ * Last modified 09.03.19 17:33.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -23,6 +23,9 @@ public class LoadRomButtonListener implements ActionListener {
         this.fileChooser = fileChooser;
     }
 
+    /**
+     * handles events created by mouse clicks
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         File file = fileChooser.getFile();

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:08.
+ * Last modified 09.03.19 17:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -24,6 +24,9 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerE
         this.cpuComboBox = cpuComboBox;
     }
 
+    /**
+     * handles events created by the runner
+     */
     @Override
     public void handleRunnerEvent(RunnerEvent e) {
         RunnerStatus status = e.getStatus();
@@ -35,10 +38,13 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerE
         }
     }
 
+    /**
+     * handles events created by mouse clicks
+     */
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-            runner.setLegacyMode(
+            runner.setUseVipCpu(
                     e.getItem() == CpuComboBox.CPU_VIP
             );
         }

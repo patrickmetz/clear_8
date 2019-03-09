@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 05.03.19 15:01.
+ * Last modified 09.03.19 17:17.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -323,7 +323,7 @@ public class CentralProcessingUnit {
      * is stored in the carry register.
      * <p>
      *
-     * @see CentralProcessingUnitLegacy#opcode8XY6(int)
+     * @see CentralProcessingUnitCosmacVip#opcode8XY6(int)
      */
     protected void opcode8XY6(int o) {
         int X = X(o);
@@ -337,7 +337,7 @@ public class CentralProcessingUnit {
      * Sets X consecutive memory values to the values of the data
      * registers 0 to X, starting at the registered memory address.
      *
-     * @see CentralProcessingUnitLegacy#opcodeFX55(int)
+     * @see CentralProcessingUnitCosmacVip#opcodeFX55(int)
      */
     protected void opcodeFX55(int o) {
         int X = X(o);
@@ -355,7 +355,7 @@ public class CentralProcessingUnit {
      * Sets data registers 0 to X to consecutive memory values,
      * starting at the registered memory address.
      *
-     * @see CentralProcessingUnitLegacy#opcodeFX65(int)
+     * @see CentralProcessingUnitCosmacVip#opcodeFX65(int)
      */
     protected void opcodeFX65(int o) {
         int X = X(o);

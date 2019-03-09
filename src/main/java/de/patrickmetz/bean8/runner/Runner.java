@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 14:30.
+ * Last modified 09.03.19 17:21.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -19,21 +19,21 @@ public class Runner extends AbstractRunnerEventManager {
     private int instructionsPerSecond;
     private boolean isPaused;
     private boolean isRunning;
-    private boolean legacyMode;
     private String romPath;
+    private boolean useVipCpu;
 
-    public Runner(String romPath, int instructionsPerSecond, boolean legacyMode) {
+    public Runner(String romPath, int instructionsPerSecond, boolean useVipCpu) {
         this.romPath = romPath == null ? "" : romPath;
         this.instructionsPerSecond = instructionsPerSecond;
-        this.legacyMode = legacyMode;
-    }
-
-    public boolean getLegacyMode() {
-        return legacyMode;
+        this.useVipCpu = useVipCpu;
     }
 
     public String getRomPath() {
         return romPath;
+    }
+
+    public boolean getUseVipCpu() {
+        return useVipCpu;
     }
 
     public void run() {
@@ -46,7 +46,7 @@ public class Runner extends AbstractRunnerEventManager {
         emulator = new Emulator(
                 romPath,
                 instructionsPerSecond,
-                legacyMode,
+                useVipCpu,
                 display
         );
 
@@ -63,12 +63,12 @@ public class Runner extends AbstractRunnerEventManager {
         this.instructionsPerSecond = instructionsPerSecond;
     }
 
-    public void setLegacyMode(boolean legacyMode) {
-        this.legacyMode = legacyMode;
-    }
-
     public void setRomPath(String romPath) {
         this.romPath = romPath;
+    }
+
+    public void setUseVipCpu(boolean useVipCpu) {
+        this.useVipCpu = useVipCpu;
     }
 
     public void stop() {

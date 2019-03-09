@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:10.
+ * Last modified 09.03.19 17:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -148,7 +148,7 @@ public class Gui implements RunnerEventListener {
 
     private void initializeComponents() {
         cpuComboBox.setSelectedItem(
-                runner.getLegacyMode() ?
+                runner.getUseVipCpu() ?
                         CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
         );
 

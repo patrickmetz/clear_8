@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:06.
+ * Last modified 09.03.19 17:35.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,11 +25,17 @@ public class StopButtonListener implements ActionListener, RunnerEventListener {
         this.stopButton = stopButton;
     }
 
+    /**
+     * handles events created by mouse clicks
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         runner.stop();
     }
 
+    /**
+     * handles events created by the runner
+     */
     @Override
     public void handleRunnerEvent(RunnerEvent e) {
         RunnerStatus status = e.getStatus();
