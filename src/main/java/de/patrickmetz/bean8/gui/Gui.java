@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 12:07.
+ * Last modified 09.03.19 12:23.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -34,7 +34,7 @@ public class Gui {
     private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
-    private JButton pauseButton;
+    private JToggleButton pauseButton;
     private StatusPane statusPane;
     private JButton stopButton;
     private JPanel topPanel;
@@ -243,22 +243,16 @@ public class Gui {
 
     private class PauseButtonListener implements ActionListener {
 
-        private String TEXT_IS_PAUSED = "Resume";
-        private String TEXT_IS_RUNNING = "Pause";
+        private String TEXT_PAUSE = "Pause";
+        private String TEXT_RESUME = "Resume";
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton button = (JButton) e.getSource();
+            JToggleButton button = (JToggleButton) e.getSource();
 
-            if (runner.isRunning()) {
-                if (runner.isPaused()) {
-                    button.setText(TEXT_IS_RUNNING);
-                } else {
-                    button.setText(TEXT_IS_PAUSED);
-                }
-            } else {
-                return;
-            }
+            button.setText(
+                    button.isSelected() ? TEXT_RESUME : TEXT_PAUSE
+            );
 
             runner.togglePause();
         }
