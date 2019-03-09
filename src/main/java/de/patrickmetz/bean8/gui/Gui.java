@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 23:56.
+ * Last modified 09.03.19 02:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,10 +13,12 @@ import de.patrickmetz.bean8.gui.component.output.Display;
 import de.patrickmetz.bean8.gui.component.output.StatusPane;
 import de.patrickmetz.bean8.gui.component.structure.Window;
 import de.patrickmetz.bean8.gui.component.structure.*;
-import de.patrickmetz.bean8.gui.listener.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
 import java.io.File;
 
 public class Gui {
@@ -122,28 +124,16 @@ public class Gui {
     }
 
     private void createListeners() {
-        loadRomButton.addActionListener(
-                new LoadRomButtonListener(
-                        runner, statusPane, pauseButton, stopButton, cpuComboBox, fileDialog)
-        );
-
-        pauseButton.addActionListener(
-                new PauseButtonListener(runner)
-        );
-
-        stopButton.addActionListener(
-                new StopButtonListener(runner, pauseButton, this, cpuComboBox, statusPane)
-        );
-
-        cpuComboBox.addItemListener(
-                new CpuComboBoxListener(runner)
-        );
+        loadRomButton.addActionListener(new LoadRomButtonListener());
+        pauseButton.addActionListener(new PauseButtonListener());
+        stopButton.addActionListener(new StopButtonListener());
+        cpuComboBox.addItemListener(new CpuComboBoxListener());
     }
 
     private void createTimers() {
         fpsTimer = new Timer(
                 1000,
-                new FpsTimerListener(display, statusPane)
+                new FpsTimerListener()
         );
 
         fpsTimer.start();
@@ -175,6 +165,112 @@ public class Gui {
 
     private void stopTimers() {
         fpsTimer.stop();
+    }
+
+    private class CpuComboBoxListener implements java.awt.event.ItemListener {
+
+        @Override
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                Object item = e.getItem();
+
+                if (item == CpuComboBox.CPU_COSMAC_VIP) {
+                    runner.setLegacyMode(true);
+                } else if (item == CpuComboBox.CPU_SUPER_CHIP) {
+                    runner.setLegacyMode(false);
+                }
+            }
+
+        }
+
+    }
+
+    private class FpsTimerListener implements ActionListener {
+
+        private int updateCount;
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int newUpdateCount = display.getUpdateCount();
+            int fps = newUpdateCount - updateCount;
+            updateCount = newUpdateCount;
+
+            statusPane.setFps("" + fps);
+        }
+
+    }
+
+    private class LoadRomButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            File file = fileDialog.getFile();
+
+            if (file != null) {
+
+                if (!file.getPath().isBlank()) {
+                    if (runner.isRunning()) {
+                        runner.stop();
+                    }
+
+                    runner.setRomPath(file.getPath());
+                    runner.run();
+
+                    pauseButton.setEnabled(true);
+                    stopButton.setEnabled(true);
+                    cpuComboBox.setEnabled(false);
+
+                    statusPane.setFileName(
+                            file.getName()
+                    );
+
+                }
+            }
+        }
+
+    }
+
+    private class StopButtonListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton stopButton = (JButton) e.getSource();
+
+            runner.stop();
+            resetDisplay();
+
+            stopButton.setEnabled(false);
+            pauseButton.setEnabled(false);
+            cpuComboBox.setEnabled(true);
+
+            statusPane.setFps(null);
+            statusPane.setFileName(null);
+        }
+
+    }
+
+    private class PauseButtonListener implements ActionListener {
+
+        private String TEXT_IS_PAUSED = "Resume";
+        private String TEXT_IS_RUNNING = "Pause";
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            JButton button = (JButton) e.getSource();
+
+            if (runner.isRunning()) {
+                if (runner.isPaused()) {
+                    button.setText(TEXT_IS_RUNNING);
+                } else {
+                    button.setText(TEXT_IS_PAUSED);
+                }
+            } else {
+                return;
+            }
+
+            runner.togglePause();
+        }
+
     }
 
 }
