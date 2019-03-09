@@ -1,49 +1,51 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 13:06.
+ * Last modified 09.03.19 16:19.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui;
 
-import de.patrickmetz.bean8.Runner;
-import de.patrickmetz.bean8.gui.component.interaction.FileDialog;
 import de.patrickmetz.bean8.gui.component.interaction.*;
 import de.patrickmetz.bean8.gui.component.output.Display;
 import de.patrickmetz.bean8.gui.component.output.StatusPane;
 import de.patrickmetz.bean8.gui.component.structure.Window;
 import de.patrickmetz.bean8.gui.component.structure.*;
+import de.patrickmetz.bean8.gui.listener.CpuComboBoxListener;
+import de.patrickmetz.bean8.gui.listener.LoadRomButtonListener;
+import de.patrickmetz.bean8.gui.listener.PauseButtonListener;
+import de.patrickmetz.bean8.gui.listener.StopButtonListener;
+import de.patrickmetz.bean8.runner.Runner;
+import de.patrickmetz.bean8.runner.event.RunnerEvent;
+import de.patrickmetz.bean8.runner.event.RunnerEventListener;
+import de.patrickmetz.bean8.runner.event.RunnerStatus;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.io.File;
 
-public class Gui {
+public class Gui implements RunnerEventListener {
 
     private static Runner runner;
     private static Window window;
 
     private JPanel bottomPanel;
     private JPanel centerPanel;
-    private JComboBox<String> cpuComboBox;
+    private CpuComboBox cpuComboBox;
     private Display display;
-    private FileDialog fileDialog;
-    private Timer fpsTimer;
+    private FileChooser fileChooser;
+    private FpsTimer fpsTimer;
     private JButton loadRomButton;
-    private JToggleButton pauseButton;
+    private PauseButton pauseButton;
     private StatusPane statusPane;
-    private JButton stopButton;
+    private StopButton stopButton;
     private JPanel topPanel;
     private JPanel windowContent;
 
     private Gui() {
         createComponents();
+        createFpsTimer();
         createListeners();
         initializeComponents();
-        createFpsTimer();
 
         runner.setDisplay(display);
     }
@@ -54,8 +56,15 @@ public class Gui {
 
         SwingUtilities.invokeLater(Gui::createGui);
 
-        if (runner.getRomPath() != null) {
+        if (!runner.getRomPath().isBlank()) {
             SwingUtilities.invokeLater(runner::run);
+        }
+    }
+
+    @Override
+    public void handleRunnerEvent(RunnerEvent event) {
+        if (event.getStatus() == RunnerStatus.STOPPED) {
+            resetDisplay();
         }
     }
 
@@ -87,7 +96,7 @@ public class Gui {
 
         // interaction
 
-        fileDialog = new FileDialog();
+        fileChooser = new FileChooser();
 
         loadRomButton = new LoadRomButton();
         topPanel.add(loadRomButton);
@@ -111,34 +120,27 @@ public class Gui {
     }
 
     private void createFpsTimer() {
-        fpsTimer = new Timer(
-                1000,
-                new FpsTimerListener()
-        );
-
-        fpsTimer.start();
+        fpsTimer = new FpsTimer(display, statusPane);
     }
 
     private void createListeners() {
-        loadRomButton.addActionListener(new LoadRomButtonListener());
-        pauseButton.addActionListener(new PauseButtonListener());
-        stopButton.addActionListener(new StopButtonListener());
-        cpuComboBox.addItemListener(new CpuComboBoxListener());
+        loadRomButton.addActionListener(
+                new LoadRomButtonListener(runner, fileChooser)
+        );
+
+        pauseButton.addActionListener(new PauseButtonListener(runner));
+        stopButton.addActionListener(new StopButtonListener(runner));
+        cpuComboBox.addItemListener(new CpuComboBoxListener(runner));
+
+        runner.addListener(pauseButton);
+        runner.addListener(stopButton);
+        runner.addListener(cpuComboBox);
+        runner.addListener(statusPane);
+        runner.addListener(fpsTimer);
+        runner.addListener(this);
     }
 
     private void initializeComponents() {
-        String romPath = runner.getRomPath();
-
-        if (!romPath.isBlank()) {
-            statusPane.setFileName(
-                    new File(romPath).getName()
-            );
-
-            pauseButton.setEnabled(true);
-            stopButton.setEnabled(true);
-            cpuComboBox.setEnabled(false);
-        }
-
         cpuComboBox.setSelectedItem(
                 runner.getLegacyMode() ?
                         CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
@@ -153,91 +155,6 @@ public class Gui {
         centerPanel.add(display);
 
         runner.setDisplay(display);
-
-    }
-
-    private class CpuComboBoxListener implements java.awt.event.ItemListener {
-
-        @Override
-        public void itemStateChanged(ItemEvent e) {
-            if (e.getStateChange() == ItemEvent.SELECTED) {
-                runner.setLegacyMode(
-                        e.getItem() == CpuComboBox.CPU_VIP
-                );
-            }
-
-        }
-
-    }
-
-    private class FpsTimerListener implements ActionListener {
-
-        private int updates;
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int newUpdates = display.getUpdateCount();
-            statusPane.setFps("" + (newUpdates - updates));
-            updates = newUpdates;
-        }
-
-    }
-
-    private class LoadRomButtonListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            File file = fileDialog.getFile();
-
-            if (file != null) {
-                runner.stop();
-                runner.setRomPath(file.getPath());
-                runner.run();
-
-                cpuComboBox.setEnabled(false);
-                pauseButton.setEnabled(true);
-                stopButton.setEnabled(true);
-
-                statusPane.setFileName(file.getName());
-                fpsTimer.start();
-            }
-        }
-
-    }
-
-    private class StopButtonListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            runner.stop();
-            resetDisplay();
-
-            cpuComboBox.setEnabled(true);
-            pauseButton.setEnabled(false);
-            ((StopButton) e.getSource()).setEnabled(false);
-
-            statusPane.clear();
-            fpsTimer.stop();
-        }
-
-    }
-
-    private class PauseButtonListener implements ActionListener {
-
-        private String TEXT_PAUSE = "Pause";
-        private String TEXT_RESUME = "Resume";
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JToggleButton button = (JToggleButton) e.getSource();
-
-            button.setText(
-                    button.isSelected() ? TEXT_RESUME : TEXT_PAUSE
-            );
-
-            runner.togglePause();
-        }
-
     }
 
 }

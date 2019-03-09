@@ -1,14 +1,20 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 12:03.
+ * Last modified 09.03.19 16:17.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.component.output;
 
-import javax.swing.*;
+import de.patrickmetz.bean8.runner.Runner;
+import de.patrickmetz.bean8.runner.event.RunnerEvent;
+import de.patrickmetz.bean8.runner.event.RunnerEventListener;
+import de.patrickmetz.bean8.runner.event.RunnerStatus;
 
-public class StatusPane extends JTextPane {
+import javax.swing.*;
+import java.io.File;
+
+public class StatusPane extends JTextPane implements RunnerEventListener {
 
     private static final String FPS = " fps";
 
@@ -20,20 +26,31 @@ public class StatusPane extends JTextPane {
         setOpaque(false);
     }
 
-    public void clear() {
-        setText("");
-    }
+    @Override
+    public void handleRunnerEvent(RunnerEvent event) {
+        RunnerStatus status = event.getStatus();
 
-    public void setFileName(String fileName) {
-        if (fileName != null) {
-            this.fileName = fileName.split("\\.")[0].toLowerCase();
+        if (status == RunnerStatus.STARTED) {
+            Runner runner = (Runner) event.getSource();
+
+            setFileName(
+                    new File(runner.getRomPath()).getName()
+            );
+        } else if (status == RunnerStatus.STOPPED) {
+            setText("");
         }
-
-        updateText();
     }
 
     public void setFps(String fps) {
         this.fps = fps;
+
+        updateText();
+    }
+
+    private void setFileName(String fileName) {
+        if (fileName != null) {
+            this.fileName = fileName.split("\\.")[0].toLowerCase();
+        }
 
         updateText();
     }

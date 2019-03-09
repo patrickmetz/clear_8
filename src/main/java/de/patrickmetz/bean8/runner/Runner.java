@@ -1,15 +1,17 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 11:11.
+ * Last modified 09.03.19 14:30.
  * Copyright (c) 2019. All rights reserved.
  */
 
-package de.patrickmetz.bean8;
+package de.patrickmetz.bean8.runner;
 
 import de.patrickmetz.bean8.emulator.Display;
 import de.patrickmetz.bean8.emulator.Emulator;
+import de.patrickmetz.bean8.runner.event.AbstractRunnerEventManager;
+import de.patrickmetz.bean8.runner.event.RunnerStatus;
 
-public class Runner {
+public class Runner extends AbstractRunnerEventManager {
 
     private Display display;
     private Emulator emulator;
@@ -20,7 +22,7 @@ public class Runner {
     private boolean legacyMode;
     private String romPath;
 
-    Runner(String romPath, int instructionsPerSecond, boolean legacyMode) {
+    public Runner(String romPath, int instructionsPerSecond, boolean legacyMode) {
         this.romPath = romPath == null ? "" : romPath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.legacyMode = legacyMode;
@@ -32,14 +34,6 @@ public class Runner {
 
     public String getRomPath() {
         return romPath;
-    }
-
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    public boolean isRunning() {
-        return isRunning;
     }
 
     public void run() {
@@ -57,6 +51,8 @@ public class Runner {
         );
 
         emulator.execute();
+
+        fireEvent(RunnerStatus.STARTED);
     }
 
     public void setDisplay(Display display) {
@@ -82,6 +78,8 @@ public class Runner {
 
         emulator.cancel(true);
         isRunning = false;
+
+        fireEvent(RunnerStatus.STOPPED);
     }
 
     public void togglePause() {
@@ -91,5 +89,12 @@ public class Runner {
 
         emulator.togglePause();
         isPaused = !isPaused;
+
+        if (isPaused) {
+            fireEvent(RunnerStatus.PAUSED);
+        } else {
+            fireEvent(RunnerStatus.RESUMED);
+        }
     }
+
 }

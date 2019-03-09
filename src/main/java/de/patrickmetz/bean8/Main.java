@@ -1,12 +1,13 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 14:50.
+ * Last modified 09.03.19 13:28.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8;
 
 import de.patrickmetz.bean8.gui.Gui;
+import de.patrickmetz.bean8.runner.Runner;
 
 final public class Main {
 
@@ -28,4 +29,5 @@ final public class Main {
                 legacyMode
         )));
     }
+
 }
