@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 12:23.
+ * Last modified 09.03.19 13:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -31,7 +31,6 @@ public class Gui {
     private JComboBox<String> cpuComboBox;
     private Display display;
     private FileDialog fileDialog;
-    private JTextPane fpsPane;
     private Timer fpsTimer;
     private JButton loadRomButton;
     private JToggleButton pauseButton;
@@ -42,8 +41,8 @@ public class Gui {
 
     private Gui() {
         createComponents();
-        setComponentsUp();
         createListeners();
+        initializeComponents();
         createFpsTimer();
 
         runner.setDisplay(display);
@@ -58,16 +57,6 @@ public class Gui {
         if (runner.getRomPath() != null) {
             SwingUtilities.invokeLater(runner::run);
         }
-    }
-
-    public void resetDisplay() {
-        centerPanel.remove(display);
-
-        display = new Display();
-        centerPanel.add(display);
-
-        runner.setDisplay(display);
-
     }
 
     private static void createGui() {
@@ -137,7 +126,7 @@ public class Gui {
         cpuComboBox.addItemListener(new CpuComboBoxListener());
     }
 
-    private void setComponentsUp() {
+    private void initializeComponents() {
         String romPath = runner.getRomPath();
 
         if (!romPath.isBlank()) {
@@ -150,15 +139,21 @@ public class Gui {
             cpuComboBox.setEnabled(false);
         }
 
-        if (runner.getLegacyMode()) {
-            cpuComboBox.setSelectedItem(
-                    CpuComboBox.CPU_COSMAC_VIP
-            );
-        } else {
-            cpuComboBox.setSelectedItem(
-                    CpuComboBox.CPU_SUPER_CHIP
-            );
-        }
+        cpuComboBox.setSelectedItem(
+                runner.getLegacyMode() ?
+                        CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
+        );
+
+    }
+
+    private void resetDisplay() {
+        centerPanel.remove(display);
+
+        display = new Display();
+        centerPanel.add(display);
+
+        runner.setDisplay(display);
+
     }
 
     private class CpuComboBoxListener implements java.awt.event.ItemListener {
@@ -166,13 +161,9 @@ public class Gui {
         @Override
         public void itemStateChanged(ItemEvent e) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                Object item = e.getItem();
-
-                if (item == CpuComboBox.CPU_COSMAC_VIP) {
-                    runner.setLegacyMode(true);
-                } else if (item == CpuComboBox.CPU_SUPER_CHIP) {
-                    runner.setLegacyMode(false);
-                }
+                runner.setLegacyMode(
+                        e.getItem() == CpuComboBox.CPU_VIP
+                );
             }
 
         }
@@ -181,15 +172,13 @@ public class Gui {
 
     private class FpsTimerListener implements ActionListener {
 
-        private int updateCount;
+        private int updates;
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int newUpdateCount = display.getUpdateCount();
-            int fps = newUpdateCount - updateCount;
-            updateCount = newUpdateCount;
-
-            statusPane.setFps("" + fps);
+            int newUpdates = display.getUpdateCount();
+            statusPane.setFps("" + (newUpdates - updates));
+            updates = newUpdates;
         }
 
     }
@@ -201,22 +190,16 @@ public class Gui {
             File file = fileDialog.getFile();
 
             if (file != null) {
+                runner.stop();
+                runner.setRomPath(file.getPath());
+                runner.run();
 
-                if (!file.getPath().isBlank()) {
-                    if (runner.isRunning()) {
-                        runner.stop();
-                    }
+                cpuComboBox.setEnabled(false);
+                pauseButton.setEnabled(true);
+                stopButton.setEnabled(true);
 
-                    runner.setRomPath(file.getPath());
-                    runner.run();
-
-                    pauseButton.setEnabled(true);
-                    stopButton.setEnabled(true);
-                    cpuComboBox.setEnabled(false);
-
-                    statusPane.setFileName(file.getName());
-                    fpsTimer.start();
-                }
+                statusPane.setFileName(file.getName());
+                fpsTimer.start();
             }
         }
 
@@ -226,17 +209,15 @@ public class Gui {
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            JButton stopButton = (JButton) e.getSource();
-
             runner.stop();
             resetDisplay();
 
-            stopButton.setEnabled(false);
-            pauseButton.setEnabled(false);
             cpuComboBox.setEnabled(true);
+            pauseButton.setEnabled(false);
+            ((StopButton) e.getSource()).setEnabled(false);
 
-            fpsTimer.stop();
             statusPane.clear();
+            fpsTimer.stop();
         }
 
     }
