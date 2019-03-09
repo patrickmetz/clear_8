@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 08.03.19 20:59.
+ * Last modified 09.03.19 12:03.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,6 +18,10 @@ public class StatusPane extends JTextPane {
     public StatusPane() {
         setEditable(false);
         setOpaque(false);
+    }
+
+    public void clear() {
+        setText("");
     }
 
     public void setFileName(String fileName) {

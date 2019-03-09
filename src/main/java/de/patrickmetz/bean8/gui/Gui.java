@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 02:06.
+ * Last modified 09.03.19 12:07.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -44,7 +44,7 @@ public class Gui {
         createComponents();
         setComponentsUp();
         createListeners();
-        createTimers();
+        createFpsTimer();
 
         runner.setDisplay(display);
     }
@@ -68,8 +68,6 @@ public class Gui {
 
         runner.setDisplay(display);
 
-        stopTimers();
-        createTimers();
     }
 
     private static void createGui() {
@@ -123,20 +121,20 @@ public class Gui {
         bottomPanel.add(statusPane);
     }
 
-    private void createListeners() {
-        loadRomButton.addActionListener(new LoadRomButtonListener());
-        pauseButton.addActionListener(new PauseButtonListener());
-        stopButton.addActionListener(new StopButtonListener());
-        cpuComboBox.addItemListener(new CpuComboBoxListener());
-    }
-
-    private void createTimers() {
+    private void createFpsTimer() {
         fpsTimer = new Timer(
                 1000,
                 new FpsTimerListener()
         );
 
         fpsTimer.start();
+    }
+
+    private void createListeners() {
+        loadRomButton.addActionListener(new LoadRomButtonListener());
+        pauseButton.addActionListener(new PauseButtonListener());
+        stopButton.addActionListener(new StopButtonListener());
+        cpuComboBox.addItemListener(new CpuComboBoxListener());
     }
 
     private void setComponentsUp() {
@@ -161,10 +159,6 @@ public class Gui {
                     CpuComboBox.CPU_SUPER_CHIP
             );
         }
-    }
-
-    private void stopTimers() {
-        fpsTimer.stop();
     }
 
     private class CpuComboBoxListener implements java.awt.event.ItemListener {
@@ -220,10 +214,8 @@ public class Gui {
                     stopButton.setEnabled(true);
                     cpuComboBox.setEnabled(false);
 
-                    statusPane.setFileName(
-                            file.getName()
-                    );
-
+                    statusPane.setFileName(file.getName());
+                    fpsTimer.start();
                 }
             }
         }
@@ -243,8 +235,8 @@ public class Gui {
             pauseButton.setEnabled(false);
             cpuComboBox.setEnabled(true);
 
-            statusPane.setFps(null);
-            statusPane.setFileName(null);
+            fpsTimer.stop();
+            statusPane.clear();
         }
 
     }
