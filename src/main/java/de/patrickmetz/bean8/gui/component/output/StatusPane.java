@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:45.
+ * Last modified 09.03.19 18:01.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -48,26 +48,34 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
         updateText();
     }
 
+    private boolean containsDot(String fileName) {
+        return fileName.indexOf('.') > -1;
+    }
+
+    private String lowercaseWithoutExtension(String fileName) {
+        return fileName.split("\\.")[0].toLowerCase();
+    }
+
     private void setFileName(String fileName) {
-        if ((fileName != null) && (fileName.indexOf('.') > -1)) {
-            this.fileName = fileName.split("\\.")[0].toLowerCase();
+        if ((fileName != null) && containsDot(fileName)) {
+            this.fileName = lowercaseWithoutExtension(fileName);
         }
 
         updateText();
     }
 
     private void updateText() {
-        String status = "";
+        String text = "";
 
         if (fileName != null) {
-            status = fileName;
+            text = fileName;
         }
 
         if (fps != null) {
-            status += " | " + fps + TEXT_FPS;
+            text += " | " + fps + TEXT_FPS;
         }
 
-        setText(status);
+        setText(text);
     }
 
 }
