@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:22.
+ * Last modified 09.03.19 17:09.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -28,8 +28,6 @@ public abstract class AbstractRunnerEventManager {
 
         for (RunnerEventListener listener : listenerList) {
             listener.handleRunnerEvent(runnerEvent);
-
-            System.out.println("Sending " + runnerStatus + " to " + listener.getClass());
         }
 
     }

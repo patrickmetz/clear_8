@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:30.
+ * Last modified 09.03.19 17:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -27,11 +27,11 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent event) {
-        RunnerStatus status = event.getStatus();
+    public void handleRunnerEvent(RunnerEvent e) {
+        RunnerStatus status = e.getStatus();
 
         if (status == RunnerStatus.STARTED) {
-            Runner runner = (Runner) event.getSource();
+            Runner runner = (Runner) e.getSource();
 
             setFileName(
                     new File(runner.getRomPath()).getName()

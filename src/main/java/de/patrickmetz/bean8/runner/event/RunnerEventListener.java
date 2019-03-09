@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 14:24.
+ * Last modified 09.03.19 17:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,6 +10,6 @@ import java.util.EventListener;
 
 public interface RunnerEventListener extends EventListener {
 
-    void handleRunnerEvent(RunnerEvent event);
+    void handleRunnerEvent(RunnerEvent e);
 
 }

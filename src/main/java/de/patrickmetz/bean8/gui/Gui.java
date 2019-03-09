@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:38.
+ * Last modified 09.03.19 17:10.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -63,8 +63,8 @@ public class Gui implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent event) {
-        if (event.getStatus() == RunnerStatus.STOPPED) {
+    public void handleRunnerEvent(RunnerEvent e) {
+        if (e.getStatus() == RunnerStatus.STOPPED) {
             resetDisplay();
         }
     }
@@ -129,13 +129,18 @@ public class Gui implements RunnerEventListener {
                 new LoadRomButtonListener(runner, fileChooser)
         );
 
-        pauseButton.addActionListener(new PauseButtonListener(runner));
-        stopButton.addActionListener(new StopButtonListener(runner));
-        cpuComboBox.addItemListener(new CpuComboBoxListener(runner));
+        PauseButtonListener pauseButtonListener = new PauseButtonListener(runner, pauseButton);
+        StopButtonListener stopButtonListener = new StopButtonListener(runner, stopButton);
+        CpuComboBoxListener cpuComboBoxListener = new CpuComboBoxListener(runner, cpuComboBox);
 
-        runner.addListener(pauseButton);
-        runner.addListener(stopButton);
-        runner.addListener(cpuComboBox);
+        pauseButton.addActionListener(pauseButtonListener);
+        stopButton.addActionListener(stopButtonListener);
+        cpuComboBox.addItemListener(cpuComboBoxListener);
+
+        runner.addListener(cpuComboBoxListener);
+        runner.addListener(pauseButtonListener);
+        runner.addListener(stopButtonListener);
+
         runner.addListener(statusPane);
         runner.addListener(fpsTimer);
         runner.addListener(this);

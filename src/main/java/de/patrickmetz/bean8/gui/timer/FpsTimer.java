@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:38.
+ * Last modified 09.03.19 17:06.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,7 +25,7 @@ public class FpsTimer implements RunnerEventListener {
 
     private final Timer timer;
 
-    FpsTimer(Display display, StatusPane statusPane) {
+    public FpsTimer(Display display, StatusPane statusPane) {
         this.display = display;
         this.statusPane = statusPane;
 
@@ -36,8 +36,8 @@ public class FpsTimer implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent event) {
-        RunnerStatus status = event.getStatus();
+    public void handleRunnerEvent(RunnerEvent e) {
+        RunnerStatus status = e.getStatus();
 
         if (status == RunnerStatus.STARTED) {
             timer.start();
