@@ -1,16 +1,17 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:17.
+ * Last modified 10.03.19 18:46.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.emulator.hardware;
 
+import de.patrickmetz.bean8.emulator.Keyboard;
+
 /**
  * CPU implementation using opcodes of the Cosmac VIP
  * <p>
- * see:
- * https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
+ * see: https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
 public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
 
@@ -26,11 +27,9 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
     }
 
     /**
-     * Sets data register X to the value of data register Y,
-     * shifted to the right by one bit.
+     * Sets data register X to the value of data register Y, shifted to the right by one bit.
      * <p>
-     * Stores the least significant bit of X's former value
-     * in the carry register.
+     * Stores the least significant bit of X's former value in the carry register.
      *
      * @see CentralProcessingUnit#opcode8XY6(int)
      */
@@ -48,8 +47,8 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
     }
 
     /**
-     * Sets X consecutive memory values to the values of the data
-     * registers 0 to X, starting at the registered memory address.
+     * Sets X consecutive memory values to the values of the data registers 0 to X, starting at the
+     * registered memory address.
      * <p>
      * <p>
      * Additionally increments address register by X.
@@ -67,8 +66,8 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
     }
 
     /**
-     * Sets data registers 0 to X values to consecutive memory
-     * values beginning at the registered memory address.
+     * Sets data registers 0 to X values to consecutive memory values beginning at the registered
+     * memory address.
      * <p>
      * <p>
      * Additionally increments address register by X.
@@ -84,4 +83,5 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
                 + X(o)
         );
     }
+
 }

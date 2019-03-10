@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:11.
+ * Last modified 10.03.19 18:44.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,6 +8,7 @@ package de.patrickmetz.bean8.runner;
 
 import de.patrickmetz.bean8.emulator.Display;
 import de.patrickmetz.bean8.emulator.Emulator;
+import de.patrickmetz.bean8.emulator.Keyboard;
 import de.patrickmetz.bean8.runner.event.AbstractRunnerEventManager;
 import de.patrickmetz.bean8.runner.event.RunnerState;
 
@@ -19,6 +20,7 @@ public class Runner extends AbstractRunnerEventManager {
     private int instructionsPerSecond;
     private boolean isPaused;
     private boolean isRunning;
+    private Keyboard keyboard;
     private String romPath;
     private boolean useVipCpu;
 
@@ -47,7 +49,8 @@ public class Runner extends AbstractRunnerEventManager {
                 romPath,
                 instructionsPerSecond,
                 useVipCpu,
-                display
+                display,
+                keyboard
         );
 
         emulator.execute();
@@ -61,6 +64,10 @@ public class Runner extends AbstractRunnerEventManager {
 
     public void setInstructionsPerSecond(int instructionsPerSecond) {
         this.instructionsPerSecond = instructionsPerSecond;
+    }
+
+    public void setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
     }
 
     public void setRomPath(String romPath) {

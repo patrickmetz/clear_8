@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:13.
+ * Last modified 10.03.19 18:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -11,10 +11,7 @@ import de.patrickmetz.bean8.gui.component.output.Display;
 import de.patrickmetz.bean8.gui.component.output.StatusPane;
 import de.patrickmetz.bean8.gui.component.structure.Window;
 import de.patrickmetz.bean8.gui.component.structure.*;
-import de.patrickmetz.bean8.gui.listener.CpuComboBoxListener;
-import de.patrickmetz.bean8.gui.listener.LoadRomButtonListener;
-import de.patrickmetz.bean8.gui.listener.PauseButtonListener;
-import de.patrickmetz.bean8.gui.listener.StopButtonListener;
+import de.patrickmetz.bean8.gui.listener.*;
 import de.patrickmetz.bean8.gui.timer.FpsTimer;
 import de.patrickmetz.bean8.runner.Runner;
 import de.patrickmetz.bean8.runner.event.RunnerEvent;
@@ -28,13 +25,13 @@ public class Gui implements RunnerEventListener {
 
     private static Runner runner;
     private static Window window;
-
     private JPanel bottomPanel;
     private JPanel centerPanel;
     private CpuComboBox cpuComboBox;
     private Display display;
     private FileChooser fileChooser;
     private FpsTimer fpsTimer;
+    private KeyListener keyListener;
     private JButton loadRomButton;
     private PauseButton pauseButton;
     private StatusPane statusPane;
@@ -149,6 +146,10 @@ public class Gui implements RunnerEventListener {
         runner.addListener(statusPane);
         runner.addListener(fpsTimer);
         runner.addListener(this);
+
+        keyListener = new KeyListener();
+        window.addKeyListener(keyListener);
+        runner.setKeyboard(keyListener);
     }
 
     private void initializeComponents() {

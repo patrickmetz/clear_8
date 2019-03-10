@@ -1,10 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:17.
+ * Last modified 10.03.19 19:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.emulator.hardware;
+
+import de.patrickmetz.bean8.emulator.Keyboard;
 
 /**
  * CPU implementation using opcodes of the SCHIP (Super Chip)
@@ -707,7 +709,7 @@ public class CentralProcessingUnit {
      * its key code in data register X.
      */
     private void opcodeFX0A(int o) {
-        dataRegisters.write(X(o), keyboard.waitForKey());
+        dataRegisters.write(X(o), keyboard.getNextKeyPressed());
     }
 
     /**
@@ -765,4 +767,5 @@ public class CentralProcessingUnit {
                 "CPU instruction " + Integer.toHexString(instruction & 0xFFFF)
         );
     }
+
 }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:17.
+ * Last modified 10.03.19 18:45.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -34,13 +34,19 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
     private boolean isPaused;
     private String romPath;
 
-    public Emulator(String romPath, int instructionsPerSecond, boolean useVipCpu, Display screen) {
+    public Emulator(
+            String romPath,
+            int instructionsPerSecond,
+            boolean useVipCpu,
+            Display screen,
+            Keyboard keyboard
+    ) {
         this.romPath = romPath;
         this.screen = screen;
 
         INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
 
-        cpu = CentralProcessingUnitFactory.makeCpu(useVipCpu);
+        cpu = CentralProcessingUnitFactory.makeCpu(useVipCpu, keyboard);
     }
 
     @Override
