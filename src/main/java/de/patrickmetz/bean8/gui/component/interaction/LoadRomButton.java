@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:27.
+ * Last modified 10.03.19 15:16.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -15,6 +15,8 @@ public class LoadRomButton extends JButton {
     public LoadRomButton() {
         setEnabled(true);
         setText(TEXT_LOAD_ROM);
+
+        setFocusable(false);
     }
 
 }

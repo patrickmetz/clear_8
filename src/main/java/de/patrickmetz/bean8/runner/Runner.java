@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:21.
+ * Last modified 10.03.19 18:11.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,7 +9,7 @@ package de.patrickmetz.bean8.runner;
 import de.patrickmetz.bean8.emulator.Display;
 import de.patrickmetz.bean8.emulator.Emulator;
 import de.patrickmetz.bean8.runner.event.AbstractRunnerEventManager;
-import de.patrickmetz.bean8.runner.event.RunnerStatus;
+import de.patrickmetz.bean8.runner.event.RunnerState;
 
 public class Runner extends AbstractRunnerEventManager {
 
@@ -52,7 +52,7 @@ public class Runner extends AbstractRunnerEventManager {
 
         emulator.execute();
 
-        fireEvent(RunnerStatus.STARTED);
+        fireEvent(RunnerState.STARTED);
     }
 
     public void setDisplay(Display display) {
@@ -79,7 +79,7 @@ public class Runner extends AbstractRunnerEventManager {
         emulator.cancel(true);
         isRunning = false;
 
-        fireEvent(RunnerStatus.STOPPED);
+        fireEvent(RunnerState.STOPPED);
     }
 
     public void togglePause() {
@@ -91,9 +91,9 @@ public class Runner extends AbstractRunnerEventManager {
         isPaused = !isPaused;
 
         if (isPaused) {
-            fireEvent(RunnerStatus.PAUSED);
+            fireEvent(RunnerState.PAUSED);
         } else {
-            fireEvent(RunnerStatus.RESUMED);
+            fireEvent(RunnerState.RESUMED);
         }
     }
 

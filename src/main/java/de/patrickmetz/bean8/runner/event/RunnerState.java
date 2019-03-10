@@ -1,12 +1,12 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 14:33.
+ * Last modified 10.03.19 16:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.runner.event;
 
-public enum RunnerStatus {
+public enum RunnerState {
     PAUSED,
     RESUMED,
     STARTED,

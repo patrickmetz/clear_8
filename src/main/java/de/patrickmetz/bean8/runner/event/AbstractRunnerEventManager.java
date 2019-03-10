@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:09.
+ * Last modified 10.03.19 16:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -20,7 +20,7 @@ public abstract class AbstractRunnerEventManager {
         listeners.remove(RunnerEventListener.class, listener);
     }
 
-    protected synchronized void fireEvent(RunnerStatus runnerStatus) {
+    protected synchronized void fireEvent(RunnerState runnerStatus) {
         RunnerEvent runnerEvent = new RunnerEvent(this, runnerStatus);
 
         RunnerEventListener[] listenerList =

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 16:47.
+ * Last modified 09.03.19 21:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,6 +16,8 @@ public class PauseButton extends JButton {
     public PauseButton() {
         setEnabled(false);
         setText(TEXT_PAUSE);
+
+        setFocusable(false);
     }
 
 }

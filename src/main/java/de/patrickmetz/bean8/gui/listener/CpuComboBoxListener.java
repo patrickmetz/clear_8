@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:32.
+ * Last modified 10.03.19 16:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,7 +10,7 @@ import de.patrickmetz.bean8.gui.component.interaction.CpuComboBox;
 import de.patrickmetz.bean8.runner.Runner;
 import de.patrickmetz.bean8.runner.event.RunnerEvent;
 import de.patrickmetz.bean8.runner.event.RunnerEventListener;
-import de.patrickmetz.bean8.runner.event.RunnerStatus;
+import de.patrickmetz.bean8.runner.event.RunnerState;
 
 import java.awt.event.ItemEvent;
 
@@ -25,21 +25,21 @@ public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerE
     }
 
     /**
-     * handles events created by the runner
+     * handles runner state changes
      */
     @Override
     public void handleRunnerEvent(RunnerEvent e) {
-        RunnerStatus status = e.getStatus();
+        RunnerState state = e.getState();
 
-        if (status == RunnerStatus.STARTED) {
+        if (state == RunnerState.STARTED) {
             cpuComboBox.setEnabled(false);
-        } else if (status == RunnerStatus.STOPPED) {
+        } else if (state == RunnerState.STOPPED) {
             cpuComboBox.setEnabled(true);
         }
     }
 
     /**
-     * handles events created by mouse clicks
+     * handles mouse clicks
      */
     @Override
     public void itemStateChanged(ItemEvent e) {

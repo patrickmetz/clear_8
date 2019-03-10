@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:32.
+ * Last modified 10.03.19 16:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,7 +25,7 @@ public class PauseButtonListener implements ActionListener, RunnerEventListener 
     }
 
     /**
-     * handles events created by mouse clicks
+     * handles mouse clicks
      */
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -33,12 +33,12 @@ public class PauseButtonListener implements ActionListener, RunnerEventListener 
     }
 
     /**
-     * handles events created by the runner
+     * handles runner states
      */
     @Override
     public void handleRunnerEvent(RunnerEvent e) {
 
-        switch (e.getStatus()) {
+        switch (e.getState()) {
             case STARTED:
                 pauseButton.setEnabled(true);
                 break;

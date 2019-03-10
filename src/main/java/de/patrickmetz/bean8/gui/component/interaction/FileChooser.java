@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 15:55.
+ * Last modified 09.03.19 21:42.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -22,6 +22,8 @@ public class FileChooser extends JFileChooser {
                         FILE_EXTENSION
                 )
         );
+
+        setFocusable(false);
     }
 
     public File getFile() {

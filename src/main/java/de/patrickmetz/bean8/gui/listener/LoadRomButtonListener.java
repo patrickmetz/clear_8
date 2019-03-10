@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:33.
+ * Last modified 10.03.19 16:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -24,7 +24,7 @@ public class LoadRomButtonListener implements ActionListener {
     }
 
     /**
-     * handles events created by mouse clicks
+     * handles mouse clicks
      */
     @Override
     public void actionPerformed(ActionEvent e) {

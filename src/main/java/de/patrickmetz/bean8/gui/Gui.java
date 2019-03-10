@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 17:50.
+ * Last modified 10.03.19 18:13.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -19,7 +19,7 @@ import de.patrickmetz.bean8.gui.timer.FpsTimer;
 import de.patrickmetz.bean8.runner.Runner;
 import de.patrickmetz.bean8.runner.event.RunnerEvent;
 import de.patrickmetz.bean8.runner.event.RunnerEventListener;
-import de.patrickmetz.bean8.runner.event.RunnerStatus;
+import de.patrickmetz.bean8.runner.event.RunnerState;
 
 import javax.swing.*;
 import java.awt.*;
@@ -64,7 +64,7 @@ public class Gui implements RunnerEventListener {
 
     @Override
     public void handleRunnerEvent(RunnerEvent e) {
-        if (e.getStatus() == RunnerStatus.STOPPED) {
+        if (e.getState() == RunnerState.STOPPED) {
             resetDisplay();
         }
     }

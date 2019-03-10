@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 14:35.
+ * Last modified 10.03.19 16:14.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,14 +10,14 @@ import java.util.EventObject;
 
 public class RunnerEvent extends EventObject {
 
-    private RunnerStatus status;
+    private RunnerState status;
 
-    RunnerEvent(Object source, RunnerStatus status) {
+    RunnerEvent(Object source, RunnerState status) {
         super(source);
         this.status = status;
     }
 
-    public RunnerStatus getStatus() {
+    public RunnerState getState() {
         return status;
     }
 
