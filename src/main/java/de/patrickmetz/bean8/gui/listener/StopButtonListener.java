@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 16:14.
+ * Last modified 11.03.19 13:26.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -17,12 +17,12 @@ import java.awt.event.ActionListener;
 
 public class StopButtonListener implements ActionListener, RunnerEventListener {
 
+    private final StopButton button;
     private final Runner runner;
-    private final StopButton stopButton;
 
-    public StopButtonListener(Runner runner, StopButton stopButton) {
+    public StopButtonListener(Runner runner, StopButton button) {
         this.runner = runner;
-        this.stopButton = stopButton;
+        this.button = button;
     }
 
     /**
@@ -41,9 +41,9 @@ public class StopButtonListener implements ActionListener, RunnerEventListener {
         RunnerState state = e.getState();
 
         if (state == RunnerState.STARTED) {
-            stopButton.setEnabled(true);
+            button.setEnabled(true);
         } else if (state == RunnerState.STOPPED) {
-            stopButton.setEnabled(false);
+            button.setEnabled(false);
         }
     }
 

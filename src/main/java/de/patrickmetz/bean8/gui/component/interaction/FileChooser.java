@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 09.03.19 21:42.
+ * Last modified 11.03.19 13:32.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,14 +16,14 @@ public class FileChooser extends JFileChooser {
     private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";
 
     public FileChooser() {
+        setFocusable(false);
+
         setFileFilter(
                 new FileNameExtensionFilter(
                         FILE_EXTENSION_DESCRIPTION,
                         FILE_EXTENSION
                 )
         );
-
-        setFocusable(false);
     }
 
     public File getFile() {

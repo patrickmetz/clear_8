@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:44.
+ * Last modified 11.03.19 12:53.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -28,6 +28,10 @@ public class Runner extends AbstractRunnerEventManager {
         this.romPath = romPath == null ? "" : romPath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.useVipCpu = useVipCpu;
+    }
+
+    public int getInstructionsPerSecond() {
+        return instructionsPerSecond;
     }
 
     public String getRomPath() {

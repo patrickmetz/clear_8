@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 12:27.
+ * Last modified 11.03.19 13:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -28,6 +28,7 @@ public class Gui {
     private Display display;
     private FileChooser fileChooser;
     private FpsTimer fpsTimer;
+    private InstructionsComboBox instructionsComboBox;
     private LoadRomButton loadRomButton;
     private PauseButton pauseButton;
     private StatusPane statusPane;
@@ -107,6 +108,9 @@ public class Gui {
         cpuComboBox = new CpuComboBox();
         topPanel.add(cpuComboBox);
 
+        instructionsComboBox = new InstructionsComboBox();
+        topPanel.add(instructionsComboBox);
+
         // output
 
         display = new Display();
@@ -121,6 +125,9 @@ public class Gui {
     }
 
     private void createListeners() {
+
+        // define listeners
+
         loadRomButton.addActionListener(
                 new LoadRomButtonListener(runner, fileChooser)
         );
@@ -134,23 +141,34 @@ public class Gui {
         CpuComboBoxListener cpuComboBoxListener =
                 new CpuComboBoxListener(runner, cpuComboBox);
 
+        InstructionsComboBoxListener instructionsComboBoxListener =
+                new InstructionsComboBoxListener(runner, instructionsComboBox);
+
         StatusPaneListener statusPaneListener =
                 new StatusPaneListener(statusPane);
 
         GuiListener guiListener = new GuiListener(this);
 
+        // register mouse click listeners
+
         pauseButton.addActionListener(pauseButtonListener);
         stopButton.addActionListener(stopButtonListener);
         cpuComboBox.addItemListener(cpuComboBoxListener);
+        instructionsComboBox.addItemListener(instructionsComboBoxListener);
+
+        // register runner state change listeners
 
         runner.addListener(pauseButtonListener);
         runner.addListener(stopButtonListener);
         runner.addListener(cpuComboBoxListener);
+        runner.addListener(instructionsComboBoxListener);
 
         runner.addListener(statusPaneListener);
         runner.addListener(fpsTimer);
 
         runner.addListener(guiListener);
+
+        // register keyboard events
 
         KeyboardListener keyboardListener = new KeyboardListener();
         window.addKeyListener(keyboardListener);
@@ -163,6 +181,9 @@ public class Gui {
                         CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
         );
 
+        instructionsComboBox.setSelectedItem(
+                runner.getInstructionsPerSecond()
+        );
     }
 
 }

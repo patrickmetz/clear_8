@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 16:14.
+ * Last modified 11.03.19 13:52.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,12 +16,12 @@ import java.awt.event.ActionListener;
 
 public class PauseButtonListener implements ActionListener, RunnerEventListener {
 
-    private final PauseButton pauseButton;
+    private final PauseButton button;
     private final Runner runner;
 
-    public PauseButtonListener(Runner runner, PauseButton pauseButton) {
+    public PauseButtonListener(Runner runner, PauseButton button) {
         this.runner = runner;
-        this.pauseButton = pauseButton;
+        this.button = button;
     }
 
     /**
@@ -40,19 +40,19 @@ public class PauseButtonListener implements ActionListener, RunnerEventListener 
 
         switch (e.getState()) {
             case STARTED:
-                pauseButton.setEnabled(true);
+                button.setEnabled(true);
                 break;
 
             case STOPPED:
-                pauseButton.setEnabled(false);
+                button.setEnabled(false);
                 break;
 
             case PAUSED:
-                pauseButton.setText(PauseButton.TEXT_RESUME);
+                button.setText(PauseButton.TEXT_RESUME);
                 break;
 
             case RESUMED:
-                pauseButton.setText(PauseButton.TEXT_PAUSE);
+                button.setText(PauseButton.TEXT_PAUSE);
                 break;
         }
     }

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 12:28.
+ * Last modified 11.03.19 13:26.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,10 +16,10 @@ import java.io.File;
 
 public class StatusPaneListener implements RunnerEventListener {
 
-    private final StatusPane statusPane;
+    private final StatusPane pane;
 
-    public StatusPaneListener(StatusPane statusPane) {
-        this.statusPane = statusPane;
+    public StatusPaneListener(StatusPane pane) {
+        this.pane = pane;
     }
 
     @Override
@@ -29,12 +29,12 @@ public class StatusPaneListener implements RunnerEventListener {
         if (status == RunnerState.STARTED) {
             Runner runner = (Runner) e.getSource();
 
-            statusPane.updateFileName(
+            pane.updateFileName(
                     new File(runner.getRomPath()).getName()
             );
         } else if (status == RunnerState.STOPPED) {
-            statusPane.updateFileName(null);
-            statusPane.updateFps(null);
+            pane.updateFileName(null);
+            pane.updateFps(null);
         }
     }
 
