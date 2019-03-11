@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 16:14.
+ * Last modified 11.03.19 12:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -58,7 +58,7 @@ public class FpsTimer implements RunnerEventListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             int newUpdates = display.getUpdateCount();
-            statusPane.setFps("" + (newUpdates - updates));
+            statusPane.updateFps("" + (newUpdates - updates));
             updates = newUpdates;
         }
 

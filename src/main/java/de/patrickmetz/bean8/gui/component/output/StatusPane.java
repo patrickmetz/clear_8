@@ -1,20 +1,14 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 16:14.
+ * Last modified 11.03.19 12:05.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.bean8.gui.component.output;
 
-import de.patrickmetz.bean8.runner.Runner;
-import de.patrickmetz.bean8.runner.event.RunnerEvent;
-import de.patrickmetz.bean8.runner.event.RunnerEventListener;
-import de.patrickmetz.bean8.runner.event.RunnerState;
-
 import javax.swing.*;
-import java.io.File;
 
-public class StatusPane extends JTextPane implements RunnerEventListener {
+public class StatusPane extends JTextPane {
 
     private static final String TEXT_FPS = " fps";
 
@@ -28,23 +22,17 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
         setFocusable(false);
     }
 
-    @Override
-    public void handleRunnerEvent(RunnerEvent e) {
-        RunnerState status = e.getState();
-
-        if (status == RunnerState.STARTED) {
-            Runner runner = (Runner) e.getSource();
-
-            setFileName(
-                    new File(runner.getRomPath()).getName()
-            );
-        } else if (status == RunnerState.STOPPED) {
-            fps = fileName = null;
-            updateText();
+    public void updateFileName(String fileName) {
+        if ((fileName != null) && containsDot(fileName)) {
+            this.fileName = lowercaseWithoutExtension(fileName);
+        } else {
+            this.fileName = null;
         }
+
+        updateText();
     }
 
-    public void setFps(String fps) {
+    public void updateFps(String fps) {
         this.fps = fps;
 
         updateText();
@@ -56,14 +44,6 @@ public class StatusPane extends JTextPane implements RunnerEventListener {
 
     private String lowercaseWithoutExtension(String fileName) {
         return fileName.split("\\.")[0].toLowerCase();
-    }
-
-    private void setFileName(String fileName) {
-        if ((fileName != null) && containsDot(fileName)) {
-            this.fileName = lowercaseWithoutExtension(fileName);
-        }
-
-        updateText();
     }
 
     private void updateText() {

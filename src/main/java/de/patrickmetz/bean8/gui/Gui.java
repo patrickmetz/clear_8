@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:42.
+ * Last modified 11.03.19 12:27.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,14 +14,11 @@ import de.patrickmetz.bean8.gui.component.structure.*;
 import de.patrickmetz.bean8.gui.listener.*;
 import de.patrickmetz.bean8.gui.timer.FpsTimer;
 import de.patrickmetz.bean8.runner.Runner;
-import de.patrickmetz.bean8.runner.event.RunnerEvent;
-import de.patrickmetz.bean8.runner.event.RunnerEventListener;
-import de.patrickmetz.bean8.runner.event.RunnerState;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class Gui implements RunnerEventListener {
+public class Gui {
 
     private static Runner runner;
     private static Window window;
@@ -31,8 +28,7 @@ public class Gui implements RunnerEventListener {
     private Display display;
     private FileChooser fileChooser;
     private FpsTimer fpsTimer;
-    private KeyListener keyListener;
-    private JButton loadRomButton;
+    private LoadRomButton loadRomButton;
     private PauseButton pauseButton;
     private StatusPane statusPane;
     private StopButton stopButton;
@@ -59,11 +55,14 @@ public class Gui implements RunnerEventListener {
         }
     }
 
-    @Override
-    public void handleRunnerEvent(RunnerEvent e) {
-        if (e.getState() == RunnerState.STOPPED) {
-            resetDisplay();
-        }
+    public void resetDisplay() {
+        centerPanel.remove(display);
+
+        display = new Display();
+        centerPanel.add(display);
+
+        runner.setDisplay(display);
+        fpsTimer.setDisplay(display);
     }
 
     private static void createGui() {
@@ -135,6 +134,11 @@ public class Gui implements RunnerEventListener {
         CpuComboBoxListener cpuComboBoxListener =
                 new CpuComboBoxListener(runner, cpuComboBox);
 
+        StatusPaneListener statusPaneListener =
+                new StatusPaneListener(statusPane);
+
+        GuiListener guiListener = new GuiListener(this);
+
         pauseButton.addActionListener(pauseButtonListener);
         stopButton.addActionListener(stopButtonListener);
         cpuComboBox.addItemListener(cpuComboBoxListener);
@@ -143,13 +147,14 @@ public class Gui implements RunnerEventListener {
         runner.addListener(stopButtonListener);
         runner.addListener(cpuComboBoxListener);
 
-        runner.addListener(statusPane);
+        runner.addListener(statusPaneListener);
         runner.addListener(fpsTimer);
-        runner.addListener(this);
 
-        keyListener = new KeyListener();
-        window.addKeyListener(keyListener);
-        runner.setKeyboard(keyListener);
+        runner.addListener(guiListener);
+
+        KeyboardListener keyboardListener = new KeyboardListener();
+        window.addKeyListener(keyboardListener);
+        runner.setKeyboard(keyboardListener);
     }
 
     private void initializeComponents() {
@@ -158,16 +163,6 @@ public class Gui implements RunnerEventListener {
                         CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
         );
 
-    }
-
-    private void resetDisplay() {
-        centerPanel.remove(display);
-
-        display = new Display();
-        centerPanel.add(display);
-
-        runner.setDisplay(display);
-        fpsTimer.setDisplay(display);
     }
 
 }

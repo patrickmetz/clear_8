@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 19:33.
+ * Last modified 11.03.19 12:19.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -27,16 +27,16 @@ import java.util.HashMap;
  * A|S|D|F<p>
  * Y|X|C|V<p>
  */
-public class KeyListener extends KeyAdapter implements Keyboard {
+public class KeyboardListener extends KeyAdapter implements Keyboard {
 
     /**
      * maps real keys to the 16 original keys
      */
     private final HashMap<Integer, Integer> keyMap;
 
-    private int pressedKey;
+    private volatile int pressedKey;
 
-    public KeyListener() {
+    public KeyboardListener() {
         keyMap = new HashMap<>(16, 2);
 
         keyMap.put(KeyEvent.VK_1, 0x1);
