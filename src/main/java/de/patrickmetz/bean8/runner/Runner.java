@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 12:53.
+ * Last modified 11.03.19 14:01.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -89,6 +89,7 @@ public class Runner extends AbstractRunnerEventManager {
 
         emulator.cancel(true);
         isRunning = false;
+        isPaused = false;
 
         fireEvent(RunnerState.STOPPED);
     }

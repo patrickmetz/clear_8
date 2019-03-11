@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 13:52.
+ * Last modified 11.03.19 14:07.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -41,18 +41,20 @@ public class PauseButtonListener implements ActionListener, RunnerEventListener 
         switch (e.getState()) {
             case STARTED:
                 button.setEnabled(true);
+                button.usePauseText();
                 break;
 
             case STOPPED:
                 button.setEnabled(false);
+                button.usePauseText();
                 break;
 
             case PAUSED:
-                button.setText(PauseButton.TEXT_RESUME);
+                button.useResumeText();
                 break;
 
             case RESUMED:
-                button.setText(PauseButton.TEXT_PAUSE);
+                button.usePauseText();
                 break;
         }
     }
