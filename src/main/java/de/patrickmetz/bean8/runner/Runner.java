@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 14:01.
+ * Last modified 11.03.19 14:56.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,7 +25,7 @@ public class Runner extends AbstractRunnerEventManager {
     private boolean useVipCpu;
 
     public Runner(String romPath, int instructionsPerSecond, boolean useVipCpu) {
-        this.romPath = romPath == null ? "" : romPath;
+        this.romPath = romPath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.useVipCpu = useVipCpu;
     }
@@ -88,6 +88,7 @@ public class Runner extends AbstractRunnerEventManager {
         }
 
         emulator.cancel(true);
+
         isRunning = false;
         isPaused = false;
 

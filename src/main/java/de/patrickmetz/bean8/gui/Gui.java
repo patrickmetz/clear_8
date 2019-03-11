@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 13:37.
+ * Last modified 11.03.19 14:55.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -22,8 +22,9 @@ public class Gui {
 
     private static Runner runner;
     private static Window window;
-    private JPanel bottomPanel;
-    private JPanel centerPanel;
+
+    private BottomPanel bottomPanel;
+    private CenterPanel centerPanel;
     private CpuComboBox cpuComboBox;
     private Display display;
     private FileChooser fileChooser;
@@ -33,14 +34,15 @@ public class Gui {
     private PauseButton pauseButton;
     private StatusPane statusPane;
     private StopButton stopButton;
-    private JPanel topPanel;
-    private JPanel windowContent;
+    private TopPanel topPanel;
+    private WindowContent windowContent;
 
     private Gui() {
         createComponents();
-        createFpsTimer();
-        createListeners();
         initializeComponents();
+
+        createFpsTimer();
+        setListenersUp();
 
         runner.setDisplay(display);
     }
@@ -51,7 +53,7 @@ public class Gui {
 
         SwingUtilities.invokeLater(Gui::createGui);
 
-        if (!runner.getRomPath().isBlank()) {
+        if (runner.getRomPath() != null) {
             SwingUtilities.invokeLater(runner::run);
         }
     }
@@ -124,9 +126,20 @@ public class Gui {
         fpsTimer = new FpsTimer(display, statusPane);
     }
 
-    private void createListeners() {
+    private void initializeComponents() {
+        cpuComboBox.setSelectedItem(
+                runner.getUseVipCpu() ?
+                        CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
+        );
 
-        // define listeners
+        instructionsComboBox.setSelectedItem(
+                runner.getInstructionsPerSecond()
+        );
+    }
+
+    private void setListenersUp() {
+
+        // create listeners
 
         loadRomButton.addActionListener(
                 new LoadRomButtonListener(runner, fileChooser)
@@ -149,14 +162,14 @@ public class Gui {
 
         GuiListener guiListener = new GuiListener(this);
 
-        // register mouse click listeners
+        // connect mouse click listeners
 
         pauseButton.addActionListener(pauseButtonListener);
         stopButton.addActionListener(stopButtonListener);
         cpuComboBox.addItemListener(cpuComboBoxListener);
         instructionsComboBox.addItemListener(instructionsComboBoxListener);
 
-        // register runner state change listeners
+        // connect runner state change listeners
 
         runner.addListener(pauseButtonListener);
         runner.addListener(stopButtonListener);
@@ -168,22 +181,11 @@ public class Gui {
 
         runner.addListener(guiListener);
 
-        // register keyboard events
+        // create and connect keyboard listener
 
         KeyboardListener keyboardListener = new KeyboardListener();
         window.addKeyListener(keyboardListener);
         runner.setKeyboard(keyboardListener);
-    }
-
-    private void initializeComponents() {
-        cpuComboBox.setSelectedItem(
-                runner.getUseVipCpu() ?
-                        CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
-        );
-
-        instructionsComboBox.setSelectedItem(
-                runner.getInstructionsPerSecond()
-        );
     }
 
 }
