@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:46.
+ * Last modified 11.03.19 15:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,8 +10,8 @@ import de.patrickmetz.bean8.emulator.Keyboard;
 
 public class CentralProcessingUnitFactory {
 
-    public static CentralProcessingUnit makeCpu(boolean legacyMode, Keyboard keyboard) {
-        if (legacyMode) {
+    public static CentralProcessingUnit makeCpu(boolean useVipCpu, Keyboard keyboard) {
+        if (useVipCpu) {
             return new CentralProcessingUnitCosmacVip(
                     new AddressRegister(), new CallStack(), new DataRegisters(),
                     new DelayTimer(), new Graphics(), keyboard, new Memory(),

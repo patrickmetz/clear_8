@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 14:56.
+ * Last modified 12.03.19 12:55.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,15 +14,16 @@ import de.patrickmetz.bean8.runner.event.RunnerState;
 
 public class Runner extends AbstractRunnerEventManager {
 
-    private Display display;
     private Emulator emulator;
+    private Display display;
+    private Keyboard keyboard;
 
     private int instructionsPerSecond;
-    private boolean isPaused;
-    private boolean isRunning;
-    private Keyboard keyboard;
     private String romPath;
     private boolean useVipCpu;
+
+    private boolean isPaused;
+    private boolean isRunning;
 
     public Runner(String romPath, int instructionsPerSecond, boolean useVipCpu) {
         this.romPath = romPath;
@@ -34,15 +35,35 @@ public class Runner extends AbstractRunnerEventManager {
         return instructionsPerSecond;
     }
 
+    public void setInstructionsPerSecond(int instructionsPerSecond) {
+        this.instructionsPerSecond = instructionsPerSecond;
+    }
+
     public String getRomPath() {
         return romPath;
+    }
+
+    public void setRomPath(String romPath) {
+        this.romPath = romPath;
     }
 
     public boolean getUseVipCpu() {
         return useVipCpu;
     }
 
-    public void run() {
+    public void setUseVipCpu(boolean useVipCpu) {
+        this.useVipCpu = useVipCpu;
+    }
+
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
+
+    public void setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
+    }
+
+    public void start() {
         if (isRunning) {
             return;
         }
@@ -62,35 +83,15 @@ public class Runner extends AbstractRunnerEventManager {
         fireEvent(RunnerState.STARTED);
     }
 
-    public void setDisplay(Display display) {
-        this.display = display;
-    }
-
-    public void setInstructionsPerSecond(int instructionsPerSecond) {
-        this.instructionsPerSecond = instructionsPerSecond;
-    }
-
-    public void setKeyboard(Keyboard keyboard) {
-        this.keyboard = keyboard;
-    }
-
-    public void setRomPath(String romPath) {
-        this.romPath = romPath;
-    }
-
-    public void setUseVipCpu(boolean useVipCpu) {
-        this.useVipCpu = useVipCpu;
-    }
-
     public void stop() {
         if (!isRunning) {
             return;
         }
 
-        emulator.cancel(true);
-
         isRunning = false;
         isPaused = false;
+
+        emulator.cancel(true);
 
         fireEvent(RunnerState.STOPPED);
     }
@@ -100,8 +101,9 @@ public class Runner extends AbstractRunnerEventManager {
             return;
         }
 
-        emulator.togglePause();
         isPaused = !isPaused;
+
+        emulator.togglePause();
 
         if (isPaused) {
             fireEvent(RunnerState.PAUSED);

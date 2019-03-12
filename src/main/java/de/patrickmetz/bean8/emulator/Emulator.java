@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 18:45.
+ * Last modified 11.03.19 15:15.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -59,7 +59,6 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         long endOfFrameTime;
 
         while (!isCancelled()) {
-
             // the emulator runs as a separate thread so we use thread safe pausing
             // see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
             synchronized (this) {

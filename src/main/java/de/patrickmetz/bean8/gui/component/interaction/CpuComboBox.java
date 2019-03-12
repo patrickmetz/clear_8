@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 13:42.
+ * Last modified 12.03.19 12:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -23,6 +23,12 @@ public class CpuComboBox extends JComboBox<String> {
 
         addItem(CPU_SCHIP);
         addItem(CPU_VIP);
+    }
+
+    public void updateSelection(boolean value) {
+        super.setSelectedItem(
+                value ? CPU_VIP : CPU_SCHIP
+        );
     }
 
 }

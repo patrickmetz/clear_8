@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 03.03.19 02:36.
+ * Last modified 12.03.19 12:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,26 +16,16 @@ final class Arguments {
     final private CommandLineParser parser;
     private CommandLine commandLine;
 
-    Arguments(String[] arguments, String executableName) {
+    Arguments(String[] arguments, String applicationName) {
         this.arguments = arguments;
-        this.executableName = executableName;
+        this.executableName = applicationName;
 
         parser = new DefaultParser();
         options = new Options();
     }
 
-    void expect(Class<?> type, boolean required, String name, String longName,
-                String description) {
-        Option option = Option.builder(name).longOpt(longName).desc(description)
-                .type(type).hasArg().required(required).build();
-
-        options.addOption(option);
-    }
-
-    boolean toBoolean(String option, boolean defaultValue) {
-        if (commandLine == null) {
-            createCommandLine();
-        }
+    boolean asBoolean(String option, boolean defaultValue) {
+        createCommandLineOnDemand();
 
         if (commandLine.hasOption(option)) {
             return Boolean.parseBoolean(commandLine.getOptionValue(option));
@@ -44,10 +34,8 @@ final class Arguments {
         return defaultValue;
     }
 
-    int toInteger(String option, int defaultValue) {
-        if (commandLine == null) {
-            createCommandLine();
-        }
+    int asInteger(String option, int defaultValue) {
+        createCommandLineOnDemand();
 
         if (commandLine.hasOption(option)) {
             return Integer.parseInt(commandLine.getOptionValue(option));
@@ -56,18 +44,14 @@ final class Arguments {
         return defaultValue;
     }
 
-    int toInteger(String option) {
-        if (commandLine == null) {
-            createCommandLine();
-        }
+    int asInteger(String option) {
+        createCommandLineOnDemand();
 
         return Integer.parseInt(commandLine.getOptionValue(option));
     }
 
-    String toString(String option, String defaultValue) {
-        if (commandLine == null) {
-            createCommandLine();
-        }
+    String asString(String option, String defaultValue) {
+        createCommandLineOnDemand();
 
         if (commandLine.hasOption(option)) {
             commandLine.getOptionValue(option);
@@ -76,20 +60,33 @@ final class Arguments {
         return defaultValue;
     }
 
-    String toString(String option) {
-        if (commandLine == null) {
-            createCommandLine();
-        }
+    String asString(String option) {
+        createCommandLineOnDemand();
 
         return commandLine.getOptionValue(option);
     }
 
-    private void createCommandLine() {
-        try {
-            commandLine = parser.parse(options, arguments);
-        } catch (ParseException e) {
-            showUsageMessage(e.getMessage());
-            System.exit(1);
+    void expect(String name, String longName, String description, Class<?> type, boolean required) {
+        Option option = Option
+                .builder(name)
+                .longOpt(longName)
+                .desc(description)
+                .type(type)
+                .required(required)
+                .hasArg()
+                .build();
+
+        options.addOption(option);
+    }
+
+    private void createCommandLineOnDemand() {
+        if (commandLine == null) {
+            try {
+                commandLine = parser.parse(options, arguments);
+            } catch (ParseException e) {
+                showUsageMessage(e.getMessage());
+                System.exit(1);
+            }
         }
     }
 
@@ -99,4 +96,5 @@ final class Arguments {
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(executableName, options);
     }
+
 }

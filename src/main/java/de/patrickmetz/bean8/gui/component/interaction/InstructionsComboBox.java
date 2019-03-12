@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 13:40.
+ * Last modified 12.03.19 12:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -25,6 +25,10 @@ public class InstructionsComboBox extends JComboBox<Integer> {
         for (int value = MINIMUM; value <= MAXIMUM; value += STEP) {
             addItem(value);
         }
+    }
+
+    public void updateSelection(int value) {
+        super.setSelectedItem(value);
     }
 
 }

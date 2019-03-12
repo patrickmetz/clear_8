@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 11.03.19 14:55.
+ * Last modified 12.03.19 12:46.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -21,6 +21,7 @@ import java.awt.*;
 public class Gui {
 
     private static Runner runner;
+    private static boolean shown;
     private static Window window;
 
     private BottomPanel bottomPanel;
@@ -38,10 +39,10 @@ public class Gui {
     private WindowContent windowContent;
 
     private Gui() {
-        createComponents();
+        constructComponents();
         initializeComponents();
 
-        createFpsTimer();
+        constructFpsTimer();
         setListenersUp();
 
         runner.setDisplay(display);
@@ -49,12 +50,17 @@ public class Gui {
 
     // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
     public static void show(Runner runner) {
+        if (shown) {
+            return;
+        }
+        shown = true;
+
         Gui.runner = runner;
 
         SwingUtilities.invokeLater(Gui::createGui);
 
         if (runner.getRomPath() != null) {
-            SwingUtilities.invokeLater(runner::run);
+            SwingUtilities.invokeLater(runner::start);
         }
     }
 
@@ -80,7 +86,7 @@ public class Gui {
         window.pack();
     }
 
-    private void createComponents() {
+    private void constructComponents() {
         // structure
 
         windowContent = new WindowContent();
@@ -122,17 +128,16 @@ public class Gui {
         bottomPanel.add(statusPane);
     }
 
-    private void createFpsTimer() {
+    private void constructFpsTimer() {
         fpsTimer = new FpsTimer(display, statusPane);
     }
 
     private void initializeComponents() {
-        cpuComboBox.setSelectedItem(
-                runner.getUseVipCpu() ?
-                        CpuComboBox.CPU_VIP : CpuComboBox.CPU_SCHIP
+        cpuComboBox.updateSelection(
+                runner.getUseVipCpu()
         );
 
-        instructionsComboBox.setSelectedItem(
+        instructionsComboBox.updateSelection(
                 runner.getInstructionsPerSecond()
         );
     }
@@ -141,9 +146,8 @@ public class Gui {
 
         // create listeners
 
-        loadRomButton.addActionListener(
-                new LoadRomButtonListener(runner, fileChooser)
-        );
+        LoadRomButtonListener loadRomButtonListener =
+                new LoadRomButtonListener(runner, fileChooser);
 
         PauseButtonListener pauseButtonListener =
                 new PauseButtonListener(runner, pauseButton);
@@ -164,6 +168,7 @@ public class Gui {
 
         // connect mouse click listeners
 
+        loadRomButton.addActionListener(loadRomButtonListener);
         pauseButton.addActionListener(pauseButtonListener);
         stopButton.addActionListener(stopButtonListener);
         cpuComboBox.addItemListener(cpuComboBoxListener);

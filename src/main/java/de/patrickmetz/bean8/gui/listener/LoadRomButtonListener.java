@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 10.03.19 16:12.
+ * Last modified 12.03.19 12:43.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -33,7 +33,7 @@ public class LoadRomButtonListener implements ActionListener {
         if (file != null) {
             runner.stop();
             runner.setRomPath(file.getPath());
-            runner.run();
+            runner.start();
         }
     }
 
