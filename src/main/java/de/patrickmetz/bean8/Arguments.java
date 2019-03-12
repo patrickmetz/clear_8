@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 12:37.
+ * Last modified 12.03.19 13:37.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,18 +10,26 @@ import org.apache.commons.cli.*;
 
 final class Arguments {
 
+    final private String applicationName;
+
     final private String[] arguments;
-    final private String executableName;
     final private Options options;
     final private CommandLineParser parser;
+
     private CommandLine commandLine;
 
     Arguments(String[] arguments, String applicationName) {
         this.arguments = arguments;
-        this.executableName = applicationName;
+        this.applicationName = applicationName;
 
         parser = new DefaultParser();
         options = new Options();
+    }
+
+    boolean asBoolean(String option) {
+        createCommandLineOnDemand();
+
+        return Boolean.parseBoolean(commandLine.getOptionValue(option));
     }
 
     boolean asBoolean(String option, boolean defaultValue) {
@@ -54,7 +62,7 @@ final class Arguments {
         createCommandLineOnDemand();
 
         if (commandLine.hasOption(option)) {
-            commandLine.getOptionValue(option);
+            return commandLine.getOptionValue(option);
         }
 
         return defaultValue;
@@ -66,17 +74,33 @@ final class Arguments {
         return commandLine.getOptionValue(option);
     }
 
-    void expect(String name, String longName, String description, Class<?> type, boolean required) {
+    boolean exists(String argumentName) {
+        createCommandLineOnDemand();
+
+        return commandLine.hasOption(argumentName);
+    }
+
+    void expect(String name,
+                String longName,
+                String description,
+                Class<?> type,
+                boolean required,
+                boolean hasArgument) {
         Option option = Option
                 .builder(name)
                 .longOpt(longName)
                 .desc(description)
                 .type(type)
                 .required(required)
-                .hasArg()
+                .hasArg(hasArgument)
                 .build();
 
         options.addOption(option);
+    }
+
+    void showHelp() {
+        HelpFormatter formatter = new HelpFormatter();
+        formatter.printHelp(applicationName, options);
     }
 
     private void createCommandLineOnDemand() {
@@ -84,17 +108,10 @@ final class Arguments {
             try {
                 commandLine = parser.parse(options, arguments);
             } catch (ParseException e) {
-                showUsageMessage(e.getMessage());
+                showHelp();
                 System.exit(1);
             }
         }
-    }
-
-    private void showUsageMessage(String message) {
-        System.err.println(message);
-
-        HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(executableName, options);
     }
 
 }
