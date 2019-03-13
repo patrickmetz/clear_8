@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,7 +14,7 @@ import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class PauseButtonListener implements ActionListener, RunnerEventListener {
+final public class PauseButtonListener implements ActionListener, RunnerEventListener {
 
     private final PauseButton button;
     private final Runner runner;

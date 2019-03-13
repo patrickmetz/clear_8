@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package de.patrickmetz.clear_8.gui.component.output;
 
 import javax.swing.*;
 
-public class StatusPane extends JTextPane {
+final public class StatusPane extends JTextPane {
 
     private static final String TEXT_FPS = " fps";
 

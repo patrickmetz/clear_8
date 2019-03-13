@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -9,7 +9,7 @@ package de.patrickmetz.clear_8.gui.component.output;
 import javax.swing.*;
 import java.awt.*;
 
-public class Display extends JPanel implements de.patrickmetz.clear_8.emulator.Display {
+final public class Display extends JPanel implements de.patrickmetz.clear_8.emulator.Display {
 
     private final static int SCREEN_HEIGHT = 32;
     private final static int SCREEN_WIDTH = 64;

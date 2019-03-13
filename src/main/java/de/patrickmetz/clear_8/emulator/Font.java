@@ -1,27 +1,27 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
 package de.patrickmetz.clear_8.emulator;
 
-class Font {
+final class Font {
 
     /**
      * These are the fonts used by chip8;
      * spanning from 0 to F.
-     *
+     * <p>
      * Each character is made of five bytes,
      * so there is one character per row.
-     *
+     * <p>
      * Every byte represents one line of a character.
      * The lines are drawn from top to bottom.
-     *
+     * <p>
      * The 1-bits are drawn on screen, the 0-bits
      * are not. So the first line, for example, is
      * a bit depiction of the character 0:<p><p>
-     *
+     * <p>
      * 0xF0  =  1111<p>
      * 0x90  =  1001<p>
      * 0x90  =  1001<p>

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:13.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,39 +16,69 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * The emulator runs on a separate thread, as a so called SwingWorker, in order to keep the GUI
- * responsive while updating the screen
- * <p>
+ * The emulator basically loops forever, or until it is shut down for good.
+ * In order for the GUI to not completely freeze, while waiting for the
+ * emulator to return something, the emulator needs to be put on a separate Thread.
+ * <p><p>
+ * But it needs to be a special thread, ensuring that we only update the
+ * GUI when it's ready to be updated. So we extend SwingWorker and implement
+ * or use the necessary methods:
+ * <p><p>
+ * doInBackground() is the method where a SwingWorker does its work
+ * (the emulation loop in our case).
+ * <p><p>
+ * publish() sends intermediate work results from within doInBackground()
+ * (display data in our case) to the GUI, where they are scheduled for
+ * later processing.
+ * <p><p>
+ * isCancelled() is used from within doInBackground(), to check if the
+ * emulator was shut down from the gui side.
+ * <p><p>
+ * process() is called by the GUI from the outside, whenever it is ready
+ * to be updated with some of the already collected work results.
+ * <p><p>
+ * The weird extends statement (extends SwingWorker...)
+ * is a Java Generic, which in this case means that the doInBackground()
+ * method returns nothing (Void) when it ends, and that the publish() method
+ * returns a two dimensional array of truth values (boolean[][]) which is
+ * send to process().
+ * <p><p>
  * see https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
  */
 final public class Emulator extends SwingWorker<Void, boolean[][]> {
 
     private final int FRAMES_PER_SECOND = 60;
+    private final int FRAME_DURATION = 1000 / FRAMES_PER_SECOND;
     private final int INSTRUCTIONS_PER_FRAME;
-    private final short MEMORY_OFFSET_FONT = 0;
-    private final short MEMORY_OFFSET_ROM = 512;
-    private final int MILLISECONDS_PER_FRAME = 1000 / FRAMES_PER_SECOND;
+
+    private final int MEMORY_OFFSET_FONT = 0;
+    private final int MEMORY_OFFSET_ROM = 512;
 
     private final CentralProcessingUnit cpu;
-    private final Display screen;
+    private final Display display;
+
     private boolean isPaused;
+
     private String romPath;
 
     public Emulator(
             String romPath,
             int instructionsPerSecond,
             boolean useVipCpu,
-            Display screen,
+            Display display,
             Keyboard keyboard
     ) {
         this.romPath = romPath;
-        this.screen = screen;
+        this.display = display;
 
         INSTRUCTIONS_PER_FRAME = instructionsPerSecond / FRAMES_PER_SECOND;
 
         cpu = CentralProcessingUnitFactory.makeCpu(useVipCpu, keyboard);
     }
 
+    /**
+     * the main loop / game loop
+     */
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
         cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
@@ -56,39 +86,30 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         cpu.setProgramCounter(MEMORY_OFFSET_ROM);
 
         long now = System.currentTimeMillis();
-        long endOfFrameTime;
 
         while (!isCancelled()) {
-            // the emulator runs as a separate thread so we use thread safe pausing
-            // see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
-            synchronized (this) {
-                while (isPaused) {
-                    wait();
-                }
-            }
-
-            endOfFrameTime = now + MILLISECONDS_PER_FRAME;
+            waitUntilPauseEnds();
 
             for (int i = 0; i < INSTRUCTIONS_PER_FRAME; i++) {
-                cpu.processNextOpcode();
+                cpu.processNextInstruction();
             }
 
-            cpu.decrementTimers();
+            cpu.updateTimers();
 
-            while (System.currentTimeMillis() < endOfFrameTime) {
-                Thread.sleep(1);
-            }
-
+            waitUntilFrameEnds(now + FRAME_DURATION);
             now = System.currentTimeMillis();
-            publish(cpu.getScreenData());
+
+            // sends screen data to the gui
+            publish(cpu.getDisplayData());
         }
 
         return null;
     }
 
     /**
-     * Reverses the current pause state in a synchronized (thread safe) way, and wakes the thread up
-     * from a possible waiting phase.
+     * thread safe pause toggling
+     * <p>
+     * see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
      */
     public synchronized void togglePause() {
         isPaused = !isPaused;
@@ -96,13 +117,20 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         notify();
     }
 
+    /**
+     * display data is send back here by the GUI,
+     * when it's ready to be updated
+     */
     @Override
-    protected void process(List<boolean[][]> screenData) {
-        for (boolean[][] data : screenData) {
-            screen.update(data);
+    protected void process(List<boolean[][]> displayData) {
+        for (boolean[][] data : displayData) {
+            display.update(data);
         }
     }
 
+    /**
+     * loads a file as an array of bytes
+     */
     private int[] loadFileAsBytes(String filePath) throws IOException {
         File file = new File(filePath);
         int[] data = new int[(int) file.length()];
@@ -116,6 +144,26 @@ final public class Emulator extends SwingWorker<Void, boolean[][]> {
         }
 
         return data;
+    }
+
+    /**
+     * resource friendly waiting until a frame ends
+     */
+    private void waitUntilFrameEnds(long endOfFrameTime) throws InterruptedException {
+        while (System.currentTimeMillis() < endOfFrameTime) {
+            Thread.sleep(1);
+        }
+    }
+
+    /**
+     * thread safe waiting while paused
+     * <p>
+     * see: https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
+     */
+    private synchronized void waitUntilPauseEnds() throws InterruptedException {
+        while (isPaused) {
+            wait();
+        }
     }
 
 }

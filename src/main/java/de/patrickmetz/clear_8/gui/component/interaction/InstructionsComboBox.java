@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package de.patrickmetz.clear_8.gui.component.interaction;
 
 import javax.swing.*;
 
-public class InstructionsComboBox extends JComboBox<Integer> {
+final public class InstructionsComboBox extends JComboBox<Integer> {
 
     private static final int MAXIMUM = 1000;
     private static final int MINIMUM = 100;
@@ -27,7 +27,8 @@ public class InstructionsComboBox extends JComboBox<Integer> {
         }
     }
 
-    public void updateSelection(int value) {
+    @Override
+    public void setSelectedItem(Object value) {
         super.setSelectedItem(value);
     }
 

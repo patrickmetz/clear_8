@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:11.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,7 +18,7 @@ public class CentralProcessingUnitFactory {
                     new ProgramCounter(), new SoundTimer(new Sound())
             );
         } else {
-            return new CentralProcessingUnit(
+            return new CentralProcessingUnitSuperChip(
                     new AddressRegister(), new CallStack(), new DataRegisters(),
                     new DelayTimer(), new Graphics(), keyboard, new Memory(),
                     new ProgramCounter(), new SoundTimer(new Sound())

@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -8,7 +8,7 @@ package de.patrickmetz.clear_8.gui.component.interaction;
 
 import javax.swing.*;
 
-public class CpuComboBox extends JComboBox<String> {
+final public class CpuComboBox extends JComboBox<String> {
 
     public final static String CPU_SCHIP = "Super Chip";
     public final static String CPU_VIP = "Cosmac VIP";
@@ -25,9 +25,9 @@ public class CpuComboBox extends JComboBox<String> {
         addItem(CPU_VIP);
     }
 
-    public void updateSelection(boolean value) {
+    public void setSelectedItem(Object value) {
         super.setSelectedItem(
-                value ? CPU_VIP : CPU_SCHIP
+                (boolean) value ? CPU_VIP : CPU_SCHIP
         );
     }
 

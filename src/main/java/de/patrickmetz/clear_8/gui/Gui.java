@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -18,25 +18,36 @@ import de.patrickmetz.clear_8.runner.Runner;
 import javax.swing.*;
 import java.awt.*;
 
-public class Gui {
+final public class Gui {
 
-    private static Runner runner;
     private static boolean shown;
+    private static Runner runner;
     private static Window window;
 
-    private BottomPanel bottomPanel;
+    // window structure
+
+    private WindowContent windowContent;
+
+    private TopPanel topPanel;
     private CenterPanel centerPanel;
-    private CpuComboBox cpuComboBox;
-    private Display display;
-    private FileChooser fileChooser;
-    private FpsTimer fpsTimer;
-    private InstructionsComboBox instructionsComboBox;
+    private BottomPanel bottomPanel;
+
+    // interactive elements
+
     private LoadRomButton loadRomButton;
     private PauseButton pauseButton;
-    private StatusPane statusPane;
     private StopButton stopButton;
-    private TopPanel topPanel;
-    private WindowContent windowContent;
+
+    private FileChooser fileChooser;
+
+    private CpuComboBox cpuComboBox;
+    private InstructionsComboBox instructionsComboBox;
+
+    // output elements
+
+    private Display display;
+    private FpsTimer fpsTimer;
+    private StatusPane statusPane;
 
     private Gui() {
         constructComponents();
@@ -84,10 +95,12 @@ public class Gui {
         window = new Window();
         window.setContentPane(new Gui().windowContent);
         window.pack();
+        window.setLocationRelativeTo(null); // centers window
+        window.setVisible(true);
     }
 
     private void constructComponents() {
-        // structure
+        // window structure
 
         windowContent = new WindowContent();
 
@@ -100,7 +113,7 @@ public class Gui {
         bottomPanel = new BottomPanel();
         windowContent.add(bottomPanel, BorderLayout.SOUTH);
 
-        // interaction
+        // interactive elements
 
         fileChooser = new FileChooser();
 
@@ -119,7 +132,7 @@ public class Gui {
         instructionsComboBox = new InstructionsComboBox();
         topPanel.add(instructionsComboBox);
 
-        // output
+        // output elements
 
         display = new Display();
         centerPanel.add(display);
@@ -133,18 +146,18 @@ public class Gui {
     }
 
     private void initializeComponents() {
-        cpuComboBox.updateSelection(
+        cpuComboBox.setSelectedItem(
                 runner.getUseVipCpu()
         );
 
-        instructionsComboBox.updateSelection(
+        instructionsComboBox.setSelectedItem(
                 runner.getInstructionsPerSecond()
         );
     }
 
     private void setListenersUp() {
 
-        // create listeners
+        // create mouse and runner listeners
 
         LoadRomButtonListener loadRomButtonListener =
                 new LoadRomButtonListener(runner, fileChooser);

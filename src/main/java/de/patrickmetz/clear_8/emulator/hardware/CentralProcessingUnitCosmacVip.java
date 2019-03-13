@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:13.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -13,7 +13,7 @@ import de.patrickmetz.clear_8.emulator.Keyboard;
  * <p>
  * see: https://github.com/Chromatophore/HP48-Superchip#behavior-and-quirk-investigations
  */
-public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
+class CentralProcessingUnitCosmacVip extends CentralProcessingUnitSuperChip {
 
     CentralProcessingUnitCosmacVip(AddressRegister addressRegister, CallStack callStack,
                                    DataRegisters dataRegisters, DelayTimer delayTimer,
@@ -31,18 +31,18 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
      * <p>
      * Stores the least significant bit of X's former value in the carry register.
      *
-     * @see CentralProcessingUnit#opcode8XY6(int)
+     * @see CentralProcessingUnitSuperChip#opcode8XY6(int)
      */
     @Override
     protected void opcode8XY6(int o) {
         dataRegisters.write(
                 CARRY,
-                dataRegisters.read(X(o)) & LSB
+                dataRegisters.read(x(o)) & LSB
         );
 
         dataRegisters.write(
-                X(o),
-                dataRegisters.read(Y(o)) >> 1
+                x(o),
+                dataRegisters.read(y(o)) >> 1
         );
     }
 
@@ -53,7 +53,7 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
      * <p>
      * Additionally increments address register by X.
      *
-     * @see CentralProcessingUnit#opcodeFX55(int)
+     * @see CentralProcessingUnitSuperChip#opcodeFX55(int)
      */
     @Override
     protected void opcodeFX55(int o) {
@@ -61,7 +61,7 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
 
         addressRegister.write(
                 addressRegister.read()
-                + X(o)
+                + x(o)
         );
     }
 
@@ -72,7 +72,7 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
      * <p>
      * Additionally increments address register by X.
      *
-     * @see CentralProcessingUnit#opcodeFX65(int)
+     * @see CentralProcessingUnitSuperChip#opcodeFX65(int)
      */
     @Override
     protected void opcodeFX65(int o) {
@@ -80,7 +80,7 @@ public class CentralProcessingUnitCosmacVip extends CentralProcessingUnit {
 
         addressRegister.write(
                 addressRegister.read()
-                + X(o)
+                + x(o)
         );
     }
 

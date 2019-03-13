@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -12,16 +12,19 @@ import de.patrickmetz.clear_8.emulator.Keyboard;
 import de.patrickmetz.clear_8.runner.event.AbstractRunnerEventManager;
 import de.patrickmetz.clear_8.runner.event.RunnerState;
 
-public class Runner extends AbstractRunnerEventManager {
+final public class Runner extends AbstractRunnerEventManager {
 
-    private Emulator emulator;
+    // input and output
     private Display display;
     private Keyboard keyboard;
 
+    // emulator and its arguments
+    private Emulator emulator;
     private int instructionsPerSecond;
     private String romPath;
     private boolean useVipCpu;
 
+    // internal state of the runner
     private boolean isPaused;
     private boolean isRunning;
 

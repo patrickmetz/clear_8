@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -27,7 +27,7 @@ import java.util.HashMap;
  * A|S|D|F<p>
  * Y|X|C|V<p>
  */
-public class KeyboardListener extends KeyAdapter implements Keyboard {
+final public class KeyboardListener extends KeyAdapter implements Keyboard {
 
     /**
      * maps real keys to the 16 original keys

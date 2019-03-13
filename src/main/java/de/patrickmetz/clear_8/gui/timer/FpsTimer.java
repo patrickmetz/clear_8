@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -16,7 +16,7 @@ import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class FpsTimer implements RunnerEventListener {
+final public class FpsTimer implements RunnerEventListener {
 
     private static final int DELAY = 1000;
 
@@ -51,7 +51,7 @@ public class FpsTimer implements RunnerEventListener {
 
     }
 
-    private class FpsTimerListener implements ActionListener {
+    final private class FpsTimerListener implements ActionListener {
 
         private int updates;
 

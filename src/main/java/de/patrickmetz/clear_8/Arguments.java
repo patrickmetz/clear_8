@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -74,7 +74,7 @@ final class Arguments {
         return commandLine.getOptionValue(option);
     }
 
-    boolean exists(String argumentName) {
+    boolean given(String argumentName) {
         createCommandLineOnDemand();
 
         return commandLine.hasOption(argumentName);
@@ -84,14 +84,13 @@ final class Arguments {
                 String longName,
                 String description,
                 Class<?> type,
-                boolean required,
                 boolean hasArgument) {
         Option option = Option
                 .builder(name)
                 .longOpt(longName)
                 .desc(description)
                 .type(type)
-                .required(required)
+                .required(false)
                 .hasArg(hasArgument)
                 .build();
 

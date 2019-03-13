@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -14,7 +14,7 @@ import de.patrickmetz.clear_8.runner.event.RunnerState;
 
 import java.awt.event.ItemEvent;
 
-public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerEventListener {
+final public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerEventListener {
 
     private final CpuComboBox comboBox;
     private final Runner runner;

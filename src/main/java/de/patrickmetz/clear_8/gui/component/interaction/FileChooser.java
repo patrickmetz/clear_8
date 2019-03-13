@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -10,7 +10,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
-public class FileChooser extends JFileChooser {
+final public class FileChooser extends JFileChooser {
 
     private static final String FILE_EXTENSION = "ch8";
     private static final String FILE_EXTENSION_DESCRIPTION = "chip 8 ROMs (.ch8)";

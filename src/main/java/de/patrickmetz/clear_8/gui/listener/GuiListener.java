@@ -1,6 +1,6 @@
 /*
  * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 12.03.19 13:59.
+ * Last modified 13.03.19 15:12.
  * Copyright (c) 2019. All rights reserved.
  */
 
@@ -11,7 +11,7 @@ import de.patrickmetz.clear_8.runner.event.RunnerEvent;
 import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
 import de.patrickmetz.clear_8.runner.event.RunnerState;
 
-public class GuiListener implements RunnerEventListener {
+final public class GuiListener implements RunnerEventListener {
 
     private final Gui gui;
 
