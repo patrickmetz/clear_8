@@ -1,45 +1,52 @@
-![clear_8](src/main/java/de/patrickmetz/clear_8/resources/logo.png)
+![clear_8](assets/logo.png)
 
-An interpreting emulator for [chip8](https://en.wikipedia.org/wiki/CHIP-8) - written in Java.
+An object-oriented emulator, with a **clea**-n and **r**-eadable architecture, that interpretes and runs [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) games - written in Java and Swing.
+
+![clear_8](assets/demo.gif)
 
 About
 -----
+**This is still a bug-ridden hobby project, updated at a leisurely pace, that is going to end up really nice some day :-)**
 
-Its focus (besides emulating games in a fast, correct and convenient manner)  
-is on using **clea**n and **r**eadable software components, which can be easily  
-understood, maintained and extended.
+I stomped it out of the ground three years ago, almost forgot about it, just blew the dust off of it, and now turned it into my weekend project.
 
-It can be examined hands-on by emulation development beginners, helping  
-them grasp how emulators re-create hardware and how everything can be  
-connected to a graphical user interface and controlled from the outside.
-
-This is achieved by
-
-  - striving for [separation of concerns](https://en.wikipedia.org/wiki/Separation_of_concerns), high [cohesion](https://en.wikipedia.org/wiki/Cohesion_(computer_science)) and low [coupling](https://en.wikipedia.org/wiki/Coupling_(computer_programming))
-  -   meaningfully named classes, interfaces, methods and variables
-   
-  - helpful embedded documentation, placed in order to provide  
-  additional insights
+Goals
+-----
+* **clea**n and **r**eadable architecture, which can be easily understood, maintained and extended
+* correct implementation of Cosmac VIP and SuperChip instruction sets
+* extensive set of unit tests
+* graphical debugger of current memory and cpu state, etc.
 
 
+Public domain games
+-------------------
 
-Helpful resources
------------------
+https://www.zophar.net/pdroms/chip8.html
 
-https://en.wikipedia.org/wiki/CHIP-8
+Usage
+-----
+1. > java -jar ./dist/clear_8.jar
+2. Click "Load ROM" to select and load a game
 
-http://www.mattmik.com/files/chip8/mastering/chip8.html
+Controls
+--------
 
-https://github.com/mattmikolay/chip-8/wiki/CHIP%E2%80%908-Technical-Reference
+The original keys
 
-http://www.codeslinger.co.uk/pages/projects/chip8.html
+* 1 | 2 | 3 | C
+* 4 | 5 | 6 | D
+* 7 | 8 | 9 | E
+* A | 0 | B | F
 
-http://devernay.free.fr/hacks/chip8/C8TECH10.HTM
+are mapped to
 
-https://github.com/Chromatophore/HP48-Superchip\#behavior-and-quirk-investigations
+* 1 | 2 | 3 | 4
+* Q | W | E | R
+* A | S | D | F
+* Y | X | C | V
 
-http://www.koonsolo.com/news/dewitters-gameloop/
+for german keyboards :P
 
-https://gafferongames.com/post/fix_your_timestep/
 
-http://emulator101.com/
+
+

@@ -1,9 +1,3 @@
-/*
- * Developed by Patrick Metz <patrickmetz@web.de>.
- * Last modified 13.03.19 15:13.
- * Copyright (c) 2019. All rights reserved.
- */
-
 package de.patrickmetz.clear_8.emulator;
 
 import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnit;
