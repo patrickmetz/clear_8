@@ -10,6 +10,7 @@ Table of Contents
 * [About](#about)
 * [Goals](#goals)
 * [Usage](#usage)
+* [Command Line Options](#command-line-options)
 * [Controls](#controls)
 * [Public Domain Games](#public-domain-games)
 
