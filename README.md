@@ -39,6 +39,18 @@ Usage
 1. > java -jar ./dist/clear_8.jar
 2. Click "Load ROM" to select and load a game
 
+Command line options
+--------------------
+
+> **-h, --help** : Shows how to use the command line options.
+
+> **-i, --ips** _number_ :   CPU instructions per second. (100, 200, ...)
+
+> **-r, --rom** _path_ :  File path of a ROM file. (C:\example\filename)
+
+> **-v,--vip** _true/false_ :   Use Cosmac VIP CPU if true; or Super Chip CPU otherwise.
+(true / false)
+
 Controls
 --------
 

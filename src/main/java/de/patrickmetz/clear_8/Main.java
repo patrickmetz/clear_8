@@ -4,35 +4,36 @@ import de.patrickmetz.clear_8.gui.Gui;
 import de.patrickmetz.clear_8.runner.Runner;
 
 final public class Main {
+    private static final String HELP_HELP = "Shows how to use the command line options.";
+    private static final String HELP_IPS  = "CPU instructions per second. (100, 200, ...)";
+    private static final String HELP_ROM  = "File path of a ROM file. (C:\\example\\filename)";
+    private static final String HELP_VIP  = "Use Cosmac VIP CPU if true; or Super Chip CPU otherwise. (true / false)";
 
-    private static final String APPLICATION_NAME = "clear_8";
+    private static final String HELP = "help";
+    private static final String IPS  = "ips";
+    private static final String ROM  = "rom";
+    private static final String VIP  = "vip";
 
-    private static final int DEFAULT_IPS = 500;
+    private static final int     DEFAULT_IPS = 500;
     private static final boolean DEFAULT_VIP = false;
 
-    private static final String DESCRIPTION_HELP = "Shows how to use the command line options.";
-    private static final String DESCRIPTION_IPS = "CPU instructions per second. (100, 200, ...)";
-    private static final String DESCRIPTION_ROM = "File path of a ROM file. (C:\\example\\rom.ch8)";
-    private static final String DESCRIPTION_VIP = "Use VIP CPU; SCHIP CPU otherwise. (true / false)";
-
     public static void main(String[] args) {
-        Arguments arguments = new Arguments(args, APPLICATION_NAME);
+        CliFacade cli = new CliFacade(args);
 
-        arguments.expect("h", "help", DESCRIPTION_HELP, String.class, false);
-        arguments.expect("r", "rom", DESCRIPTION_ROM, String.class, true);
-        arguments.expect("i", "ips", DESCRIPTION_IPS, Integer.class, true);
-        arguments.expect("v", "vip", DESCRIPTION_VIP, Boolean.class, true);
+        cli.expect("h", HELP, HELP_HELP, String.class, false);
+        cli.expect("i", IPS, HELP_IPS, Integer.class, true);
+        cli.expect("r", ROM, HELP_ROM, String.class, true);
+        cli.expect("v", VIP, HELP_VIP, Boolean.class, true);
 
-        if (arguments.given("help")) {
-            arguments.showHelp();
+        if (cli.given(HELP)) {
+            cli.printHelp();
             return;
         }
 
-        Gui.show((new Runner(
-                arguments.asString("rom"),
-                arguments.asInteger("ips", DEFAULT_IPS),
-                arguments.asBoolean("vip", DEFAULT_VIP)
-        )));
+        Gui.show(new Runner(
+                cli.get(ROM),
+                cli.get(IPS, DEFAULT_IPS),
+                cli.get(VIP, DEFAULT_VIP)
+        ));
     }
-
 }
