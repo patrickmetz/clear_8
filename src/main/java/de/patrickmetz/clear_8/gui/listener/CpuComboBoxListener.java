@@ -1,28 +1,25 @@
 package de.patrickmetz.clear_8.gui.listener;
 
+import de.patrickmetz.clear_8.emulator.Emulator;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.event.RunnerState;
 import de.patrickmetz.clear_8.gui.component.interaction.CpuComboBox;
-import de.patrickmetz.clear_8.runner.Runner;
-import de.patrickmetz.clear_8.runner.event.RunnerEvent;
-import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
-import de.patrickmetz.clear_8.runner.event.RunnerState;
 
 import java.awt.event.ItemEvent;
 
-final public class CpuComboBoxListener implements java.awt.event.ItemListener, RunnerEventListener {
+final public class CpuComboBoxListener implements java.awt.event.ItemListener, EmulatorEventListener {
 
     private final CpuComboBox comboBox;
-    private final Runner runner;
+    private final Emulator    emulator;
 
-    public CpuComboBoxListener(Runner runner, CpuComboBox comboBox) {
-        this.runner = runner;
+    public CpuComboBoxListener(Emulator emulator, CpuComboBox comboBox) {
+        this.emulator = emulator;
         this.comboBox = comboBox;
     }
 
-    /**
-     * handles runner state changes
-     */
     @Override
-    public void handleRunnerEvent(RunnerEvent e) {
+    public void handleRunnerEvent(EmulatorEvent e) {
         RunnerState state = e.getState();
 
         if (state == RunnerState.STARTED) {
@@ -38,7 +35,7 @@ final public class CpuComboBoxListener implements java.awt.event.ItemListener, R
     @Override
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-            runner.setUseVipCpu(
+            emulator.setUseVipCpu(
                     e.getItem() == CpuComboBox.CPU_VIP
             );
         }

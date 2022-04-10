@@ -1,11 +1,11 @@
 package de.patrickmetz.clear_8.gui.listener;
 
+import de.patrickmetz.clear_8.emulator.event.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.event.RunnerState;
 import de.patrickmetz.clear_8.gui.Gui;
-import de.patrickmetz.clear_8.runner.event.RunnerEvent;
-import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
-import de.patrickmetz.clear_8.runner.event.RunnerState;
 
-final public class GuiListener implements RunnerEventListener {
+final public class GuiListener implements EmulatorEventListener {
 
     private final Gui gui;
 
@@ -14,7 +14,7 @@ final public class GuiListener implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent e) {
+    public void handleRunnerEvent(EmulatorEvent e) {
         if (e.getState() == RunnerState.STOPPED) {
             gui.resetDisplay();
         }

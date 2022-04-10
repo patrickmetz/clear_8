@@ -6,7 +6,7 @@
 
 package de.patrickmetz.clear_8.emulator.hardware;
 
-import de.patrickmetz.clear_8.gui.listener.KeyboardListener;
+import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -19,9 +19,9 @@ class CentralProcessingUnitSuperChipTest {
     private CentralProcessingUnitSuperChip cpu;
     private DataRegisters dataRegisters;
     private DelayTimer delayTimer;
-    private Graphics graphics;
-    private KeyboardListener keyboard;
-    private Memory memory;
+    private Graphics     graphics;
+    private KeyboardImpl keyboard;
+    private Memory       memory;
     private ProgramCounter programCounter;
     private SoundTimer soundTimer;
 
@@ -81,7 +81,7 @@ class CentralProcessingUnitSuperChipTest {
         dataRegisters = new DataRegisters();
         delayTimer = new DelayTimer();
         graphics = new Graphics();
-        keyboard = new KeyboardListener();
+        keyboard = new KeyboardImpl();
         memory = new Memory();
         programCounter = new ProgramCounter();
         soundTimer = new SoundTimer(new Sound());

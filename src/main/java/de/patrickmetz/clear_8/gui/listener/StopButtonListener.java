@@ -1,37 +1,27 @@
 package de.patrickmetz.clear_8.gui.listener;
 
+import de.patrickmetz.clear_8.emulator.Emulator;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.event.RunnerState;
 import de.patrickmetz.clear_8.gui.component.interaction.StopButton;
-import de.patrickmetz.clear_8.runner.Runner;
-import de.patrickmetz.clear_8.runner.event.RunnerEvent;
-import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
-import de.patrickmetz.clear_8.runner.event.RunnerState;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-final public class StopButtonListener implements ActionListener, RunnerEventListener {
+final public class StopButtonListener implements ActionListener, EmulatorEventListener {
 
     private final StopButton button;
-    private final Runner runner;
+    private final Emulator   emulator;
 
-    public StopButtonListener(Runner runner, StopButton button) {
-        this.runner = runner;
+    public StopButtonListener(Emulator emulator, StopButton button) {
+        this.emulator = emulator;
         this.button = button;
     }
 
-    /**
-     * handles mouse clicks
-     */
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        runner.stop();
-    }
 
-    /**
-     * handles runner state changes
-     */
     @Override
-    public void handleRunnerEvent(RunnerEvent e) {
+    public void handleRunnerEvent(EmulatorEvent e) {
         RunnerState state = e.getState();
 
         if (state == RunnerState.STARTED) {
@@ -41,4 +31,11 @@ final public class StopButtonListener implements ActionListener, RunnerEventList
         }
     }
 
+    /**
+     * handles mouse clicks
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        emulator.stop();
+    }
 }

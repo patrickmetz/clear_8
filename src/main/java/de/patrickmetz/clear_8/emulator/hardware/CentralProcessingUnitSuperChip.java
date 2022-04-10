@@ -1,6 +1,6 @@
 package de.patrickmetz.clear_8.emulator.hardware;
 
-import de.patrickmetz.clear_8.emulator.Keyboard;
+import de.patrickmetz.clear_8.emulator.input.Keyboard;
 
 /**
  * CPU implementation using opcodes of the SCHIP (Super Chip)
@@ -699,7 +699,7 @@ class CentralProcessingUnitSuperChip implements CentralProcessingUnit {
      * its key code in data register X.
      */
     private void opcodeFX0A(int o) {
-        dataRegisters.write(x(o), keyboard.getNextKeyPressed());
+        dataRegisters.write(x(o), keyboard.getNextPressedKey());
     }
 
     /**

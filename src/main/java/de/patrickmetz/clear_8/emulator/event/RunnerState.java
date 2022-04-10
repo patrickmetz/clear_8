@@ -1,4 +1,4 @@
-package de.patrickmetz.clear_8.runner.event;
+package de.patrickmetz.clear_8.emulator.event;
 
 public enum RunnerState {
     PAUSED,

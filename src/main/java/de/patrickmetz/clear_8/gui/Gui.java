@@ -1,46 +1,47 @@
 package de.patrickmetz.clear_8.gui;
 
+import de.patrickmetz.clear_8.emulator.Emulator;
+import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
 import de.patrickmetz.clear_8.gui.component.interaction.*;
-import de.patrickmetz.clear_8.gui.component.output.Display;
+import de.patrickmetz.clear_8.gui.component.output.DisplayImpl;
 import de.patrickmetz.clear_8.gui.component.output.StatusPane;
 import de.patrickmetz.clear_8.gui.component.structure.Window;
 import de.patrickmetz.clear_8.gui.component.structure.*;
 import de.patrickmetz.clear_8.gui.listener.*;
 import de.patrickmetz.clear_8.gui.timer.FpsTimer;
-import de.patrickmetz.clear_8.runner.Runner;
 
 import javax.swing.*;
 import java.awt.*;
 
 final public class Gui {
 
-    private static boolean shown;
-    private static Runner runner;
-    private static Window window;
+    private static boolean  isShown;
+    private static Emulator emulator;
+    private static Window   window;
 
     // window structure
 
     private WindowContent windowContent;
 
-    private TopPanel topPanel;
+    private TopPanel    topPanel;
     private CenterPanel centerPanel;
     private BottomPanel bottomPanel;
 
     // interactive elements
 
     private LoadRomButton loadRomButton;
-    private PauseButton pauseButton;
-    private StopButton stopButton;
+    private PauseButton   pauseButton;
+    private StopButton    stopButton;
 
     private FileChooser fileChooser;
 
-    private CpuComboBox cpuComboBox;
+    private CpuComboBox          cpuComboBox;
     private InstructionsComboBox instructionsComboBox;
 
     // output elements
 
-    private Display display;
-    private FpsTimer fpsTimer;
+    private DisplayImpl display;
+    private FpsTimer    fpsTimer;
     private StatusPane statusPane;
 
     private Gui() {
@@ -50,32 +51,32 @@ final public class Gui {
         constructFpsTimer();
         setListenersUp();
 
-        runner.setDisplay(display);
+        emulator.setDisplay(display);
     }
 
     // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
-    public static void show(Runner runner) {
-        if (shown) {
+    public static void show(Emulator emulator) {
+        if (isShown) {
             return;
         }
-        shown = true;
+        isShown = true;
 
-        Gui.runner = runner;
+        Gui.emulator = emulator;
 
         SwingUtilities.invokeLater(Gui::createGui);
 
-        if (runner.getRomPath() != null) {
-            SwingUtilities.invokeLater(runner::start);
+        if (Gui.emulator.getGamePath() != null) {
+            SwingUtilities.invokeLater(Gui.emulator::start);
         }
     }
 
     public void resetDisplay() {
         centerPanel.remove(display);
 
-        display = new Display();
+        display = new DisplayImpl();
         centerPanel.add(display);
 
-        runner.setDisplay(display);
+        emulator.setDisplay(display);
         fpsTimer.setDisplay(display);
     }
 
@@ -128,7 +129,7 @@ final public class Gui {
 
         // output elements
 
-        display = new Display();
+        display = new DisplayImpl();
         centerPanel.add(display);
 
         statusPane = new StatusPane();
@@ -141,32 +142,32 @@ final public class Gui {
 
     private void initializeComponents() {
         cpuComboBox.setSelectedItem(
-                runner.getUseVipCpu()
+                emulator.getUseVipCpu()
         );
 
         instructionsComboBox.setSelectedItem(
-                runner.getInstructionsPerSecond()
+                emulator.getInstructionsPerSecond()
         );
     }
 
     private void setListenersUp() {
 
-        // create mouse and runner listeners
+        // create all listeners
 
         LoadRomButtonListener loadRomButtonListener =
-                new LoadRomButtonListener(runner, fileChooser);
+                new LoadRomButtonListener(emulator, fileChooser);
 
         PauseButtonListener pauseButtonListener =
-                new PauseButtonListener(runner, pauseButton);
+                new PauseButtonListener(emulator, pauseButton);
 
         StopButtonListener stopButtonListener =
-                new StopButtonListener(runner, stopButton);
+                new StopButtonListener(emulator, stopButton);
 
         CpuComboBoxListener cpuComboBoxListener =
-                new CpuComboBoxListener(runner, cpuComboBox);
+                new CpuComboBoxListener(emulator, cpuComboBox);
 
         InstructionsComboBoxListener instructionsComboBoxListener =
-                new InstructionsComboBoxListener(runner, instructionsComboBox);
+                new InstructionsComboBoxListener(emulator, instructionsComboBox);
 
         StatusPaneListener statusPaneListener =
                 new StatusPaneListener(statusPane);
@@ -181,23 +182,24 @@ final public class Gui {
         cpuComboBox.addItemListener(cpuComboBoxListener);
         instructionsComboBox.addItemListener(instructionsComboBoxListener);
 
-        // connect runner state change listeners
+        // connect runner state listeners
 
-        runner.addListener(pauseButtonListener);
-        runner.addListener(stopButtonListener);
-        runner.addListener(cpuComboBoxListener);
-        runner.addListener(instructionsComboBoxListener);
+        emulator.addStateListener(pauseButtonListener);
+        emulator.addStateListener(stopButtonListener);
+        emulator.addStateListener(cpuComboBoxListener);
+        emulator.addStateListener(instructionsComboBoxListener);
 
-        runner.addListener(statusPaneListener);
-        runner.addListener(fpsTimer);
+        emulator.addStateListener(statusPaneListener);
+        emulator.addStateListener(fpsTimer);
 
-        runner.addListener(guiListener);
+        emulator.addStateListener(guiListener);
 
         // create and connect keyboard listener
 
-        KeyboardListener keyboardListener = new KeyboardListener();
-        window.addKeyListener(keyboardListener);
-        runner.setKeyboard(keyboardListener);
-    }
+        // can't use keyboard interface because addKeyListener expects an extended class
+        KeyboardImpl keyboard = new KeyboardImpl();
 
+        window.addKeyListener(keyboard);
+        emulator.setKeyboard(keyboard);
+    }
 }

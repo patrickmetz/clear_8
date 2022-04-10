@@ -1,6 +1,6 @@
 package de.patrickmetz.clear_8.emulator.hardware;
 
-import de.patrickmetz.clear_8.emulator.Keyboard;
+import de.patrickmetz.clear_8.emulator.input.Keyboard;
 
 public class CentralProcessingUnitFactory {
 

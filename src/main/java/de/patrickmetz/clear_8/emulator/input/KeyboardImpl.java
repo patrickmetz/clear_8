@@ -1,6 +1,4 @@
-package de.patrickmetz.clear_8.gui.listener;
-
-import de.patrickmetz.clear_8.emulator.Keyboard;
+package de.patrickmetz.clear_8.emulator.input;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -21,7 +19,7 @@ import java.util.HashMap;
  * A|S|D|F<p>
  * Y|X|C|V<p>
  */
-final public class KeyboardListener extends KeyAdapter implements Keyboard {
+final public class KeyboardImpl extends KeyAdapter implements Keyboard {
 
     /**
      * maps real keys to the 16 original keys
@@ -30,7 +28,7 @@ final public class KeyboardListener extends KeyAdapter implements Keyboard {
 
     private volatile int pressedKey;
 
-    public KeyboardListener() {
+    public KeyboardImpl() {
         keyMap = new HashMap<>(16, 2);
 
         keyMap.put(KeyEvent.VK_1, 0x1);
@@ -55,7 +53,7 @@ final public class KeyboardListener extends KeyAdapter implements Keyboard {
     }
 
     @Override
-    public int getNextKeyPressed() {
+    public int getNextPressedKey() {
         while (pressedKey == -1) {
             try {
                 Thread.sleep(1);

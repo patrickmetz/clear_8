@@ -1,7 +1,8 @@
 package de.patrickmetz.clear_8;
 
+import de.patrickmetz.clear_8.emulator.Emulator;
+import de.patrickmetz.clear_8.emulator.EmulatorImpl;
 import de.patrickmetz.clear_8.gui.Gui;
-import de.patrickmetz.clear_8.runner.Runner;
 
 final public class Main {
     private static final String HELP_HELP = "Prints help for the command line options.";
@@ -30,10 +31,11 @@ final public class Main {
             return;
         }
 
-        Gui.show(new Runner(
-                cl.getOptionValue(GAME),
-                cl.getOptionValueOrDefault(IPS, DEFAULT_IPS),
-                cl.getOptionValueOrDefault(VIP, DEFAULT_VIP)
-        ));
+        Emulator emulator = new EmulatorImpl();
+        emulator.setGamePath(cl.getOptionValue(GAME));
+        emulator.setInstructionsPerSecond(cl.getOptionValueOrDefault(IPS, DEFAULT_IPS));
+        emulator.setUseVipCpu(cl.getOptionValueOrDefault(VIP, DEFAULT_VIP));
+
+        Gui.show(emulator);
     }
 }

@@ -1,25 +1,25 @@
 package de.patrickmetz.clear_8.gui.timer;
 
-import de.patrickmetz.clear_8.gui.component.output.Display;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.event.RunnerState;
+import de.patrickmetz.clear_8.gui.component.output.DisplayImpl;
 import de.patrickmetz.clear_8.gui.component.output.StatusPane;
-import de.patrickmetz.clear_8.runner.event.RunnerEvent;
-import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
-import de.patrickmetz.clear_8.runner.event.RunnerState;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-final public class FpsTimer implements RunnerEventListener {
+final public class FpsTimer implements EmulatorEventListener {
 
     private static final int DELAY = 1000;
 
     private final StatusPane statusPane;
     private final Timer timer;
 
-    private Display display;
+    private DisplayImpl display;
 
-    public FpsTimer(Display display, StatusPane statusPane) {
+    public FpsTimer(DisplayImpl display, StatusPane statusPane) {
         this.display = display;
         this.statusPane = statusPane;
 
@@ -30,7 +30,7 @@ final public class FpsTimer implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent e) {
+    public void handleRunnerEvent(EmulatorEvent e) {
         RunnerState status = e.getState();
 
         if (status == RunnerState.STARTED) {
@@ -40,7 +40,7 @@ final public class FpsTimer implements RunnerEventListener {
         }
     }
 
-    public void setDisplay(Display display) {
+    public void setDisplay(DisplayImpl display) {
         this.display = display;
 
     }

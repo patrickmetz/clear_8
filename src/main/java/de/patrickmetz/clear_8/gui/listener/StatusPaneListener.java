@@ -1,14 +1,14 @@
 package de.patrickmetz.clear_8.gui.listener;
 
+import de.patrickmetz.clear_8.emulator.Emulator;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.event.RunnerState;
 import de.patrickmetz.clear_8.gui.component.output.StatusPane;
-import de.patrickmetz.clear_8.runner.Runner;
-import de.patrickmetz.clear_8.runner.event.RunnerEvent;
-import de.patrickmetz.clear_8.runner.event.RunnerEventListener;
-import de.patrickmetz.clear_8.runner.event.RunnerState;
 
 import java.io.File;
 
-final public class StatusPaneListener implements RunnerEventListener {
+final public class StatusPaneListener implements EmulatorEventListener {
 
     private final StatusPane pane;
 
@@ -17,14 +17,14 @@ final public class StatusPaneListener implements RunnerEventListener {
     }
 
     @Override
-    public void handleRunnerEvent(RunnerEvent e) {
+    public void handleRunnerEvent(EmulatorEvent e) {
         RunnerState status = e.getState();
 
         if (status == RunnerState.STARTED) {
-            Runner runner = (Runner) e.getSource();
+            Emulator emulator = (Emulator) e.getSource();
 
             pane.updateFileName(
-                    new File(runner.getRomPath()).getName()
+                    new File(emulator.getGamePath()).getName()
             );
         } else if (status == RunnerState.STOPPED) {
             pane.updateFileName(null);
