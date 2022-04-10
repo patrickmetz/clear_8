@@ -2,21 +2,21 @@ package de.patrickmetz.clear_8.gui;
 
 import de.patrickmetz.clear_8.emulator.Emulator;
 import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
-import de.patrickmetz.clear_8.gui.component.interaction.*;
-import de.patrickmetz.clear_8.gui.component.output.DisplayImpl;
-import de.patrickmetz.clear_8.gui.component.output.StatusPane;
-import de.patrickmetz.clear_8.gui.component.structure.Window;
-import de.patrickmetz.clear_8.gui.component.structure.*;
-import de.patrickmetz.clear_8.gui.listener.*;
-import de.patrickmetz.clear_8.gui.timer.FpsTimer;
+import de.patrickmetz.clear_8.gui.elements.*;
+import de.patrickmetz.clear_8.gui.listeners.*;
+import de.patrickmetz.clear_8.gui.output.DisplayImpl;
+import de.patrickmetz.clear_8.gui.output.StatusPane;
+import de.patrickmetz.clear_8.gui.structure.Window;
+import de.patrickmetz.clear_8.gui.structure.*;
+import de.patrickmetz.clear_8.gui.timers.FpsTimer;
 
 import javax.swing.*;
 import java.awt.*;
 
 final public class Gui {
-
     private static boolean  isShown;
     private static Emulator emulator;
+
     private static Window   window;
 
     // window structure
@@ -54,7 +54,6 @@ final public class Gui {
         emulator.setDisplay(display);
     }
 
-    // see: https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
     public static void show(Emulator emulator) {
         if (isShown) {
             return;
@@ -63,6 +62,7 @@ final public class Gui {
 
         Gui.emulator = emulator;
 
+        // see https://docs.oracle.com/javase/tutorial/uiswing/concurrency/index.html
         SwingUtilities.invokeLater(Gui::createGui);
 
         if (Gui.emulator.getGamePath() != null) {

@@ -1,12 +1,13 @@
 package de.patrickmetz.clear_8.emulator;
 
-import de.patrickmetz.clear_8.emulator.event.EmulatorEventImpl;
-import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
-import de.patrickmetz.clear_8.emulator.event.RunnerState;
+import de.patrickmetz.clear_8.emulator.events.EmulatorEvent;
+import de.patrickmetz.clear_8.emulator.events.EmulatorEventImpl;
+import de.patrickmetz.clear_8.emulator.events.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.events.EmulatorState;
 import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnit;
 import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnitFactory;
 import de.patrickmetz.clear_8.emulator.input.Keyboard;
-import de.patrickmetz.clear_8.gui.component.output.Display;
+import de.patrickmetz.clear_8.gui.output.Display;
 
 import javax.swing.*;
 import javax.swing.event.EventListenerList;
@@ -19,7 +20,7 @@ import java.util.List;
  * The emulator basically loops forever, or until it is shut down for good.
  * In order for the GUI to not completely freeze, while waiting for the
  * emulator to return something, the emulator needs to be put on a separate Thread.
- * <p><p>
+ *
  * But it needs to be a special thread, ensuring that we only update the
  * GUI when it's ready to be updated. So we extend SwingWorker and implement
  * or use the necessary methods:
@@ -37,11 +38,9 @@ import java.util.List;
  * process() is called by the GUI from the outside, whenever it is ready
  * to be updated with some of the already collected work results.
  * <p><p>
- * The weird extends statement (extends SwingWorker...)
- * is a Java Generic, which in this case means that the doInBackground()
- * method returns nothing (Void) when it ends, and that the publish() method
- * returns a two dimensional array of truth values (boolean[][]) which is
- * send to process().
+ * The Java Generic means that the doInBackground() method returns nothing
+ * (Void) when it ends, and that the publish() method returns a two dimensional
+ * array of truth values (boolean[][]) which is send to process().
  * <p><p>
  * see https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
  */
@@ -75,7 +74,19 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         listeners = new EventListenerList();
     }
 
-    // configuration getters and setters --------------------------------------
+    // setters for in- and output ---------------------------------------------
+
+    @Override
+    public void setDisplay(Display display) {
+        this.display = display;
+    }
+
+    @Override
+    public void setKeyboard(Keyboard keyboard) {
+        this.keyboard = keyboard;
+    }
+
+    // getters and setter for options -----------------------------------------
 
     @Override
     public String getGamePath() {
@@ -107,16 +118,6 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         this.useVipCpu = useVipCpu;
     }
 
-    @Override
-    public void setDisplay(Display display) {
-        this.display = display;
-    }
-
-    @Override
-    public void setKeyboard(Keyboard keyboard) {
-        this.keyboard = keyboard;
-    }
-
     // state control ----------------------------------------------------------
 
     @Override
@@ -133,7 +134,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
 
         this.execute();
 
-        notify(RunnerState.STARTED);
+        notify(EmulatorState.STARTED);
     }
 
     @Override
@@ -147,7 +148,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
 
         this.cancel(true);
 
-        notify(RunnerState.STOPPED);
+        notify(EmulatorState.STOPPED);
     }
 
     /**
@@ -165,9 +166,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         notify();
 
         if (isPaused) {
-            notify(RunnerState.PAUSED);
+            notify(EmulatorState.PAUSED);
         } else {
-            notify(RunnerState.RESUMED);
+            notify(EmulatorState.RESUMED);
         }
     }
 
@@ -178,14 +179,14 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         listeners.add(EmulatorEventListener.class, listener);
     }
 
-    private synchronized void notify(RunnerState runnerStatus) {
-        EmulatorEventImpl runnerEvent = new EmulatorEventImpl(this, runnerStatus);
+    private synchronized void notify(EmulatorState runnerStatus) {
+        EmulatorEvent runnerEvent = new EmulatorEventImpl(this, runnerStatus);
 
         EmulatorEventListener[] listenerList =
                 listeners.getListeners(EmulatorEventListener.class);
 
         for (EmulatorEventListener listener : listenerList) {
-            listener.handleRunnerEvent(runnerEvent);
+            listener.handleEmulatorEvent(runnerEvent);
         }
     }
 

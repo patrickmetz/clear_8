@@ -18,11 +18,13 @@ final class CommandLineFacade {
         options = new Options();
     }
 
-    public void expectOption(String shortName,
-                             String longName,
-                             String helpText,
-                             Class<?> dataType,
-                             boolean hasArgument) {
+    public void expectOption(
+            String shortName,
+            String longName,
+            String helpText,
+            Class<?> dataType,
+            boolean hasArgument
+    ) {
         Option option = Option
                 .builder(shortName)
                 .longOpt(longName)

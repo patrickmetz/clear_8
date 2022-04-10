@@ -1,21 +1,15 @@
 package de.patrickmetz.clear_8.emulator;
 
-import de.patrickmetz.clear_8.emulator.event.EmulatorEventListener;
+import de.patrickmetz.clear_8.emulator.events.EmulatorEventListener;
 import de.patrickmetz.clear_8.emulator.input.Keyboard;
-import de.patrickmetz.clear_8.gui.component.output.Display;
+import de.patrickmetz.clear_8.gui.output.Display;
 
 public interface Emulator {
-    // state control ----------------------------------------------------------
+    // setters for in- and output ---------------------------------------------
 
-    void start();
+    void setDisplay(Display display);
 
-    void stop();
-
-    void togglePause();
-
-    // state events -----------------------------------------------------------
-
-    void addStateListener(EmulatorEventListener listener);
+    void setKeyboard(Keyboard keyboard);
 
     // getters and setter for options -----------------------------------------
 
@@ -31,7 +25,15 @@ public interface Emulator {
 
     void setUseVipCpu(boolean useVipCpu);
 
-    void setDisplay(Display display);
+    // state control ----------------------------------------------------------
 
-    void setKeyboard(Keyboard keyboard);
+    void start();
+
+    void stop();
+
+    void togglePause();
+
+    // state events -----------------------------------------------------------
+
+    void addStateListener(EmulatorEventListener listener);
 }

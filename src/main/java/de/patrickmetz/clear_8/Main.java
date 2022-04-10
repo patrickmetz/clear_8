@@ -4,6 +4,10 @@ import de.patrickmetz.clear_8.emulator.Emulator;
 import de.patrickmetz.clear_8.emulator.EmulatorImpl;
 import de.patrickmetz.clear_8.gui.Gui;
 
+/**
+ * First instantiates the emulator with the given command line arguments.
+ * Then starts the Swing GUI, with the emulator attached.
+ */
 final public class Main {
     private static final String HELP_HELP = "Prints help for the command line options.";
     private static final String HELP_IPS  = "CPU instructions per second. Controls emulation speed. (100, 200, ...)";
