@@ -4,7 +4,7 @@ import javax.swing.*;
 
 final public class LoadRomButton extends JButton {
 
-    private static final String TEXT_LOAD_ROM = "Load ROM";
+    private static final String TEXT_LOAD_ROM = "Load game";
 
     public LoadRomButton() {
         setEnabled(true);

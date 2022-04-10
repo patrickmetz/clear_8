@@ -43,14 +43,11 @@ Usage
 Command line options
 --------------------
 
-> **-h, --help** : Shows how to use the command line options.
-
-> **-i, --ips** _number_ :   CPU instructions per second. (100, 200, ...)
-
-> **-r, --rom** _path_ :  File path of a ROM file. (C:\example\filename)
-
-> **-v,--vip** _true/false_ :   Use Cosmac VIP CPU if true; or Super Chip CPU otherwise.
-(true / false)
+> java -jar ./dist/clear_8.jar <br><br>
+> -g, --game < path >   Path to a game file. (C:\my_folder\my_game) <br>
+-h, --help         Prints help for the command line options. <br>
+-i, --ips < number >    CPU instructions per second. Controls emulation speed. (100, 200, ...) <br>
+-v, --vip < boolean >    Use Cosmac VIP CPU if true; or Super Chip CPU otherwise. (true / false)
 
 Controls
 --------
