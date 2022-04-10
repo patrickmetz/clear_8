@@ -21,8 +21,8 @@ About
 
 I abandoned it three years ago, and now revived it as my weekend project.
 
-It's main purposes are having fun and polishing my skills in programming, 
-<br>software-engineering and project-management.
+It's main purposes are having fun and polishing my skills in programming 
+<br>and software-engineering.
 
 Goals
 -----
