@@ -31,10 +31,11 @@ final public class Main {
             return;
         }
 
-        Emulator emulator = new EmulatorImpl();
-        emulator.setGamePath(cl.getOptionValue(GAME));
-        emulator.setInstructionsPerSecond(cl.getOptionValueOrDefault(IPS, DEFAULT_IPS));
-        emulator.setUseVipCpu(cl.getOptionValueOrDefault(VIP, DEFAULT_VIP));
+        Emulator emulator = new EmulatorImpl(
+                cl.getOptionValue(GAME),
+                cl.getOptionValueOrDefault(IPS, DEFAULT_IPS),
+                cl.getOptionValueOrDefault(VIP, DEFAULT_VIP)
+        );
 
         Gui.show(emulator);
     }

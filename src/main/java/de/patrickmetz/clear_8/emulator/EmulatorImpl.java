@@ -67,7 +67,11 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     private int     instructionsPerSecond;
     private boolean useVipCpu;
 
-    public EmulatorImpl() {
+    public EmulatorImpl(String gamePath, int instructionsPerSecond, boolean useVipCpu) {
+        this.gamePath = gamePath;
+        this.instructionsPerSecond = instructionsPerSecond;
+        this.useVipCpu = useVipCpu;
+
         listeners = new EventListenerList();
     }
 
@@ -91,7 +95,6 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     @Override
     public void setInstructionsPerSecond(int instructionsPerSecond) {
         this.instructionsPerSecond = instructionsPerSecond;
-        instructionsPerFrame = instructionsPerSecond / FRAMES_PER_SECOND;
     }
 
     @Override
@@ -123,7 +126,10 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         }
 
         isRunning = true;
+
         cpu = CentralProcessingUnitFactory.makeCpu(useVipCpu, keyboard);
+
+        instructionsPerFrame = instructionsPerSecond / FRAMES_PER_SECOND;
 
         this.execute();
 
