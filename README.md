@@ -1,7 +1,7 @@
 ![clear_8](assets/logo.png)
 
 An emulator that interpretes and runs [CHIP-8](https://en.wikipedia.org/wiki/CHIP-8) games, with a simple useful interface.
-<br>It has a **clea**-n and **r**-eadable object-oriented architecture.
+<br>It has a **clea**-n and **r**-eadable object-oriented architecture, written in Java and Swing.
 
 ![clear_8](assets/demo.gif)
 
@@ -37,13 +37,13 @@ Goals
 
 Usage
 -----
-1. > java -jar ./dist/clear_8.jar
+1. > java -jar ./build/clear_8.jar
 2. Click "Load ROM" to select and load a game
 
 Command line options
 --------------------
 
-> java -jar ./dist/clear_8.jar <br><br>
+> java -jar ./build/clear_8.jar <br><br>
 > -g, --game < path >   Path to a game file. (C:\my_folder\my_game) <br>
 -h, --help         Prints help for the command line options. <br>
 -i, --ips < number >    CPU instructions per second. Controls emulation speed. (100, 200, ...) <br>

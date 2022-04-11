@@ -7,6 +7,7 @@ import de.patrickmetz.clear_8.emulator.events.EmulatorState;
 import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnit;
 import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnitFactory;
 import de.patrickmetz.clear_8.emulator.input.Keyboard;
+import de.patrickmetz.clear_8.emulator.resources.Font;
 import de.patrickmetz.clear_8.gui.output.Display;
 
 import javax.swing.*;

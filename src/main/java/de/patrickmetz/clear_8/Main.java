@@ -1,5 +1,6 @@
 package de.patrickmetz.clear_8;
 
+import de.patrickmetz.clear_8.cli.CommandLineFacade;
 import de.patrickmetz.clear_8.emulator.Emulator;
 import de.patrickmetz.clear_8.emulator.EmulatorImpl;
 import de.patrickmetz.clear_8.gui.Gui;
