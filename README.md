@@ -24,6 +24,8 @@ I abandoned it three years ago, and now revived it as my weekend project.
 It's main purposes are having fun and polishing my skills in programming 
 <br>and software-engineering.
 
+Peek into its codebase, if you like: [src/main/java/de/patrickmetz/clear_8](src/main/java/de/patrickmetz/clear_8)
+
 Goals
 -----
 - Usability
