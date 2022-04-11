@@ -8,7 +8,7 @@ package de.patrickmetz.clear_8.emulator.hardware;
 
 import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +28,7 @@ class CentralProcessingUnitSuperChipTest {
     /**
      * @see CentralProcessingUnitSuperChip#opcode1NNN
      */
-    @Test
+    @Disabled
     void opcode1NNN() {
         writeInstruction(0x1123);
         cpu.processNextInstruction();
@@ -39,7 +39,7 @@ class CentralProcessingUnitSuperChipTest {
     /**
      * @see CentralProcessingUnitSuperChip#opcode2NNN
      */
-    @Test
+    @Disabled
     void opcode2NNN() {
         writeInstruction(0x2123);
         cpu.processNextInstruction();
@@ -51,7 +51,7 @@ class CentralProcessingUnitSuperChipTest {
     /**
      * @see CentralProcessingUnitSuperChip#opcode3XNN
      */
-    @Test
+    @Disabled
     void opcode3NNN() {
         dataRegisters.write(1, 0x0023);
 
@@ -64,7 +64,7 @@ class CentralProcessingUnitSuperChipTest {
     /**
      * @see CentralProcessingUnitSuperChip#opcode4XNN
      */
-    @Test
+    @Disabled
     void opcode4NNN() {
         dataRegisters.write(1, 0x0023);
 

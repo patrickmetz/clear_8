@@ -1,81 +1,27 @@
 package de.patrickmetz.clear_8.cli;
 
-import org.apache.commons.cli.*;
-
 /**
- * Hides the complexity of the Apache command line
- * option parser subsystem and simplifies its usage.
+ * This facade hides the complexity of the Apache command line interface
+ * parser subsystem and simplifies its usage. It basically delivers the
+ * values of command line options, given by the user, or uses default
+ * values, given by the programmer.
  */
-public final class CommandLineFacade {
-    private final String[] arguments;
-    private final Options  options;
-
-    private CommandLine commandLine;
-
-    public CommandLineFacade(String[] commandLineArguments) {
-        this.arguments = commandLineArguments;
-
-        options = new Options();
-    }
-
-    public void expectOption(
+public interface CommandLineFacade {
+    void expectOption(
             String shortName,
             String longName,
             String helpText,
             Class<?> dataType,
             boolean hasArgument
-    ) {
-        Option option = Option
-                .builder(shortName)
-                .longOpt(longName)
-                .desc(helpText)
-                .type(dataType)
-                .required(false)
-                .hasArg(hasArgument)
-                .build();
+    );
 
-        options.addOption(option);
-    }
+    boolean hasOption(String longOrShortName);
 
-    public boolean hasOption(String longOrShortName) {
-        return getCommandLine().hasOption(longOrShortName);
-    }
+    String getOptionValue(String longOrShortName);
 
-    public String getOptionValue(String longOrShortName) {
-        return getCommandLine().getOptionValue(longOrShortName);
-    }
+    int getOptionValueOrDefault(String longOrShortName, int defaultValue);
 
-    public int getOptionValueOrDefault(String longOrShortName, int defaultValue) {
-        CommandLine commandLine = getCommandLine();
+    boolean getOptionValueOrDefault(String longOrShortName, boolean defaultValue);
 
-        return commandLine.hasOption(longOrShortName)
-                ? Integer.parseInt(commandLine.getOptionValue(longOrShortName))
-                : defaultValue;
-    }
-
-    public boolean getOptionValueOrDefault(String longOrShortName, boolean defaultValue) {
-        CommandLine commandLine = getCommandLine();
-
-        return commandLine.hasOption(longOrShortName)
-                ? Boolean.parseBoolean(commandLine.getOptionValue(longOrShortName))
-                : defaultValue;
-    }
-
-    public void printHelp() {
-        new HelpFormatter().printHelp("clear_8.jar", options);
-    }
-
-    private CommandLine getCommandLine() {
-        if (commandLine == null) {
-            try {
-                commandLine = new DefaultParser().parse(options, arguments);
-            } catch (ParseException e) {
-                // TODO: why is this here? does it really make sense?
-                printHelp();
-                System.exit(1);
-            }
-        }
-
-        return commandLine;
-    }
+    void printExpectedOptions();
 }

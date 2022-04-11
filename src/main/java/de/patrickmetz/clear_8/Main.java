@@ -1,13 +1,16 @@
 package de.patrickmetz.clear_8;
 
 import de.patrickmetz.clear_8.cli.CommandLineFacade;
+import de.patrickmetz.clear_8.cli.CommandLineFacadeImpl;
 import de.patrickmetz.clear_8.emulator.Emulator;
 import de.patrickmetz.clear_8.emulator.EmulatorImpl;
 import de.patrickmetz.clear_8.gui.Gui;
 
 /**
- * First instantiates the emulator with the given command line arguments.
- * Then starts the Swing GUI, with the emulator attached.
+ * This is the main entry point of this software.
+ * First, it initializes the emulator with command line arguments, given by the
+ * user, or default values given by the programmer. Then, it starts the graphical
+ * user interface with the emulator attached.
  */
 final public class Main {
     private static final String HELP_HELP = "Prints help for the command line options.";
@@ -24,7 +27,7 @@ final public class Main {
     private static final boolean DEFAULT_VIP = true;
 
     public static void main(String[] args) {
-        CommandLineFacade cl = new CommandLineFacade(args);
+        CommandLineFacade cl = new CommandLineFacadeImpl(args);
 
         cl.expectOption("g", GAME, HELP_GAME, String.class, true);
         cl.expectOption("h", HELP, HELP_HELP, String.class, false);
@@ -32,7 +35,7 @@ final public class Main {
         cl.expectOption("v", VIP, HELP_VIP, Boolean.class, true);
 
         if (cl.hasOption(HELP)) {
-            cl.printHelp();
+            cl.printExpectedOptions();
             return;
         }
 
