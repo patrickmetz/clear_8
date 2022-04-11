@@ -9,7 +9,7 @@ import de.patrickmetz.clear_8.gui.output.Display;
  * commands from a given game, while feeding the game keyboard input, and
  * displaying the game's graphical output on screen. It can be started,
  * stopped and paused and signals these state changes to interested listeners,
- * which react to those changes, like buttons in a graphical user interface.
+ * which react to those events, like buttons in a graphical user interface.
  */
 public interface Emulator {
     // in- and output ---------------------------------------------------------

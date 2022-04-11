@@ -3,17 +3,15 @@ package de.patrickmetz.clear_8.gui.timers;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEvent;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEventListener;
 import de.patrickmetz.clear_8.emulator.events.EmulatorState;
+import de.patrickmetz.clear_8.globals.Config;
 import de.patrickmetz.clear_8.gui.output.DisplayImpl;
 import de.patrickmetz.clear_8.gui.output.StatusPane;
 
-import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 final public class FpsTimer implements EmulatorEventListener {
-
-    private static final int DELAY = 1000;
-
     private final StatusPane statusPane;
     private final Timer timer;
 
@@ -24,7 +22,7 @@ final public class FpsTimer implements EmulatorEventListener {
         this.statusPane = statusPane;
 
         timer = new Timer(
-                DELAY,
+                Config.Gui.FPS_UPDATE_INTERVAL_IN_MS,
                 new FpsTimerListener()
         );
     }

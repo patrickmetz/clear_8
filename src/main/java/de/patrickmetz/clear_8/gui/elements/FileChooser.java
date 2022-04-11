@@ -1,6 +1,6 @@
 package de.patrickmetz.clear_8.gui.elements;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
 import java.io.File;
 
 final public class FileChooser extends JFileChooser {

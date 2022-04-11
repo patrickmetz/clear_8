@@ -1,22 +1,23 @@
 package de.patrickmetz.clear_8.gui.elements;
 
-import javax.swing.*;
+import de.patrickmetz.clear_8.globals.Config;
+import de.patrickmetz.clear_8.globals.Text;
+
+import javax.swing.JComboBox;
 
 final public class InstructionsComboBox extends JComboBox<Integer> {
-
-    private static final int MAXIMUM = 1000;
-    private static final int MINIMUM = 100;
-    private static final int STEP = 100;
-
-    private static final String TOOL_TIP = "CPU instructions per second";
 
     public InstructionsComboBox() {
         setEditable(false);
         setFocusable(false);
 
-        setToolTipText(TOOL_TIP);
+        setToolTipText(Text.Gui.TOOL_TIP_CPU_INSTRUCTIONS);
 
-        for (int value = MINIMUM; value <= MAXIMUM; value += STEP) {
+        for (
+                int value = Config.Gui.IPS_MINIMUM;
+                value     <= Config.Gui.IPS_MAXIMUM;
+                value     += Config.Gui.IPS_STEP_SIZE
+        ) {
             addItem(value);
         }
     }

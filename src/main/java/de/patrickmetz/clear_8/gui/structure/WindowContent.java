@@ -1,11 +1,16 @@
 package de.patrickmetz.clear_8.gui.structure;
 
-import javax.swing.*;
-import java.awt.*;
+import de.patrickmetz.clear_8.globals.Config;
+
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 
 final public class WindowContent extends JPanel {
 
     public WindowContent() {
-        setLayout(new BorderLayout(0, 0));
+        setLayout(new BorderLayout(
+                Config.Gui.WINDOW_HORIZONTAL_GAP,
+                Config.Gui.WINDOW_VERTICAL_GAP)
+        );
     }
 }

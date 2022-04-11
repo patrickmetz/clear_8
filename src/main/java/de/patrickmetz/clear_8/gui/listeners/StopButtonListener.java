@@ -19,7 +19,6 @@ final public class StopButtonListener implements ActionListener, EmulatorEventLi
         this.button = button;
     }
 
-
     @Override
     public void handleEmulatorEvent(EmulatorEvent e) {
         EmulatorState state = e.getState();

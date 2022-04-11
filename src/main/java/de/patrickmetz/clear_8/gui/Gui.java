@@ -10,8 +10,9 @@ import de.patrickmetz.clear_8.gui.structure.Window;
 import de.patrickmetz.clear_8.gui.structure.*;
 import de.patrickmetz.clear_8.gui.timers.FpsTimer;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import java.awt.BorderLayout;
 
 final public class Gui {
     private static boolean  isShown;

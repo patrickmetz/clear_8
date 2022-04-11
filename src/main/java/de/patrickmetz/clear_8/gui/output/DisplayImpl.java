@@ -1,36 +1,45 @@
 package de.patrickmetz.clear_8.gui.output;
 
-import javax.swing.*;
-import java.awt.*;
+import de.patrickmetz.clear_8.globals.Config;
+
+import javax.swing.BorderFactory;
+import javax.swing.JPanel;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Graphics;
 
 final public class DisplayImpl extends JPanel implements Display {
 
-    private final static int SCREEN_HEIGHT = 32;
-    private final static int SCREEN_WIDTH = 64;
-
-    private static Color colorBackground;
-    private static Color colorPixel;
+    private Color colorBackground;
+    private Color colorPixel;
 
     private boolean[][] screenData;
-    private int screenScale = 8;
-    private int updateCount;
+    private int         updateCount;
 
     public DisplayImpl() {
-        screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
+        screenData = new boolean[Config.Gui.SCREEN_WIDTH][Config.Gui.SCREEN_HEIGHT];
         setDoubleBuffered(true);
 
-        colorBackground = new Color(255, 255, 255);
-        colorPixel = new Color(45, 71, 141);
+        colorBackground = new Color(
+                Config.Gui.SCREEN_BACKGROUND_COLOR_RED,
+                Config.Gui.SCREEN_BACKGROUND_COLOR_GREEN,
+                Config.Gui.SCREEN_BACKGROUND_COLOR_BLUE
+        );
+
+        colorPixel = new Color(
+                Config.Gui.SCREEN_PIXEL_COLOR_RED,
+                Config.Gui.SCREEN_PIXEL_COLOR_GREEN,
+                Config.Gui.SCREEN_PIXEL_COLOR_BLUE
+        );
 
         setBorder(BorderFactory.createLineBorder(Color.lightGray));
 
         setAlignmentX(Component.CENTER_ALIGNMENT);
         setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        setPreferredSize(new Dimension(
-                SCREEN_WIDTH * screenScale,
-                SCREEN_HEIGHT * screenScale
-        ));
+        setPreferredSize(new Dimension(Config.Gui.SCREEN_WIDTH * Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_HEIGHT * Config.Gui.SCREEN_SCALE));
     }
 
     @Override
@@ -56,21 +65,13 @@ final public class DisplayImpl extends JPanel implements Display {
     }
 
     private void drawScreen(Graphics graphics) {
-        for (int x = 0; x < SCREEN_WIDTH; x++) {
-            for (int y = 0; y < SCREEN_HEIGHT; y++) {
-                graphics.setColor(
-                        screenData[x][y] ? colorPixel : colorBackground
-                );
+        for (int x = 0; x < Config.Gui.SCREEN_WIDTH; x++) {
+            for (int y = 0; y < Config.Gui.SCREEN_HEIGHT; y++) {
+                graphics.setColor(screenData[x][y] ? colorPixel : colorBackground);
 
                 // one scaled pixel
-                graphics.fillRect(
-                        x * screenScale,
-                        y * screenScale,
-                        screenScale,
-                        screenScale
-                );
+                graphics.fillRect(x * Config.Gui.SCREEN_SCALE, y * Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_SCALE);
             }
         }
     }
-
 }

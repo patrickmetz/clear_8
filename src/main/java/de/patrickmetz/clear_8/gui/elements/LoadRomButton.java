@@ -1,15 +1,14 @@
 package de.patrickmetz.clear_8.gui.elements;
 
-import javax.swing.*;
+import de.patrickmetz.clear_8.globals.Text;
+
+import javax.swing.JButton;
 
 final public class LoadRomButton extends JButton {
 
-    private static final String TEXT_LOAD_ROM = "Load game";
-
     public LoadRomButton() {
         setEnabled(true);
-        setText(TEXT_LOAD_ROM);
-
+        setText(Text.Gui.LOAD_ROM);
         setFocusable(false);
     }
 

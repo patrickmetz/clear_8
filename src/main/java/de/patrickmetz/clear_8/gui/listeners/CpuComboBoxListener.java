@@ -4,6 +4,7 @@ import de.patrickmetz.clear_8.emulator.Emulator;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEvent;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEventListener;
 import de.patrickmetz.clear_8.emulator.events.EmulatorState;
+import de.patrickmetz.clear_8.globals.Text;
 import de.patrickmetz.clear_8.gui.elements.CpuComboBox;
 
 import java.awt.event.ItemEvent;
@@ -36,7 +37,7 @@ final public class CpuComboBoxListener implements java.awt.event.ItemListener, E
     public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
             emulator.setUseVipCpu(
-                    e.getItem() == CpuComboBox.CPU_VIP
+                    e.getItem() == Text.Gui.CPU_VIP
             );
         }
     }

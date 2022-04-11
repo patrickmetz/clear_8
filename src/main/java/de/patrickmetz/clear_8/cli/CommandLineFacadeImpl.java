@@ -1,8 +1,15 @@
 package de.patrickmetz.clear_8.cli;
 
-import org.apache.commons.cli.*;
+import de.patrickmetz.clear_8.globals.Text;
 
-public final class CommandLineFacadeImpl implements CommandLineFacade{
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+
+public final class CommandLineFacadeImpl implements CommandLineFacade {
     private final String[] arguments;
     private final Options  options;
 
@@ -16,15 +23,14 @@ public final class CommandLineFacadeImpl implements CommandLineFacade{
 
     @Override
     public void expectOption(
-            String shortName,
-            String longName,
+            String name,
             String helpText,
             Class<?> dataType,
             boolean hasArgument
     ) {
         Option option = Option
-                .builder(shortName)
-                .longOpt(longName)
+                .builder(getShortName(name))
+                .longOpt(name)
                 .desc(helpText)
                 .type(dataType)
                 .required(false)
@@ -32,6 +38,10 @@ public final class CommandLineFacadeImpl implements CommandLineFacade{
                 .build();
 
         options.addOption(option);
+    }
+
+    private String getShortName(String longName) {
+        return longName.substring(0, 1);
     }
 
     @Override
@@ -64,7 +74,7 @@ public final class CommandLineFacadeImpl implements CommandLineFacade{
 
     @Override
     public void printExpectedOptions() {
-        new HelpFormatter().printHelp("clear_8.jar", options);
+        new HelpFormatter().printHelp(Text.Cli.APPLICATION_NAME, options);
     }
 
     private CommandLine getCommandLine() {

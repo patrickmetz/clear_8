@@ -1,11 +1,10 @@
 package de.patrickmetz.clear_8.gui.elements;
 
-import javax.swing.*;
+import de.patrickmetz.clear_8.globals.Text;
+
+import javax.swing.JButton;
 
 final public class PauseButton extends JButton {
-
-    private static final String TEXT_PAUSE = "Pause";
-    private static final String TEXT_RESUME = "Resume";
 
     public PauseButton() {
         setEnabled(false);
@@ -15,11 +14,11 @@ final public class PauseButton extends JButton {
     }
 
     public void usePauseText() {
-        setText(TEXT_PAUSE);
+        setText(Text.Gui.STATE_PAUSE);
     }
 
     public void useResumeText() {
-        setText(TEXT_RESUME);
+        setText(Text.Gui.STATE_RESUME);
     }
 
 }

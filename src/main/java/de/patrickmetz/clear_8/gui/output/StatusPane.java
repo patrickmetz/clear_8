@@ -1,10 +1,10 @@
 package de.patrickmetz.clear_8.gui.output;
 
-import javax.swing.*;
+import de.patrickmetz.clear_8.globals.Text;
+
+import javax.swing.JTextPane;
 
 final public class StatusPane extends JTextPane {
-
-    private static final String TEXT_FPS = " fps";
 
     private String fileName;
     private String fps;
@@ -12,7 +12,6 @@ final public class StatusPane extends JTextPane {
     public StatusPane() {
         setEditable(false);
         setOpaque(false);
-
         setFocusable(false);
     }
 
@@ -28,7 +27,6 @@ final public class StatusPane extends JTextPane {
 
     public void updateFps(String fps) {
         this.fps = fps;
-
         updateText();
     }
 
@@ -43,12 +41,13 @@ final public class StatusPane extends JTextPane {
     private void updateText() {
         String text = "";
 
-        if (fileName != null) {
-            text = fileName;
-        }
-
         if (fps != null) {
-            text += " | " + fps + TEXT_FPS;
+            if (fileName != null) {
+                text += " | " + fps + Text.Gui.FPS;
+            } else {
+                text += fps + " " + Text.Gui.FPS;
+            }
+
         }
 
         setText(text);
