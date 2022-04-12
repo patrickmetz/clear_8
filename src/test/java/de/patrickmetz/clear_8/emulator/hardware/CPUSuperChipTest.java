@@ -31,7 +31,7 @@ class CentralProcessingUnitSuperChipTest {
     @Disabled
     void opcode1NNN() {
         writeInstruction(0x1123);
-        cpu.process();
+        cpu.process(1);
 
         assertEquals(0x0123, programCounter.read());
     }
@@ -42,7 +42,7 @@ class CentralProcessingUnitSuperChipTest {
     @Disabled
     void opcode2NNN() {
         writeInstruction(0x2123);
-        cpu.process();
+        cpu.process(1);
 
         assertEquals(2, callStack.pop());
         assertEquals(0x0123, programCounter.read());
@@ -56,7 +56,7 @@ class CentralProcessingUnitSuperChipTest {
         dataRegisters.write(1, 0x0023);
 
         writeInstruction(0x3123);
-        cpu.process();
+        cpu.process(1);
 
         assertEquals(4, programCounter.read());
     }
@@ -69,7 +69,7 @@ class CentralProcessingUnitSuperChipTest {
         dataRegisters.write(1, 0x0023);
 
         writeInstruction(0x4155);
-        cpu.process();
+        cpu.process(1);
 
         assertEquals(4, programCounter.read());
     }

@@ -46,8 +46,6 @@ class CPUSuperChip implements CPU {
      */
     protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
-    private int instructionsPerProcessing;
-
     protected final AddressRegister addressRegister;
     protected final DataRegisters   dataRegisters;
     private final   CallStack       callStack;
@@ -75,10 +73,10 @@ class CPUSuperChip implements CPU {
     }
 
     @Override
-    public void process() {
+    public void process(int instructionCount) {
         int i = 0;
 
-        while (i < instructionsPerProcessing) {
+        while (i < instructionCount) {
             processNextInstruction();
             i++;
         }
@@ -87,16 +85,10 @@ class CPUSuperChip implements CPU {
     }
 
     @Override
-    public void setInstructionsPerProcessing(int instructionsPerProcessCycle) {
-        this.instructionsPerProcessing = instructionsPerProcessCycle;
-    }
-
-    @Override
     public boolean[][] getDisplayData() {
         return graphics.getScreenData();
     }
-
-
+    
     private void processNextInstruction() throws UnsupportedOperationException {
         int o = getNextOpcode();
 

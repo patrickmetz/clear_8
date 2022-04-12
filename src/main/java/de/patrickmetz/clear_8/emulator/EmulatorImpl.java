@@ -33,13 +33,10 @@ import java.util.List;
 final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implements Emulator {
     private EventListenerList listeners;
 
-    private final int FRAME_DURATION = 1000 / Config.Emulator.FRAMES_PER_SECOND;
-    private       int instructionsPerFrame;
+    private final float FRAME_DURATION = 1000f / Config.Emulator.FRAMES_PER_SECOND;
 
     private final int MEMORY_OFFSET_FONT = 0;
     private final int MEMORY_OFFSET_GAME = 512;
-
-    private CPU cpu;
 
     private Display  display;
     private Keyboard keyboard;
@@ -51,10 +48,14 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     private int     instructionsPerSecond;
     private boolean useVipCpu;
 
+    private int instructionCountPerFrame;
+
     public EmulatorImpl(String gamePath, int instructionsPerSecond, boolean useVipCpu) {
         this.gamePath = gamePath;
         this.instructionsPerSecond = instructionsPerSecond;
         this.useVipCpu = useVipCpu;
+
+        updateInstructionCountPerFrame();
 
         listeners = new EventListenerList();
     }
@@ -91,6 +92,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     @Override
     public void setInstructionsPerSecond(int instructionsPerSecond) {
         this.instructionsPerSecond = instructionsPerSecond;
+        updateInstructionCountPerFrame();
     }
 
     @Override
@@ -112,8 +114,6 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         }
 
         isRunning = true;
-
-        cpu = CPUFactory.makeCpu(useVipCpu, keyboard);
 
         this.execute(); // schedules the SwingWorker, once, as a worker thread
 
@@ -172,36 +172,31 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     // the main loop ----------------------------------------------------------
 
     /**
-     * Here the Swing worker does its actual work
+     * Here the emulator does its actual work, as a Swing worker
      */
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
+        CPU cpu = CPUFactory.makeCpu(useVipCpu, keyboard);
+
         cpu.setMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
-        cpu.setMemory(loadFileAsBytes(gamePath), MEMORY_OFFSET_GAME);
+        cpu.setMemory(loadFileAsByteArray(gamePath), MEMORY_OFFSET_GAME);
         cpu.setProgramCounter(MEMORY_OFFSET_GAME);
 
-        cpu.setInstructionsPerProcessing(getInstructionsPerFrame());
-
-        long now = System.currentTimeMillis();
+        long timeOfLastFrameEnd = System.currentTimeMillis();
 
         while (!isCancelled()) {
             synchronized (this) { // acquire intrinsic lock / get mutually exclusive access
                 while (isPaused) wait(); // cpu-friendly conditional thread pausing
             }
 
-            cpu.process();
-
-            waitUntilFrameEnds(now + FRAME_DURATION);
+            cpu.process(instructionCountPerFrame);
             publish(cpu.getDisplayData()); // let Swing schedule intermediate result processing
 
-            now = System.currentTimeMillis();
+            waitUntilFrameEnds(timeOfLastFrameEnd);
+            timeOfLastFrameEnd = System.currentTimeMillis();
         }
 
         return null;
-    }
-
-    private int getInstructionsPerFrame() {
-        return instructionsPerSecond / Config.Emulator.FRAMES_PER_SECOND;
     }
 
     /**
@@ -214,10 +209,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         }
     }
 
-    /**
-     * loads a file as an array of bytes
-     */
-    private int[] loadFileAsBytes(String filePath) throws IOException {
+    private int[] loadFileAsByteArray(String filePath) throws IOException {
         File            file       = new File(filePath);
         int[]           data       = new int[(int) file.length()];
         FileInputStream fileStream = new FileInputStream(file);
@@ -232,14 +224,18 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         return data;
     }
 
-    /**
-     * waiting until a frame's time span is over
-     */
     private void waitUntilFrameEnds(long endOfFrameTime) throws InterruptedException {
-        while (System.currentTimeMillis() < endOfFrameTime) {
-            // TODO: this is too imprecise (and expensive?) -> look into ScheduledThreadPoolExecutor(1)
+        // todo: the emulator cannot keep steady 60 fps, because the floating point precision
+        //  of FRAME_DURATION is lost when used with the long result of currentTimeMillis().
+        //  and using nanoTime() would end up way too expensive, and does only guarantee milli
+        //  second resolution.
+        while (System.currentTimeMillis() < endOfFrameTime + (long) FRAME_DURATION) {
+            //  todo: Thread.sleep(1) is too imprecisely scheduled and relatively expensive
             Thread.sleep(1);
         }
     }
 
+    private void updateInstructionCountPerFrame() {
+        instructionCountPerFrame = instructionsPerSecond / Config.Emulator.FRAMES_PER_SECOND;
+    }
 }
