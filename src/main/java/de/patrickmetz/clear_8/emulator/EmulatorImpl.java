@@ -29,7 +29,6 @@ import java.util.List;
  * The Swing GUI notices that, and schedules calls to process(), whenever it is ready
  * to be used with regard to the intermediate work results.
  *
- * see https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
  */
 final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implements Emulator {
     private EventListenerList listeners;
@@ -145,8 +144,8 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         if (isPaused) {
             notifyListeners(EmulatorState.PAUSED);
         } else {
-            synchronized (this) {
-                notify();
+            synchronized (this) { // acquire intrinsic lock / get mutually exclusive access
+                notify(); // wakes a single pausing thread up
             }
             notifyListeners(EmulatorState.RESUMED);
         }
@@ -186,9 +185,8 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         long now = System.currentTimeMillis();
 
         while (!isCancelled()) {
-            // see https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
-            synchronized (this) {
-                while (isPaused) wait();
+            synchronized (this) { // acquire intrinsic lock / get mutually exclusive access
+                while (isPaused) wait(); // cpu-friendly conditional thread pausing
             }
 
             cpu.process();
