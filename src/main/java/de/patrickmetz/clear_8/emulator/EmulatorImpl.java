@@ -185,7 +185,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
 
         while (!isCancelled()) {
             // see https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
-            while (isPaused) wait();
+            synchronized (this) {
+                while (isPaused) wait();
+            }
 
             cpu.process();
 
