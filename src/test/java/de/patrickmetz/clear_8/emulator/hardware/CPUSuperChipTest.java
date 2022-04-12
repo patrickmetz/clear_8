@@ -15,8 +15,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CentralProcessingUnitSuperChipTest {
 
     private AddressRegister addressRegister;
-    private CallStack callStack;
-    private CentralProcessingUnitSuperChip cpu;
+    private CallStack     callStack;
+    private CPUSuperChip  cpu;
     private DataRegisters dataRegisters;
     private DelayTimer delayTimer;
     private Graphics     graphics;
@@ -26,50 +26,50 @@ class CentralProcessingUnitSuperChipTest {
     private SoundTimer soundTimer;
 
     /**
-     * @see CentralProcessingUnitSuperChip#opcode1NNN
+     * @see CPUSuperChip#opcode1NNN
      */
     @Disabled
     void opcode1NNN() {
         writeInstruction(0x1123);
-        cpu.processNextInstruction();
+        cpu.process();
 
         assertEquals(0x0123, programCounter.read());
     }
 
     /**
-     * @see CentralProcessingUnitSuperChip#opcode2NNN
+     * @see CPUSuperChip#opcode2NNN
      */
     @Disabled
     void opcode2NNN() {
         writeInstruction(0x2123);
-        cpu.processNextInstruction();
+        cpu.process();
 
         assertEquals(2, callStack.pop());
         assertEquals(0x0123, programCounter.read());
     }
 
     /**
-     * @see CentralProcessingUnitSuperChip#opcode3XNN
+     * @see CPUSuperChip#opcode3XNN
      */
     @Disabled
     void opcode3NNN() {
         dataRegisters.write(1, 0x0023);
 
         writeInstruction(0x3123);
-        cpu.processNextInstruction();
+        cpu.process();
 
         assertEquals(4, programCounter.read());
     }
 
     /**
-     * @see CentralProcessingUnitSuperChip#opcode4XNN
+     * @see CPUSuperChip#opcode4XNN
      */
     @Disabled
     void opcode4NNN() {
         dataRegisters.write(1, 0x0023);
 
         writeInstruction(0x4155);
-        cpu.processNextInstruction();
+        cpu.process();
 
         assertEquals(4, programCounter.read());
     }
@@ -86,7 +86,7 @@ class CentralProcessingUnitSuperChipTest {
         programCounter = new ProgramCounter();
         soundTimer = new SoundTimer(new Sound());
 
-        cpu = new CentralProcessingUnitSuperChip(
+        cpu = new CPUSuperChip(
                 addressRegister, callStack, dataRegisters,
                 delayTimer, graphics, keyboard, memory,
                 programCounter, soundTimer

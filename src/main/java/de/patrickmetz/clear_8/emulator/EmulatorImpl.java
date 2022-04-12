@@ -4,8 +4,8 @@ import de.patrickmetz.clear_8.emulator.events.EmulatorEvent;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEventImpl;
 import de.patrickmetz.clear_8.emulator.events.EmulatorEventListener;
 import de.patrickmetz.clear_8.emulator.events.EmulatorState;
-import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnit;
-import de.patrickmetz.clear_8.emulator.hardware.CentralProcessingUnitFactory;
+import de.patrickmetz.clear_8.emulator.hardware.CPU;
+import de.patrickmetz.clear_8.emulator.hardware.CPUFactory;
 import de.patrickmetz.clear_8.emulator.input.Keyboard;
 import de.patrickmetz.clear_8.emulator.resources.Font;
 import de.patrickmetz.clear_8.globals.Config;
@@ -38,9 +38,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
     private       int instructionsPerFrame;
 
     private final int MEMORY_OFFSET_FONT = 0;
-    private final int MEMORY_OFFSET_ROM  = 512;
+    private final int MEMORY_OFFSET_GAME = 512;
 
-    private CentralProcessingUnit cpu;
+    private CPU cpu;
 
     private Display  display;
     private Keyboard keyboard;
@@ -114,9 +114,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
 
         isRunning = true;
 
-        cpu = CentralProcessingUnitFactory.makeCpu(useVipCpu, keyboard);
-
-        instructionsPerFrame = instructionsPerSecond / Config.Emulator.FRAMES_PER_SECOND;
+        cpu = CPUFactory.makeCpu(useVipCpu, keyboard);
 
         this.execute(); // schedules the SwingWorker, once, as a worker thread
 
@@ -178,20 +176,18 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
      */
     @Override
     public Void doInBackground() throws InterruptedException, IOException {
-        cpu.writeToMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
-        cpu.writeToMemory(loadFileAsBytes(gamePath), MEMORY_OFFSET_ROM);
-        cpu.setProgramCounter(MEMORY_OFFSET_ROM);
+        cpu.setMemory(Font.getBytes(), MEMORY_OFFSET_FONT);
+        cpu.setMemory(loadFileAsBytes(gamePath), MEMORY_OFFSET_GAME);
+        cpu.setProgramCounter(MEMORY_OFFSET_GAME);
+
+        cpu.setInstructionsPerProcessing(getInstructionsPerFrame());
 
         long now = System.currentTimeMillis();
 
         while (!isCancelled()) {
             waitUntilPauseEnds();
 
-            for (int i = 0; i < instructionsPerFrame; i++) {
-                cpu.processNextInstruction();
-            }
-
-            cpu.updateTimers();
+            cpu.process();
 
             waitUntilFrameEnds(now + FRAME_DURATION);
             now = System.currentTimeMillis();
@@ -200,6 +196,10 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         }
 
         return null;
+    }
+
+    private int getInstructionsPerFrame() {
+        return instructionsPerSecond / Config.Emulator.FRAMES_PER_SECOND;
     }
 
     /**
