@@ -135,7 +135,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         notifyListeners(EmulatorState.STOPPED);
     }
 
-    public synchronized void togglePause() {
+    public void togglePause() {
         if (!isRunning) {
             return;
         }
@@ -145,7 +145,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         if (isPaused) {
             notifyListeners(EmulatorState.PAUSED);
         } else {
-            notify();
+            synchronized (this) {
+                notify();
+            }
             notifyListeners(EmulatorState.RESUMED);
         }
     }
