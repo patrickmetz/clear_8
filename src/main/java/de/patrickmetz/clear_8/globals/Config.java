@@ -8,8 +8,7 @@ public class Config {
     }
 
     public static class Emulator {
-        public static final int FRAMES_PER_SECOND          = 60;
-        public static final int FRAME_SLEEP_INTERVAL_IN_MS = 1;
+        public static final int FRAMES_PER_SECOND = 60;
     }
 
     public static class Gui {

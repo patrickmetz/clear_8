@@ -135,18 +135,17 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         notifyListeners(EmulatorState.STOPPED);
     }
 
-    public void togglePause() {
+    public synchronized void togglePause() {
         if (!isRunning) {
             return;
         }
 
         isPaused = !isPaused;
 
-        notify(); // either wakes up the paused SwingWorker, or does nothing
-
         if (isPaused) {
             notifyListeners(EmulatorState.PAUSED);
         } else {
+            notify();
             notifyListeners(EmulatorState.RESUMED);
         }
     }
@@ -158,7 +157,7 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         listeners.add(EmulatorEventListener.class, listener);
     }
 
-    private synchronized void notifyListeners(EmulatorState runnerStatus) {
+    private void notifyListeners(EmulatorState runnerStatus) {
         EmulatorEvent runnerEvent = new EmulatorEventImpl(this, runnerStatus);
 
         EmulatorEventListener[] listenerList =
@@ -185,7 +184,8 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
         long now = System.currentTimeMillis();
 
         while (!isCancelled()) {
-            waitUntilPauseEnds();
+            // see https://docs.oracle.com/javase/tutorial/essential/concurrency/guardmeth.html
+            while (isPaused) wait();
 
             cpu.process();
 
@@ -235,16 +235,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
      */
     private void waitUntilFrameEnds(long endOfFrameTime) throws InterruptedException {
         while (System.currentTimeMillis() < endOfFrameTime) {
-            Thread.sleep(Config.Emulator.FRAME_SLEEP_INTERVAL_IN_MS);
+            // TODO: this is too imprecise (and expensive?) -> look into ScheduledThreadPoolExecutor(1)
+            Thread.sleep(1);
         }
     }
 
-    /**
-     * waiting while paused
-     */
-    private void waitUntilPauseEnds() throws InterruptedException {
-        while (isPaused) {
-            wait();
-        }
-    }
 }
