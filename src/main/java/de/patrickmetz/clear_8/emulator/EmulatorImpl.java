@@ -190,9 +190,9 @@ final public class EmulatorImpl extends SwingWorker<Void, boolean[][]> implement
             cpu.process();
 
             waitUntilFrameEnds(now + FRAME_DURATION);
-            now = System.currentTimeMillis();
-
             publish(cpu.getDisplayData()); // let Swing schedule intermediate result processing
+
+            now = System.currentTimeMillis();
         }
 
         return null;
