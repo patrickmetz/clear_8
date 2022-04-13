@@ -1,22 +1,26 @@
 package de.patrickmetz.clear_8.emulator.hardware;
 
-final class Graphics {
+import de.patrickmetz.clear_8.globals.Config;
 
-    private static final int SCREEN_HEIGHT = 32;
-    private static final int SCREEN_WIDTH = 64;
+ final class Graphics {
+
     private static final int SPRITE_WIDTH = 8;
 
-    private boolean[][] screenData;
+    private boolean[][] displayData;
 
     Graphics() {
-        initializeScreenData();
+        this.clearDisplayData();
     }
 
-    void clearScreen() {
-        initializeScreenData();
+    public void clearDisplayData() {
+        displayData = new boolean[Config.Gui.DISPLAY_WIDTH][Config.Gui.DISPLAY_HEIGHT];
     }
 
-    boolean drawSprite(int offsetX, int offsetY, int[] spriteRows) {
+    public boolean[][] getDisplayData() {
+        return displayData;
+    }
+
+    public boolean drawSprite(int offsetX, int offsetY, int[] spriteRows) {
         boolean collision = false;
 
         for (int x = 0; x < SPRITE_WIDTH; x++) {
@@ -33,31 +37,22 @@ final class Graphics {
                 So sprites exceeding the screen size re-enter it from the
                 opposite side.
                  */
-                int positionX = (offsetX + x) % SCREEN_WIDTH;
-                int positionY = (offsetY + y) % SCREEN_HEIGHT;
+                int positionX = (offsetX + x) % Config.Gui.DISPLAY_WIDTH;
+                int positionY = (offsetY + y) % Config.Gui.DISPLAY_HEIGHT;
 
                 /* The pixels are dawn using XOR logic: They must exclusively
                 be active in this draw call or in the last draw call, but not
                 in both. If they're active in both, they won't be drawn and
                 we register a collision. */
-                if ((pixelState) && (screenData[positionX][positionY])) {
+                if ((pixelState) && (displayData[positionX][positionY])) {
                     pixelState = false;
                     collision = true;
                 }
 
-                screenData[positionX][positionY] = pixelState;
+                displayData[positionX][positionY] = pixelState;
             }
         }
 
         return collision;
     }
-
-    boolean[][] getScreenData() {
-        return screenData;
-    }
-
-    private void initializeScreenData() {
-        screenData = new boolean[SCREEN_WIDTH][SCREEN_HEIGHT];
-    }
-
 }

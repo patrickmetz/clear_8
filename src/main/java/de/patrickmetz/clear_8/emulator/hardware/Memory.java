@@ -4,8 +4,6 @@ import java.util.HashMap;
 
 final class Memory {
 
-    // hash map read and write access surpasses array:
-    // algorithmic complexity of get() and put() is O(1)
     private final HashMap<Integer, Integer> memory;
 
     Memory() {

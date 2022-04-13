@@ -19,19 +19,19 @@ final public class DisplayImpl extends JPanel implements Display {
     private int         updateCount;
 
     public DisplayImpl() {
-        screenData = new boolean[Config.Gui.SCREEN_WIDTH][Config.Gui.SCREEN_HEIGHT];
+        screenData = new boolean[Config.Gui.DISPLAY_WIDTH][Config.Gui.DISPLAY_HEIGHT];
         setDoubleBuffered(true);
 
         colorBackground = new Color(
-                Config.Gui.SCREEN_BACKGROUND_COLOR_RED,
-                Config.Gui.SCREEN_BACKGROUND_COLOR_GREEN,
-                Config.Gui.SCREEN_BACKGROUND_COLOR_BLUE
+                Config.Gui.DISPLAY_BACKGROUND_COLOR_RED,
+                Config.Gui.DISPLAY_BACKGROUND_COLOR_GREEN,
+                Config.Gui.DISPLAY_BACKGROUND_COLOR_BLUE
         );
 
         colorPixel = new Color(
-                Config.Gui.SCREEN_PIXEL_COLOR_RED,
-                Config.Gui.SCREEN_PIXEL_COLOR_GREEN,
-                Config.Gui.SCREEN_PIXEL_COLOR_BLUE
+                Config.Gui.DISPLAY_PIXEL_COLOR_RED,
+                Config.Gui.DISPLAY_PIXEL_COLOR_GREEN,
+                Config.Gui.DISPLAY_PIXEL_COLOR_BLUE
         );
 
         setBorder(BorderFactory.createLineBorder(Color.lightGray));
@@ -39,7 +39,7 @@ final public class DisplayImpl extends JPanel implements Display {
         setAlignmentX(Component.CENTER_ALIGNMENT);
         setAlignmentY(Component.CENTER_ALIGNMENT);
 
-        setPreferredSize(new Dimension(Config.Gui.SCREEN_WIDTH * Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_HEIGHT * Config.Gui.SCREEN_SCALE));
+        setPreferredSize(new Dimension(Config.Gui.DISPLAY_WIDTH * Config.Gui.DISPLAY_SCALE, Config.Gui.DISPLAY_HEIGHT * Config.Gui.DISPLAY_SCALE));
     }
 
     @Override
@@ -65,12 +65,12 @@ final public class DisplayImpl extends JPanel implements Display {
     }
 
     private void drawScreen(Graphics graphics) {
-        for (int x = 0; x < Config.Gui.SCREEN_WIDTH; x++) {
-            for (int y = 0; y < Config.Gui.SCREEN_HEIGHT; y++) {
+        for (int x = 0; x < Config.Gui.DISPLAY_WIDTH; x++) {
+            for (int y = 0; y < Config.Gui.DISPLAY_HEIGHT; y++) {
                 graphics.setColor(screenData[x][y] ? colorPixel : colorBackground);
 
                 // one scaled pixel
-                graphics.fillRect(x * Config.Gui.SCREEN_SCALE, y * Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_SCALE, Config.Gui.SCREEN_SCALE);
+                graphics.fillRect(x * Config.Gui.DISPLAY_SCALE, y * Config.Gui.DISPLAY_SCALE, Config.Gui.DISPLAY_SCALE, Config.Gui.DISPLAY_SCALE);
             }
         }
     }

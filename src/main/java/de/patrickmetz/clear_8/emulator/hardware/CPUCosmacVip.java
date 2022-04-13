@@ -15,8 +15,8 @@ class CPUCosmacVip extends CPUSuperChip {
                  ProgramCounter programCounter, SoundTimer soundTimer) {
 
         super(addressRegister, callStack, dataRegisters,
-              delayTimer, graphics, keyboard, memory,
-              programCounter, soundTimer
+                delayTimer, graphics, keyboard, memory,
+                programCounter, soundTimer
         );
     }
 
@@ -55,7 +55,7 @@ class CPUCosmacVip extends CPUSuperChip {
 
         addressRegister.write(
                 addressRegister.read()
-                + x(o)
+                        + x(o)
         );
     }
 
@@ -74,7 +74,7 @@ class CPUCosmacVip extends CPUSuperChip {
 
         addressRegister.write(
                 addressRegister.read()
-                + x(o)
+                        + x(o)
         );
     }
 

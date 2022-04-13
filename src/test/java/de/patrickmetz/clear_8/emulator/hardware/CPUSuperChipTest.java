@@ -15,15 +15,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CentralProcessingUnitSuperChipTest {
 
     private AddressRegister addressRegister;
-    private CallStack     callStack;
-    private CPUSuperChip  cpu;
-    private DataRegisters dataRegisters;
-    private DelayTimer delayTimer;
+    private CallStack       callStack;
+    private CPUSuperChip    cpu;
+    private DataRegisters   dataRegisters;
+    private DelayTimer   delayTimer;
     private Graphics     graphics;
     private KeyboardImpl keyboard;
-    private Memory       memory;
-    private ProgramCounter programCounter;
-    private SoundTimer soundTimer;
+    private Memory          memory;
+    private ProgramCounter  programCounter;
+    private SoundTimer      soundTimer;
 
     /**
      * @see CPUSuperChip#opcode1NNN

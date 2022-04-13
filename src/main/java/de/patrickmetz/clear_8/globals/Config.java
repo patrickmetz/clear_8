@@ -16,17 +16,17 @@ public class Config {
         public static final int IPS_STEP_SIZE = 100;
         public static final int IPS_MAXIMUM   = 1000;
 
-        public static final int SCREEN_WIDTH  = 64;
-        public static final int SCREEN_HEIGHT = 32;
-        public static final int SCREEN_SCALE  = 8;
+        public static final int DISPLAY_WIDTH  = 64;
+        public static final int DISPLAY_HEIGHT = 32;
+        public static final int DISPLAY_SCALE  = 8;
 
-        public static final int SCREEN_PIXEL_COLOR_RED   = 45;
-        public static final int SCREEN_PIXEL_COLOR_GREEN = 71;
-        public static final int SCREEN_PIXEL_COLOR_BLUE  = 171;
+        public static final int DISPLAY_PIXEL_COLOR_RED   = 45;
+        public static final int DISPLAY_PIXEL_COLOR_GREEN = 71;
+        public static final int DISPLAY_PIXEL_COLOR_BLUE  = 171;
 
-        public static final int SCREEN_BACKGROUND_COLOR_RED   = 255;
-        public static final int SCREEN_BACKGROUND_COLOR_GREEN = 255;
-        public static final int SCREEN_BACKGROUND_COLOR_BLUE  = 255;
+        public static final int DISPLAY_BACKGROUND_COLOR_RED   = 255;
+        public static final int DISPLAY_BACKGROUND_COLOR_GREEN = 255;
+        public static final int DISPLAY_BACKGROUND_COLOR_BLUE  = 255;
 
         public static final int FPS_UPDATE_INTERVAL_IN_MS = 1000;
 

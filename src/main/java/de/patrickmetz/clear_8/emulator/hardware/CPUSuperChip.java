@@ -50,7 +50,7 @@ class CPUSuperChip implements CPU {
     protected final DataRegisters   dataRegisters;
     private final   CallStack       callStack;
     private final   DelayTimer      delayTimer;
-    private final   Graphics        graphics;
+    private final   Graphics        gpu;
     private final   Keyboard        keyboard;
     private final   Memory          memory;
     private final   ProgramCounter  programCounter;
@@ -58,14 +58,14 @@ class CPUSuperChip implements CPU {
 
     CPUSuperChip(AddressRegister addressRegister, CallStack callStack,
                  DataRegisters dataRegisters, DelayTimer delayTimer,
-                 Graphics graphics, Keyboard keyboard, Memory memory,
+                 Graphics gpu, Keyboard keyboard, Memory memory,
                  ProgramCounter programCounter, SoundTimer soundTimer
     ) {
         this.addressRegister = addressRegister;
         this.callStack = callStack;
         this.dataRegisters = dataRegisters;
         this.delayTimer = delayTimer;
-        this.graphics = graphics;
+        this.gpu = gpu;
         this.keyboard = keyboard;
         this.memory = memory;
         this.programCounter = programCounter;
@@ -86,9 +86,9 @@ class CPUSuperChip implements CPU {
 
     @Override
     public boolean[][] getDisplayData() {
-        return graphics.getScreenData();
+        return gpu.getDisplayData();
     }
-    
+
     private void processNextInstruction() throws UnsupportedOperationException {
         int o = getNextOpcode();
 
@@ -409,7 +409,7 @@ class CPUSuperChip implements CPU {
      * Clears the screen.
      */
     private void opcode00E0() {
-        graphics.clearScreen();
+        gpu.clearDisplayData();
     }
 
     /**
@@ -662,7 +662,7 @@ class CPUSuperChip implements CPU {
      * N sprite rows found at currently registered address.
      */
     private void opcodeDXYN(int o) {
-        boolean pixelCollision = graphics.drawSprite(
+        boolean pixelCollision = gpu.drawSprite(
                 dataRegisters.read(x(o)),
                 dataRegisters.read(y(o)),
                 memory.read(addressRegister.read(), n(o))

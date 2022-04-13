@@ -2,7 +2,7 @@ package de.patrickmetz.clear_8.emulator.hardware;
 
 import de.patrickmetz.clear_8.emulator.input.Keyboard;
 
-public class CPUFactory {
+final public class CPUFactory {
 
     public static CPU makeCpu(boolean useVipCpu, Keyboard keyboard) {
         if (useVipCpu) {
