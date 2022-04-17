@@ -15,9 +15,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class CentralProcessingUnitSuperChipTest {
 
     private AddressRegister addressRegister;
-    private CallStack       callStack;
-    private CPUSuperChip    cpu;
-    private DataRegisters   dataRegisters;
+    private CallStack        callStack;
+    private CPUSuperChipImpl cpu;
+    private DataRegisters    dataRegisters;
     private DelayTimer   delayTimer;
     private Graphics     graphics;
     private KeyboardImpl keyboard;
@@ -26,7 +26,7 @@ class CentralProcessingUnitSuperChipTest {
     private SoundTimer      soundTimer;
 
     /**
-     * @see CPUSuperChip#opcode1NNN
+     * @see CPUSuperChipImpl#opcode1NNN
      */
     @Disabled
     void opcode1NNN() {
@@ -37,7 +37,7 @@ class CentralProcessingUnitSuperChipTest {
     }
 
     /**
-     * @see CPUSuperChip#opcode2NNN
+     * @see CPUSuperChipImpl#opcode2NNN
      */
     @Disabled
     void opcode2NNN() {
@@ -49,7 +49,7 @@ class CentralProcessingUnitSuperChipTest {
     }
 
     /**
-     * @see CPUSuperChip#opcode3XNN
+     * @see CPUSuperChipImpl#opcode3XNN
      */
     @Disabled
     void opcode3NNN() {
@@ -62,7 +62,7 @@ class CentralProcessingUnitSuperChipTest {
     }
 
     /**
-     * @see CPUSuperChip#opcode4XNN
+     * @see CPUSuperChipImpl#opcode4XNN
      */
     @Disabled
     void opcode4NNN() {
@@ -86,7 +86,7 @@ class CentralProcessingUnitSuperChipTest {
         programCounter = new ProgramCounter();
         soundTimer = new SoundTimer(new Sound());
 
-        cpu = new CPUSuperChip(
+        cpu = new CPUSuperChipImpl(
                 addressRegister, callStack, dataRegisters,
                 delayTimer, graphics, keyboard, memory,
                 programCounter, soundTimer

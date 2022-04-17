@@ -6,13 +6,13 @@ final public class CPUFactory {
 
     public static CPU makeCpu(boolean useVipCpu, Keyboard keyboard) {
         if (useVipCpu) {
-            return new CPUCosmacVip(
+            return new CPUCosmacVipImpl(
                     new AddressRegister(), new CallStack(), new DataRegisters(),
                     new DelayTimer(), new Graphics(), keyboard, new Memory(),
                     new ProgramCounter(), new SoundTimer(new Sound())
             );
         } else {
-            return new CPUSuperChip(
+            return new CPUSuperChipImpl(
                     new AddressRegister(), new CallStack(), new DataRegisters(),
                     new DelayTimer(), new Graphics(), keyboard, new Memory(),
                     new ProgramCounter(), new SoundTimer(new Sound())
