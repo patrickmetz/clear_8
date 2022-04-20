@@ -2,7 +2,7 @@ package de.patrickmetz.clear_8.emulator.hardware;
 
 import de.patrickmetz.clear_8.globals.Config;
 
- final class Graphics {
+final class Graphics {
 
     private static final int SPRITE_WIDTH = 8;
 

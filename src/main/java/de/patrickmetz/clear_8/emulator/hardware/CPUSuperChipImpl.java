@@ -20,13 +20,13 @@ class CPUSuperChipImpl extends AbstractCPU {
 
     @Override
     protected void processNextInstruction() throws UnsupportedOperationException {
-        int o = getNextOpcode();
+        int opcode = getNextOpcode();
 
         // compare first hex digit (four bits)
-        switch (o & 0xF000) {
+        switch (opcode & 0xF000) {
             case 0x0000:
                 // compare last two hex digits (eight bits)
-                switch (o & 0x00FF) {
+                switch (opcode & 0x00FF) {
                     case 0x00E0:
                         opcode00E0();
                         break;
@@ -34,125 +34,125 @@ class CPUSuperChipImpl extends AbstractCPU {
                         opcode00EE();
                         break;
                     default:
-                        throwUnknownOpcodeException(o);
+                        throwUnknownOpcodeException(opcode);
                 }
                 break;
             case 0x1000:
-                opcode1NNN(o);
+                opcode1NNN(opcode);
                 break;
             case 0x2000:
-                opcode2NNN(o);
+                opcode2NNN(opcode);
                 break;
             case 0x3000:
-                opcode3XNN(o);
+                opcode3XNN(opcode);
                 break;
             case 0x4000:
-                opcode4XNN(o);
+                opcode4XNN(opcode);
                 break;
             case 0x5000:
-                opcode5XY0(o);
+                opcode5XY0(opcode);
                 break;
             case 0x6000:
-                opcode6XNN(o);
+                opcode6XNN(opcode);
                 break;
             case 0x7000:
-                opcode7XNN(o);
+                opcode7XNN(opcode);
                 break;
             case 0x8000:
-                switch (o & 0x000F) {
+                switch (opcode & 0x000F) {
                     case 0x0000:
-                        opcode8XY0(o);
+                        opcode8XY0(opcode);
                         break;
                     case 0x0001:
-                        opcode8XY1(o);
+                        opcode8XY1(opcode);
                         break;
                     case 0x0002:
-                        opcode8XY2(o);
+                        opcode8XY2(opcode);
                         break;
                     case 0x0003:
-                        opcode8XY3(o);
+                        opcode8XY3(opcode);
                         break;
                     case 0x0004:
-                        opcode8XY4(o);
+                        opcode8XY4(opcode);
                         break;
                     case 0x0005:
-                        opcode8XY5(o);
+                        opcode8XY5(opcode);
                         break;
                     case 0x0006:
-                        opcode8XY6(o);
+                        opcode8XY6(opcode);
                         break;
                     case 0x0007:
-                        opcode8XY7(o);
+                        opcode8XY7(opcode);
                         break;
                     case 0x000E:
-                        opcode8XYE(o);
+                        opcode8XYE(opcode);
                         break;
                     default:
-                        throwUnknownOpcodeException(o);
+                        throwUnknownOpcodeException(opcode);
                 }
                 break;
             case 0x9000:
-                opcode9XY0(o);
+                opcode9XY0(opcode);
                 break;
             case 0xA000:
-                opcodeANNN(o);
+                opcodeANNN(opcode);
                 break;
             case 0xB000:
-                opcodeBNNN(o);
+                opcodeBNNN(opcode);
                 break;
             case 0xC000:
-                opcodeCXNN(o);
+                opcodeCXNN(opcode);
                 break;
             case 0xD000:
-                opcodeDXYN(o);
+                opcodeDXYN(opcode);
                 break;
             case 0xE000:
-                switch (o & 0x000F) {
+                switch (opcode & 0x000F) {
                     case 0x000E:
-                        opcodeEX9E(o);
+                        opcodeEX9E(opcode);
                         break;
                     case 0x0001:
-                        opcodeEXA1(o);
+                        opcodeEXA1(opcode);
                         break;
                     default:
-                        throwUnknownOpcodeException(o);
+                        throwUnknownOpcodeException(opcode);
                 }
                 break;
             case 0xF000:
-                switch (o & 0x00FF) {
+                switch (opcode & 0x00FF) {
                     case 0x001E:
-                        opcodeFX1E(o);
+                        opcodeFX1E(opcode);
                         break;
                     case 0x0007:
-                        opcodeFX07(o);
+                        opcodeFX07(opcode);
                         break;
                     case 0x000A:
-                        opcodeFX0A(o);
+                        opcodeFX0A(opcode);
                         break;
                     case 0x0015:
-                        opcodeFX15(o);
+                        opcodeFX15(opcode);
                         break;
                     case 0x0018:
-                        opcodeFX18(o);
+                        opcodeFX18(opcode);
                         break;
                     case 0x0029:
-                        opcodeFX29(o);
+                        opcodeFX29(opcode);
                         break;
                     case 0x0033:
-                        opcodeFX33(o);
+                        opcodeFX33(opcode);
                         break;
                     case 0x0055:
-                        opcodeFX55(o);
+                        opcodeFX55(opcode);
                         break;
                     case 0x0065:
-                        opcodeFX65(o);
+                        opcodeFX65(opcode);
                         break;
                     default:
-                        throwUnknownOpcodeException(o);
+                        throwUnknownOpcodeException(opcode);
                 }
                 break;
             default:
-                throwUnknownOpcodeException(o);
+                throwUnknownOpcodeException(opcode);
         }
     }
 
@@ -167,8 +167,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      *
      * @see CPUCosmacVipImpl#opcode8XY6(int)
      */
-    protected void opcode8XY6(int o) {
-        int X     = x(o);
+    protected void opcode8XY6(int opcode) {
+        int X     = X(opcode);
         int value = dataRegisters.read(X);
 
         dataRegisters.write(CARRY, value & LSB);
@@ -181,8 +181,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      *
      * @see CPUCosmacVipImpl#opcodeFX55(int)
      */
-    protected void opcodeFX55(int o) {
-        int X       = x(o);
+    protected void opcodeFX55(int opcode) {
+        int X       = X(opcode);
         int address = addressRegister.read();
 
         for (int register = 0; register <= X; register++) {
@@ -199,8 +199,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      *
      * @see CPUCosmacVipImpl#opcodeFX65(int)
      */
-    protected void opcodeFX65(int o) {
-        int X       = x(o);
+    protected void opcodeFX65(int opcode) {
+        int X       = X(opcode);
         int address = addressRegister.read();
 
         for (int register = 0; register <= X; register++) {
@@ -228,24 +228,24 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Sets program counter to value NNN.
      */
-    private void opcode1NNN(int o) {
-        programCounter.write(nnn(o));
+    private void opcode1NNN(int opcode) {
+        programCounter.write(NNN(opcode));
     }
 
     /**
      * Enters subroutine.
      */
-    private void opcode2NNN(int o) {
+    private void opcode2NNN(int opcode) {
         callStack.push(programCounter.read());
-        programCounter.write(nnn(o));
+        programCounter.write(NNN(opcode));
     }
 
     /**
      * Skips one instruction if the value of
      * data register X is equal to NN.
      */
-    private void opcode3XNN(int o) {
-        if (dataRegisters.read(x(o)) == nn(o)) {
+    private void opcode3XNN(int opcode) {
+        if (dataRegisters.read(X(opcode)) == NN(opcode)) {
             programCounter.increment(OPCODE_SIZE);
         }
     }
@@ -254,8 +254,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Skip one instruction, if the value of data register X
      * is not equal to the value NN.
      */
-    private void opcode4XNN(int o) {
-        if (dataRegisters.read(x(o)) != nn(o)) {
+    private void opcode4XNN(int opcode) {
+        if (dataRegisters.read(X(opcode)) != NN(opcode)) {
             programCounter.increment(OPCODE_SIZE);
         }
     }
@@ -264,8 +264,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Skip one instruction, if the value of data register X
      * is equal to the value of data register Y.
      */
-    private void opcode5XY0(int o) {
-        if (dataRegisters.read(x(o)) == dataRegisters.read(y(o))) {
+    private void opcode5XY0(int opcode) {
+        if (dataRegisters.read(X(opcode)) == dataRegisters.read(Y(opcode))) {
             programCounter.increment(OPCODE_SIZE);
         }
     }
@@ -273,8 +273,8 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Sets data register X to value NN.
      */
-    private void opcode6XNN(int o) {
-        dataRegisters.write(x(o), nn(o));
+    private void opcode6XNN(int opcode) {
+        dataRegisters.write(X(opcode), NN(opcode));
     }
 
     /**
@@ -283,10 +283,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * size, it is "wrapped around" with modulo, but
      * no carry flag is set.
      */
-    private void opcode7XNN(int o) {
-        int X = x(o);
+    private void opcode7XNN(int opcode) {
+        int X = X(opcode);
 
-        int result = unsigned(dataRegisters.read(X)) + nn(o);
+        int result = unsignedByte(dataRegisters.read(X)) + NN(opcode);
 
         //  256 = 0, 257 = 1, 258 = 2, ...
         if (result > UNSIGNED_BYTE_MAX_VALUE) {
@@ -300,21 +300,21 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets the value of data register X
      * to the value of data register Y.
      */
-    private void opcode8XY0(int o) {
-        dataRegisters.write(x(o), dataRegisters.read(y(o)));
+    private void opcode8XY0(int opcode) {
+        dataRegisters.write(X(opcode), dataRegisters.read(Y(opcode)));
     }
 
     /**
      * Sets the value of data register X to the result of a
      * bitwise or of X's and Y's values.
      */
-    private void opcode8XY1(int o) {
-        int X = x(o);
+    private void opcode8XY1(int opcode) {
+        int X = X(opcode);
 
         dataRegisters.write(
                 X,
                 dataRegisters.read(X)
-                        | dataRegisters.read(y(o))
+                        | dataRegisters.read(Y(opcode))
         );
     }
 
@@ -322,13 +322,13 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets the value of data register X to the result of a
      * bitwise and of X's and Y's values.
      */
-    private void opcode8XY2(int o) {
-        int X = x(o);
+    private void opcode8XY2(int opcode) {
+        int X = X(opcode);
 
         dataRegisters.write(
                 X,
                 dataRegisters.read(X)
-                        & dataRegisters.read(y(o))
+                        & dataRegisters.read(Y(opcode))
         );
     }
 
@@ -336,13 +336,13 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets the value of data register X to the result of a
      * bitwise xor of X's and Y's values.
      */
-    private void opcode8XY3(int o) {
-        int X = x(o);
+    private void opcode8XY3(int opcode) {
+        int X = X(opcode);
 
         dataRegisters.write(
                 X,
                 dataRegisters.read(X)
-                        ^ dataRegisters.read(y(o))
+                        ^ dataRegisters.read(Y(opcode))
         );
     }
 
@@ -352,10 +352,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * it is "wrapped around" with modulo and the carry
      * flag is set to 1 (0 otherwise).
      */
-    private void opcode8XY4(int o) {
+    private void opcode8XY4(int opcode) {
         int result =
-                unsigned(dataRegisters.read(x(o)))
-                        + unsigned(dataRegisters.read(y(o)));
+                unsignedByte(dataRegisters.read(X(opcode)))
+                        + unsignedByte(dataRegisters.read(Y(opcode)));
 
         int carry = 0;
 
@@ -365,7 +365,7 @@ class CPUSuperChipImpl extends AbstractCPU {
             carry = 1;
         }
 
-        dataRegisters.write(x(o), result);
+        dataRegisters.write(X(opcode), result);
         dataRegisters.write(CARRY, carry);
     }
 
@@ -374,12 +374,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      * in X. If the result is negative (a borrow occurs), the carry flag
      * is set to 0 (1 otherwise).
      */
-    private void opcode8XY5(int o) {
+    private void opcode8XY5(int opcode) {
         int result =
-                unsigned(dataRegisters.read(x(o)))
-                        - unsigned(dataRegisters.read(y(o)));
+                unsignedByte(dataRegisters.read(X(opcode)))
+                        - unsignedByte(dataRegisters.read(Y(opcode)));
 
-        dataRegisters.write(x(o), result);
+        dataRegisters.write(X(opcode), result);
         dataRegisters.write(
                 CARRY,
                 (result < 0) ? 0 : 1
@@ -391,12 +391,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      * result in X. If the result is negative (a borrow occurs),
      * the carry flag is set to 0 (1 otherwise).
      */
-    private void opcode8XY7(int o) {
+    private void opcode8XY7(int opcode) {
         int result =
-                unsigned(dataRegisters.read(y(o)))
-                        - unsigned(dataRegisters.read(x(o)));
+                unsignedByte(dataRegisters.read(Y(opcode)))
+                        - unsignedByte(dataRegisters.read(X(opcode)));
 
-        dataRegisters.write(x(o), result);
+        dataRegisters.write(X(opcode), result);
         dataRegisters.write(
                 CARRY,
                 (result < 0) ? 0 : 1
@@ -409,8 +409,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * <p>
      * Shifts data register X to the left by 1 bit.
      */
-    private void opcode8XYE(int o) {
-        int X = x(o);
+    private void opcode8XYE(int opcode) {
+        int X = X(opcode);
 
         dataRegisters.write(CARRY, X & MSB);
         dataRegisters.write(
@@ -423,10 +423,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Skip one instruction if data register X
      * is not equal to data register Y.
      */
-    private void opcode9XY0(int o) {
+    private void opcode9XY0(int opcode) {
         if (
-                dataRegisters.read(x(o))
-                        != dataRegisters.read(y(o))
+                dataRegisters.read(X(opcode))
+                        != dataRegisters.read(Y(opcode))
         ) {
             programCounter.increment(OPCODE_SIZE);
         }
@@ -435,8 +435,8 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Set address register to value NNN.
      */
-    private void opcodeANNN(int o) {
-        addressRegister.write(nnn(o));
+    private void opcodeANNN(int opcode) {
+        addressRegister.write(NNN(opcode));
     }
 
     /**
@@ -445,10 +445,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * <p>
      * todo: implement different versions for VIP and SCHIP?
      */
-    private void opcodeBNNN(int o) {
+    private void opcodeBNNN(int opcode) {
         programCounter.write(
                 dataRegisters.read(0)
-                        + nnn(o)
+                        + NNN(opcode)
         );
     }
 
@@ -456,10 +456,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Set address register X to a random value
      * (between 0 and 255), which is masked with NN.
      */
-    private void opcodeCXNN(int o) {
+    private void opcodeCXNN(int opcode) {
         dataRegisters.write(
-                x(o),
-                (int) (Math.random() * (255 + 1)) & nn(o)
+                X(opcode),
+                (int) (Math.random() * (255 + 1)) & NN(opcode)
         );
     }
 
@@ -467,11 +467,11 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Draws a sprite at screen coordinates X,Y, using
      * N sprite rows found at currently registered address.
      */
-    private void opcodeDXYN(int o) {
+    private void opcodeDXYN(int opcode) {
         boolean pixelCollision = gpu.drawSprite(
-                dataRegisters.read(x(o)),
-                dataRegisters.read(y(o)),
-                memory.read(addressRegister.read(), n(o))
+                dataRegisters.read(X(opcode)),
+                dataRegisters.read(Y(opcode)),
+                memory.read(addressRegister.read(), N(opcode))
         );
 
         dataRegisters.write(
@@ -484,9 +484,9 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Skips an instruction if the key, stored
      * in data register X, is being pressed.
      */
-    private void opcodeEX9E(int o) {
+    private void opcodeEX9E(int opcode) {
         if (keyboard.isKeyPressed(
-                dataRegisters.read(x(o))
+                dataRegisters.read(X(opcode))
         )) {
             programCounter.increment(OPCODE_SIZE);
         }
@@ -496,9 +496,9 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Skip an instruction if the key, stored in
      * data register X, is not being pressed.
      */
-    private void opcodeEXA1(int o) {
+    private void opcodeEXA1(int opcode) {
         if (!keyboard.isKeyPressed(
-                dataRegisters.read(x(o))
+                dataRegisters.read(X(opcode))
         )) {
             programCounter.increment(OPCODE_SIZE);
         }
@@ -507,39 +507,39 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Sets data register X to the value of the delay timer.
      */
-    private void opcodeFX07(int o) {
-        dataRegisters.write(x(o), delayTimer.read());
+    private void opcodeFX07(int opcode) {
+        dataRegisters.write(X(opcode), delayTimer.read());
     }
 
     /**
      * Waits for a key to be pressed and stores
      * its key code in data register X.
      */
-    private void opcodeFX0A(int o) {
-        dataRegisters.write(x(o), keyboard.getNextPressedKey());
+    private void opcodeFX0A(int opcode) {
+        dataRegisters.write(X(opcode), keyboard.getNextPressedKey());
     }
 
     /**
      * Sets the delay timer to the value of data register X.
      */
-    private void opcodeFX15(int o) {
-        delayTimer.write(dataRegisters.read(x(o)));
+    private void opcodeFX15(int opcode) {
+        delayTimer.write(dataRegisters.read(X(opcode)));
     }
 
     /**
      * Sets the sound timer to the value of data register X.
      */
-    private void opcodeFX18(int o) {
-        soundTimer.write(dataRegisters.read(x(o)));
+    private void opcodeFX18(int opcode) {
+        soundTimer.write(dataRegisters.read(X(opcode)));
     }
 
     /**
      * Adds the value of data register X to the address register.
      */
-    private void opcodeFX1E(int o) {
+    private void opcodeFX1E(int opcode) {
         addressRegister.write(
                 addressRegister.read()
-                        + dataRegisters.read(x(o))
+                        + dataRegisters.read(X(opcode))
         );
     }
 
@@ -547,20 +547,20 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets the address register to the memory location of the
      * character stored in data register X.
      */
-    private void opcodeFX29(int o) {
+    private void opcodeFX29(int opcode) {
         // the packaged font file contains the sprites for 0-F
         // in order from 0-F and was loaded to memory offset 0
         // each character sprite contains 5 bytes.
         // so the character B, for example, is at memory location 0xB * 5 = 55
-        addressRegister.write((x(o)) * 5);
+        addressRegister.write((X(opcode)) * 5);
     }
 
     /**
      * Sets three consecutive memory addresses to the last, middle
      * and first digit of the numerical value of data register X.
      */
-    private void opcodeFX33(int o) {
-        int X       = unsigned(dataRegisters.read(x(o)));
+    private void opcodeFX33(int opcode) {
+        int X       = unsignedByte(dataRegisters.read(X(opcode)));
         int address = addressRegister.read();
 
         //example value: 197

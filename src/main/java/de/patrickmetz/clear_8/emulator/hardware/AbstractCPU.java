@@ -79,13 +79,48 @@ abstract public class AbstractCPU implements CPU {
     @Override
     public void setMemory(int[] data, int memoryAddress) {
         for (int d : data) {
-            memory.write(memoryAddress++, unsigned(d));
+            memory.write(memoryAddress++, unsignedByte(d));
         }
     }
 
     @Override
     public void setProgramCounter(int memoryAdress) {
         programCounter.write(memoryAdress);
+    }
+
+    /**
+     * Retrieves the rightmost hex digit (four bits) from an opcode.
+     */
+    protected static int N(int opcode) {
+        return opcode & 0x000F;
+    }
+
+    /**
+     * Retrieves the rightmost two hex digits (eight bits) from an opcode.
+     */
+    protected static int NN(int opcode) {
+        return opcode & 0x00FF;
+    }
+
+    /**
+     * Retrieves the rightmost three hex digits (twelve bits) from an opcode.
+     */
+    protected static int NNN(int opcode) {
+        return opcode & 0x0FFF;
+    }
+
+    /**
+     * Retrieves the X variable (bits 9 to 12) from an opcode.
+     */
+    protected static int X(int opcode) {
+        return (opcode & 0x0F00) >> 8;
+    }
+
+    /**
+     * Retrieves the Y variable (bits 5 to 8) from an opcode.
+     */
+    protected static int Y(int opcode) {
+        return (opcode & 0x00F0) >> 4;
     }
 
     /**
@@ -114,32 +149,11 @@ abstract public class AbstractCPU implements CPU {
         int opcode = memory.read(address);
         opcode <<= 8;
 
-        opcode |= unsigned(memory.read(++address));
+        opcode |= unsignedByte(memory.read(++address));
 
         programCounter.increment(OPCODE_SIZE);
 
         return opcode;
-    }
-
-    /**
-     * Retrieves the rightmost hex digit (four bits) from an opcode.
-     */
-    protected static int n(int o) {
-        return o & 0x000F;
-    }
-
-    /**
-     * Retrieves the rightmost two hex digits (eight bits) from an opcode.
-     */
-    protected static int nn(int o) {
-        return o & 0x00FF;
-    }
-
-    /**
-     * Retrieves the rightmost three hex digits (twelve bits) from an opcode.
-     */
-    protected static int nnn(int o) {
-        return o & 0x0FFF;
     }
 
     protected abstract void processNextInstruction() throws UnsupportedOperationException;
@@ -151,56 +165,31 @@ abstract public class AbstractCPU implements CPU {
     }
 
     /**
-     * Retrieves the rightmost eight bits of a whole number,
-     * in order to get a value from within an unsigned byte's
-     * value range. Just make sure to put the result into a
-     * whole number type which is bigger than a byte.
+     * Returns a whole number, whose eight rightmost bits form
+     * an unsigned byte.
+     * <p>
+     * Turns Javas signed byte values (-128 to 127) into chip8's
+     * byte values (0 to 255).
+     * <p>
+     * Needed because the emulator stores chip8's bytes into integers.
      * <p>
      * <p>
-     * chip8 actually works with unsigned bytes (0 to 255),
-     * but Java interprets those values as signed (-128 to 127).
-     * <p>
-     * <p>
-     * When we need to correctly interpret the meaning of a whole
-     * numbers bits (i.e. the value chip8 would assume) we use this
-     * method.
-     * <p>
-     * <p>
-     * This emulator stores the bytes of chip8 programs into
-     * integers. So the following example is equivalent of reading
-     * a byte from memory.
-     * <p>
-     * <p>
+     * Example:
      * int a = memory.read(someAddress);<p>
      * a is -32 or 11111111_11111111_11111111_11100000
      * <p>
      * <p>
-     * int b = unsigned(a);<p>
+     * int b = unsignedByte(a);<p>
      * b is 224 or 00000000_00000000_00000000_11100000
      * <p>
-     * <p>
-     * but don't put the result in an actual byte,
-     * or you'll get a signed value again:
+     * Putting the result into a java byte would add a sign again,
+     * so we really need a bigger container, like int.
      * <p>
      * byte c = (byte) unsigned(a);<p>
-     * c = -32 or 11100000
+     * c is -32 or 11100000
      */
-    protected static int unsigned(int value) {
+    protected static int unsignedByte(int value) {
         return value & 0xFF;
-    }
-
-    /**
-     * Retrieves the X variable (bits 9 to 12) from an opcode.
-     */
-    protected static int x(int o) {
-        return (o & 0x0F00) >> 8;
-    }
-
-    /**
-     * Retrieves the Y variable (bits 5 to 8) from an opcode.
-     */
-    protected static int y(int o) {
-        return (o & 0x00F0) >> 4;
     }
 
     private void updateTimers() {

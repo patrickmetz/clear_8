@@ -28,15 +28,15 @@ class CPUCosmacVipImpl extends CPUSuperChipImpl {
      * @see CPUSuperChipImpl#opcode8XY6(int)
      */
     @Override
-    protected void opcode8XY6(int o) {
+    protected void opcode8XY6(int opcode) {
         dataRegisters.write(
                 CARRY,
-                dataRegisters.read(x(o)) & LSB
+                dataRegisters.read(X(opcode)) & LSB
         );
 
         dataRegisters.write(
-                x(o),
-                dataRegisters.read(y(o)) >> 1
+                X(opcode),
+                dataRegisters.read(Y(opcode)) >> 1
         );
     }
 
@@ -50,12 +50,12 @@ class CPUCosmacVipImpl extends CPUSuperChipImpl {
      * @see CPUSuperChipImpl#opcodeFX55(int)
      */
     @Override
-    protected void opcodeFX55(int o) {
-        super.opcodeFX55(o);
+    protected void opcodeFX55(int opcode) {
+        super.opcodeFX55(opcode);
 
         addressRegister.write(
                 addressRegister.read()
-                        + x(o)
+                        + X(opcode)
         );
     }
 
@@ -69,12 +69,12 @@ class CPUCosmacVipImpl extends CPUSuperChipImpl {
      * @see CPUSuperChipImpl#opcodeFX65(int)
      */
     @Override
-    protected void opcodeFX65(int o) {
-        super.opcodeFX65(o);
+    protected void opcodeFX65(int opcode) {
+        super.opcodeFX65(opcode);
 
         addressRegister.write(
                 addressRegister.read()
-                        + x(o)
+                        + X(opcode)
         );
     }
 
