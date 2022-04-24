@@ -6,11 +6,11 @@ abstract public class AbstractCPU implements CPU {
     /**
      * Bitmask to get the least significant (i.e. first) bit of a byte
      */
-    protected static final int LSB   = 0b0000_0001;
+    protected static final int LSB = 0b0000_0001;
     /**
      * Bitmask to get the most significant (i.e. last) bit of a byte
      */
-    protected static final int MSB   = 0b1000_0000;
+    protected static final int MSB = 0b1000_0000;
 
     /**
      * The maximum numerical value an unsigned byte can hold.
@@ -104,7 +104,7 @@ abstract public class AbstractCPU implements CPU {
     }
 
     /**
-     * Constructs the next opcode to be executed.
+     * Constructs the next opcode (CPU command) to be executed.
      * <p>
      * <p>
      * Opcodes have a size of 16 bit. So we fetch
@@ -113,9 +113,9 @@ abstract public class AbstractCPU implements CPU {
      * <p>
      * Example:
      * <p>
-     * first byte from memory : 00000111
+     * first byte in memory  : 00000111
      * <p>
-     * second byte from memory: 01010010
+     * second byte in memory : 01010010
      * <p>
      * <p>
      * opcode               : 00000000|00000000<p>
@@ -124,16 +124,16 @@ abstract public class AbstractCPU implements CPU {
      * opcode |= second byte: 00000111|01010010
      */
     protected int getNextOpcode() {
-        int address = programCounter.read();
+        int memoryAddress = programCounter.read();
 
-        int opcode = memory.read(address);
+        int opcode = memory.read(memoryAddress); // get 1st byte of cpu command
         opcode <<= 8;
 
-        opcode |= unsignedByte(memory.read(++address));
+        opcode |= unsignedByte(memory.read(++memoryAddress)); // get 2nd byte of cpu command
 
         programCounter.increment();
 
-        return opcode;
+        return opcode; // return 16-bit wide cpu command
     }
 
     protected abstract void processNextInstruction() throws UnsupportedOperationException;

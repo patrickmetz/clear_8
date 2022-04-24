@@ -5,7 +5,7 @@ import java.util.HashMap;
 /**
  * Contains 2^12 = 4096 addressable memory cells which form CHIP-8's working memory.
  *
- * TODO: a cell only must hold a byte -> use signed short to hold unsigned bytes
+ *  Signed 32-bit integers act as a container for CHIP-8's unsigned 8-bit memory cells.
  */
 final class Memory {
 

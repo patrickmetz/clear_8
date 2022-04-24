@@ -1,7 +1,8 @@
 package de.patrickmetz.clear_8.emulator.hardware;
 
 /**
- * Contains the address of the next opcode the cpu should execute.
+ * Contains the memory address of the next 16-bit wide cpu command to be executed.
+ * A signed 32-bit acts as a container for CHIP-8's unsigned 16 bit addresses.
  */
 final class ProgramCounter {
 
