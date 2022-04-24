@@ -142,6 +142,20 @@ class CPUSuperChipImplTest {
         assertEquals(0, registers.read(0x0)); // 1st register is zero?
     }
 
+    /**
+     * @see CPUSuperChipImpl#opcode8XY0
+     */
+    @Test
+    void opcode8XY0(){
+        registers.write(0x0, 0x0);
+        registers.write(0x1, 0x1);
+
+        writeOpcodeToMemory(0x8010); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0x1, registers.read(0x0));
+    }
+
     @BeforeEach
     void setUp() {
         addressRegister = new AddressRegister();
