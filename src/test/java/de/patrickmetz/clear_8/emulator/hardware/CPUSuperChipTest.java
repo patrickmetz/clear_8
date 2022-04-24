@@ -101,6 +101,18 @@ class CPUSuperChipImplTest {
 
         assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
     }
+    /**
+     * @see CPUSuperChipImpl#opcode6XNN
+     */
+    @Test
+    void opcode6XNN(){
+        int value = 0x0099;
+
+        writeOpcodeToMemory(0x6099); // first opcode, X = 0x0, NN = 99
+        processOpcode();
+
+        assertEquals(value, registers.read(0x0)); // 1st register is 0x99?
+    }
 
     @BeforeEach
     void setUp() {
