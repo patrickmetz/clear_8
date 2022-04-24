@@ -108,10 +108,38 @@ class CPUSuperChipImplTest {
     void opcode6XNN(){
         int value = 0x0099;
 
-        writeOpcodeToMemory(0x6099); // first opcode, X = 0x0, NN = 99
+        writeOpcodeToMemory(0x6099); // X = 0x0, NN = 99
         processOpcode();
 
         assertEquals(value, registers.read(0x0)); // 1st register is 0x99?
+    }
+
+    /**
+     * @see CPUSuperChipImpl#opcode7XNN
+     */
+    @Test
+    void opcode7XNNHandlesMaxByteValue(){
+        int value = 0x00FF; // 255
+
+        registers.write(0x0, 0x0);  // set 1st register to 0
+
+        writeOpcodeToMemory(0x70FF); // X = 0x0, NN = 255
+        processOpcode();
+
+        assertEquals(value, registers.read(0x0)); // 1st register is 255?
+    }
+
+    /**
+     * @see CPUSuperChipImpl#opcode7XNN
+     */
+    @Test
+    void opcode7XNNHandlesOverflow(){
+        registers.write(0x0, 0x1);  // set 1st register to 1
+
+        writeOpcodeToMemory(0x70FF); // X = 0x0, NN = 255
+        processOpcode();
+
+        assertEquals(0, registers.read(0x0)); // 1st register is zero?
     }
 
     @BeforeEach
@@ -142,4 +170,7 @@ class CPUSuperChipImplTest {
         memory.write(1, bits & 0x00FF); // 2nd eight bits
     }
 
+    protected static int unsignedByte(int value) {
+        return value & 0xFF;
+    }
 }

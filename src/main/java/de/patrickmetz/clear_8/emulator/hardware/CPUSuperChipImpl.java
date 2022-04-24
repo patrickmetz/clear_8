@@ -18,6 +18,60 @@ class CPUSuperChipImpl extends AbstractCPU {
                 gpu, keyboard, memory, programCounter, soundTimer);
     }
 
+    /**
+     * Shifts the value of data register X by one bit
+     * to the right (i.e. divides it by two).
+     * <p>
+     * The former value's least significant bit
+     * is stored in the carry register.
+     * <p>
+     *
+     * @see CPUCosmacVipImpl#opcode8XY6(int)
+     */
+    protected void opcode8XY6(int opcode) {
+        int X     = X(opcode);
+        int value = registers.read(X);
+
+        registers.write(Registers.CARRY, value & LSB);
+        registers.write(X, value >> 1);
+    }
+
+    /**
+     * Sets X consecutive memory values to the values of the data
+     * registers 0 to X, starting at the registered memory address.
+     *
+     * @see CPUCosmacVipImpl#opcodeFX55(int)
+     */
+    protected void opcodeFX55(int opcode) {
+        int X       = X(opcode);
+        int address = addressRegister.read();
+
+        for (int register = 0; register <= X; register++) {
+            memory.write(
+                    address++,
+                    registers.read(register)
+            );
+        }
+    }
+
+    /**
+     * Sets data registers 0 to X to consecutive memory values,
+     * starting at the registered memory address.
+     *
+     * @see CPUCosmacVipImpl#opcodeFX65(int)
+     */
+    protected void opcodeFX65(int opcode) {
+        int X       = X(opcode);
+        int address = addressRegister.read();
+
+        for (int register = 0; register <= X; register++) {
+            registers.write(
+                    register,
+                    memory.read(address++)
+            );
+        }
+    }
+
     @Override
     protected void processNextInstruction() throws UnsupportedOperationException {
         int opcode = getNextOpcode();
@@ -156,61 +210,6 @@ class CPUSuperChipImpl extends AbstractCPU {
         }
     }
 
-
-    /**
-     * Shifts the value of data register X by one bit
-     * to the right (i.e. divides it by two).
-     * <p>
-     * The former value's least significant bit
-     * is stored in the carry register.
-     * <p>
-     *
-     * @see CPUCosmacVipImpl#opcode8XY6(int)
-     */
-    protected void opcode8XY6(int opcode) {
-        int X     = X(opcode);
-        int value = registers.read(X);
-
-        registers.write(Registers.CARRY, value & LSB);
-        registers.write(X, value >> 1);
-    }
-
-    /**
-     * Sets X consecutive memory values to the values of the data
-     * registers 0 to X, starting at the registered memory address.
-     *
-     * @see CPUCosmacVipImpl#opcodeFX55(int)
-     */
-    protected void opcodeFX55(int opcode) {
-        int X       = X(opcode);
-        int address = addressRegister.read();
-
-        for (int register = 0; register <= X; register++) {
-            memory.write(
-                    address++,
-                    registers.read(register)
-            );
-        }
-    }
-
-    /**
-     * Sets data registers 0 to X to consecutive memory values,
-     * starting at the registered memory address.
-     *
-     * @see CPUCosmacVipImpl#opcodeFX65(int)
-     */
-    protected void opcodeFX65(int opcode) {
-        int X       = X(opcode);
-        int address = addressRegister.read();
-
-        for (int register = 0; register <= X; register++) {
-            registers.write(
-                    register,
-                    memory.read(address++)
-            );
-        }
-    }
-
     /**
      * Clears the screen.
      */
@@ -280,13 +279,12 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Adds the value NN to data register X.
      * If the new value exceeds maximum unsigned byte
-     * size, it is "wrapped around" with modulo, but
-     * no carry flag is set.
+     * size, it is "wrapped around" with modulo
      */
     private void opcode7XNN(int opcode) {
         int X = X(opcode);
 
-        int result = unsignedByte(registers.read(X)) + NN(opcode);
+        int result = registers.read(X) + NN(opcode);
 
         //  256 = 0, 257 = 1, 258 = 2, ...
         if (result > UNSIGNED_BYTE_MAX_VALUE) {
