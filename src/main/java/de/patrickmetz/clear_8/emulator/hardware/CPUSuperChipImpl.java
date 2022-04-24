@@ -11,7 +11,7 @@ import de.patrickmetz.clear_8.emulator.input.Keyboard;
 class CPUSuperChipImpl extends AbstractCPU {
 
     CPUSuperChipImpl(AddressRegister addressRegister, CallStack callStack,
-                     DataRegisters dataRegisters, DelayTimer delayTimer,
+                     Registers dataRegisters, DelayTimer delayTimer,
                      Graphics gpu, Keyboard keyboard, Memory memory,
                      ProgramCounter programCounter, SoundTimer soundTimer) {
         super(addressRegister, dataRegisters, callStack, delayTimer,
@@ -169,10 +169,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     protected void opcode8XY6(int opcode) {
         int X     = X(opcode);
-        int value = dataRegisters.read(X);
+        int value = registers.read(X);
 
-        dataRegisters.write(CARRY, value & LSB);
-        dataRegisters.write(X, value >> 1);
+        registers.write(Registers.CARRY, value & LSB);
+        registers.write(X, value >> 1);
     }
 
     /**
@@ -188,7 +188,7 @@ class CPUSuperChipImpl extends AbstractCPU {
         for (int register = 0; register <= X; register++) {
             memory.write(
                     address++,
-                    dataRegisters.read(register)
+                    registers.read(register)
             );
         }
     }
@@ -204,7 +204,7 @@ class CPUSuperChipImpl extends AbstractCPU {
         int address = addressRegister.read();
 
         for (int register = 0; register <= X; register++) {
-            dataRegisters.write(
+            registers.write(
                     register,
                     memory.read(address++)
             );
@@ -245,8 +245,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * data register X is equal to NN.
      */
     private void opcode3XNN(int opcode) {
-        if (dataRegisters.read(X(opcode)) == NN(opcode)) {
-            programCounter.increment(OPCODE_SIZE);
+        if (registers.read(X(opcode)) == NN(opcode)) {
+            programCounter.increment();
         }
     }
 
@@ -255,8 +255,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * is not equal to the value NN.
      */
     private void opcode4XNN(int opcode) {
-        if (dataRegisters.read(X(opcode)) != NN(opcode)) {
-            programCounter.increment(OPCODE_SIZE);
+        if (registers.read(X(opcode)) != NN(opcode)) {
+            programCounter.increment();
         }
     }
 
@@ -265,8 +265,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * is equal to the value of data register Y.
      */
     private void opcode5XY0(int opcode) {
-        if (dataRegisters.read(X(opcode)) == dataRegisters.read(Y(opcode))) {
-            programCounter.increment(OPCODE_SIZE);
+        if (registers.read(X(opcode)) == registers.read(Y(opcode))) {
+            programCounter.increment();
         }
     }
 
@@ -274,7 +274,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets data register X to value NN.
      */
     private void opcode6XNN(int opcode) {
-        dataRegisters.write(X(opcode), NN(opcode));
+        registers.write(X(opcode), NN(opcode));
     }
 
     /**
@@ -286,14 +286,14 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcode7XNN(int opcode) {
         int X = X(opcode);
 
-        int result = unsignedByte(dataRegisters.read(X)) + NN(opcode);
+        int result = unsignedByte(registers.read(X)) + NN(opcode);
 
         //  256 = 0, 257 = 1, 258 = 2, ...
         if (result > UNSIGNED_BYTE_MAX_VALUE) {
             result %= UNSIGNED_BYTE_MAX_VALUE + 1;
         }
 
-        dataRegisters.write(X, result);
+        registers.write(X, result);
     }
 
     /**
@@ -301,7 +301,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * to the value of data register Y.
      */
     private void opcode8XY0(int opcode) {
-        dataRegisters.write(X(opcode), dataRegisters.read(Y(opcode)));
+        registers.write(X(opcode), registers.read(Y(opcode)));
     }
 
     /**
@@ -311,10 +311,10 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcode8XY1(int opcode) {
         int X = X(opcode);
 
-        dataRegisters.write(
+        registers.write(
                 X,
-                dataRegisters.read(X)
-                        | dataRegisters.read(Y(opcode))
+                registers.read(X)
+                        | registers.read(Y(opcode))
         );
     }
 
@@ -325,10 +325,10 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcode8XY2(int opcode) {
         int X = X(opcode);
 
-        dataRegisters.write(
+        registers.write(
                 X,
-                dataRegisters.read(X)
-                        & dataRegisters.read(Y(opcode))
+                registers.read(X)
+                        & registers.read(Y(opcode))
         );
     }
 
@@ -339,10 +339,10 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcode8XY3(int opcode) {
         int X = X(opcode);
 
-        dataRegisters.write(
+        registers.write(
                 X,
-                dataRegisters.read(X)
-                        ^ dataRegisters.read(Y(opcode))
+                registers.read(X)
+                        ^ registers.read(Y(opcode))
         );
     }
 
@@ -354,8 +354,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcode8XY4(int opcode) {
         int result =
-                unsignedByte(dataRegisters.read(X(opcode)))
-                        + unsignedByte(dataRegisters.read(Y(opcode)));
+                unsignedByte(registers.read(X(opcode)))
+                        + unsignedByte(registers.read(Y(opcode)));
 
         int carry = 0;
 
@@ -365,8 +365,8 @@ class CPUSuperChipImpl extends AbstractCPU {
             carry = 1;
         }
 
-        dataRegisters.write(X(opcode), result);
-        dataRegisters.write(CARRY, carry);
+        registers.write(X(opcode), result);
+        registers.write(Registers.CARRY, carry);
     }
 
     /**
@@ -376,12 +376,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcode8XY5(int opcode) {
         int result =
-                unsignedByte(dataRegisters.read(X(opcode)))
-                        - unsignedByte(dataRegisters.read(Y(opcode)));
+                unsignedByte(registers.read(X(opcode)))
+                        - unsignedByte(registers.read(Y(opcode)));
 
-        dataRegisters.write(X(opcode), result);
-        dataRegisters.write(
-                CARRY,
+        registers.write(X(opcode), result);
+        registers.write(
+                Registers.CARRY,
                 (result < 0) ? 0 : 1
         );
     }
@@ -393,12 +393,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcode8XY7(int opcode) {
         int result =
-                unsignedByte(dataRegisters.read(Y(opcode)))
-                        - unsignedByte(dataRegisters.read(X(opcode)));
+                unsignedByte(registers.read(Y(opcode)))
+                        - unsignedByte(registers.read(X(opcode)));
 
-        dataRegisters.write(X(opcode), result);
-        dataRegisters.write(
-                CARRY,
+        registers.write(X(opcode), result);
+        registers.write(
+                Registers.CARRY,
                 (result < 0) ? 0 : 1
         );
     }
@@ -412,10 +412,10 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcode8XYE(int opcode) {
         int X = X(opcode);
 
-        dataRegisters.write(CARRY, X & MSB);
-        dataRegisters.write(
+        registers.write(Registers.CARRY, X & MSB);
+        registers.write(
                 X,
-                dataRegisters.read(X) << 1
+                registers.read(X) << 1
         );
     }
 
@@ -425,10 +425,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcode9XY0(int opcode) {
         if (
-                dataRegisters.read(X(opcode))
-                        != dataRegisters.read(Y(opcode))
+                registers.read(X(opcode))
+                        != registers.read(Y(opcode))
         ) {
-            programCounter.increment(OPCODE_SIZE);
+            programCounter.increment();
         }
     }
 
@@ -447,7 +447,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcodeBNNN(int opcode) {
         programCounter.write(
-                dataRegisters.read(0)
+                registers.read(0)
                         + NNN(opcode)
         );
     }
@@ -457,7 +457,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * (between 0 and 255), which is masked with NN.
      */
     private void opcodeCXNN(int opcode) {
-        dataRegisters.write(
+        registers.write(
                 X(opcode),
                 (int) (Math.random() * (255 + 1)) & NN(opcode)
         );
@@ -469,13 +469,13 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcodeDXYN(int opcode) {
         boolean pixelCollision = gpu.drawSprite(
-                dataRegisters.read(X(opcode)),
-                dataRegisters.read(Y(opcode)),
+                registers.read(X(opcode)),
+                registers.read(Y(opcode)),
                 memory.read(addressRegister.read(), N(opcode))
         );
 
-        dataRegisters.write(
-                CARRY,
+        registers.write(
+                Registers.CARRY,
                 pixelCollision ? 1 : 0
         );
     }
@@ -486,9 +486,9 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcodeEX9E(int opcode) {
         if (keyboard.isKeyPressed(
-                dataRegisters.read(X(opcode))
+                registers.read(X(opcode))
         )) {
-            programCounter.increment(OPCODE_SIZE);
+            programCounter.increment();
         }
     }
 
@@ -498,9 +498,9 @@ class CPUSuperChipImpl extends AbstractCPU {
      */
     private void opcodeEXA1(int opcode) {
         if (!keyboard.isKeyPressed(
-                dataRegisters.read(X(opcode))
+                registers.read(X(opcode))
         )) {
-            programCounter.increment(OPCODE_SIZE);
+            programCounter.increment();
         }
     }
 
@@ -508,7 +508,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * Sets data register X to the value of the delay timer.
      */
     private void opcodeFX07(int opcode) {
-        dataRegisters.write(X(opcode), delayTimer.read());
+        registers.write(X(opcode), delayTimer.read());
     }
 
     /**
@@ -516,21 +516,21 @@ class CPUSuperChipImpl extends AbstractCPU {
      * its key code in data register X.
      */
     private void opcodeFX0A(int opcode) {
-        dataRegisters.write(X(opcode), keyboard.getNextPressedKey());
+        registers.write(X(opcode), keyboard.getNextPressedKey());
     }
 
     /**
      * Sets the delay timer to the value of data register X.
      */
     private void opcodeFX15(int opcode) {
-        delayTimer.write(dataRegisters.read(X(opcode)));
+        delayTimer.write(registers.read(X(opcode)));
     }
 
     /**
      * Sets the sound timer to the value of data register X.
      */
     private void opcodeFX18(int opcode) {
-        soundTimer.write(dataRegisters.read(X(opcode)));
+        soundTimer.write(registers.read(X(opcode)));
     }
 
     /**
@@ -539,7 +539,7 @@ class CPUSuperChipImpl extends AbstractCPU {
     private void opcodeFX1E(int opcode) {
         addressRegister.write(
                 addressRegister.read()
-                        + dataRegisters.read(X(opcode))
+                        + registers.read(X(opcode))
         );
     }
 
@@ -560,7 +560,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * and first digit of the numerical value of data register X.
      */
     private void opcodeFX33(int opcode) {
-        int X       = unsignedByte(dataRegisters.read(X(opcode)));
+        int X       = unsignedByte(registers.read(X(opcode)));
         int address = addressRegister.read();
 
         //example value: 197

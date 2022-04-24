@@ -10,7 +10,7 @@ import de.patrickmetz.clear_8.emulator.input.Keyboard;
 class CPUCosmacVipImpl extends CPUSuperChipImpl {
 
     CPUCosmacVipImpl(AddressRegister addressRegister, CallStack callStack,
-                     DataRegisters dataRegisters, DelayTimer delayTimer,
+                     Registers dataRegisters, DelayTimer delayTimer,
                      Graphics graphics, Keyboard keyboard, Memory memory,
                      ProgramCounter programCounter, SoundTimer soundTimer) {
 
@@ -29,14 +29,14 @@ class CPUCosmacVipImpl extends CPUSuperChipImpl {
      */
     @Override
     protected void opcode8XY6(int opcode) {
-        dataRegisters.write(
-                CARRY,
-                dataRegisters.read(X(opcode)) & LSB
+        registers.write(
+                Registers.CARRY,
+                registers.read(X(opcode)) & LSB
         );
 
-        dataRegisters.write(
+        registers.write(
                 X(opcode),
-                dataRegisters.read(Y(opcode)) >> 1
+                registers.read(Y(opcode)) >> 1
         );
     }
 

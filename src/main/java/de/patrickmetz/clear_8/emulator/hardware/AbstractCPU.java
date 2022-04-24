@@ -4,21 +4,6 @@ import de.patrickmetz.clear_8.emulator.input.Keyboard;
 
 abstract public class AbstractCPU implements CPU {
     /**
-     * The address of the carry register.
-     * <p>
-     * <p>
-     * A carry is used to signal that a value overflows
-     * its range, i.e. an unsigned byte bigger than 255
-     * (which is than actually wrapped around with the
-     * modulo operator, i.e. 256 becomes 0, 257 becomes
-     * 1, etc...).
-     * <p>
-     * <p>
-     * chip8 also uses the carry to signal borrows, i.e.
-     * value underflows.
-     */
-    protected static final int CARRY = 0xF;
-    /**
      * Bitmask to get the least significant (i.e. first) bit of a byte
      */
     protected static final int LSB   = 0b0000_0001;
@@ -28,17 +13,12 @@ abstract public class AbstractCPU implements CPU {
     protected static final int MSB   = 0b1000_0000;
 
     /**
-     * One opcode consists of two bytes
-     */
-    protected static final int OPCODE_SIZE = 2;
-
-    /**
      * The maximum numerical value an unsigned byte can hold.
      */
     protected static final int UNSIGNED_BYTE_MAX_VALUE = 255;
 
     protected final AddressRegister addressRegister;
-    protected final DataRegisters   dataRegisters;
+    protected final Registers       registers;
     protected final CallStack       callStack;
     protected final DelayTimer      delayTimer;
     protected final Graphics        gpu;
@@ -47,9 +27,9 @@ abstract public class AbstractCPU implements CPU {
     protected final ProgramCounter  programCounter;
     protected final SoundTimer      soundTimer;
 
-    public AbstractCPU(AddressRegister addressRegister, DataRegisters dataRegisters, CallStack callStack, DelayTimer delayTimer, Graphics gpu, Keyboard keyboard, Memory memory, ProgramCounter programCounter, SoundTimer soundTimer) {
+    public AbstractCPU(AddressRegister addressRegister, Registers registers, CallStack callStack, DelayTimer delayTimer, Graphics gpu, Keyboard keyboard, Memory memory, ProgramCounter programCounter, SoundTimer soundTimer) {
         this.addressRegister = addressRegister;
-        this.dataRegisters = dataRegisters;
+        this.registers = registers;
         this.callStack = callStack;
         this.delayTimer = delayTimer;
         this.gpu = gpu;
@@ -151,7 +131,7 @@ abstract public class AbstractCPU implements CPU {
 
         opcode |= unsignedByte(memory.read(++address));
 
-        programCounter.increment(OPCODE_SIZE);
+        programCounter.increment();
 
         return opcode;
     }

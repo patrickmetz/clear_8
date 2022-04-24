@@ -17,8 +17,8 @@ class CentralProcessingUnitSuperChipTest {
     private AddressRegister addressRegister;
     private CallStack        callStack;
     private CPUSuperChipImpl cpu;
-    private DataRegisters    dataRegisters;
-    private DelayTimer   delayTimer;
+    private Registers        dataRegisters;
+    private DelayTimer       delayTimer;
     private Graphics     graphics;
     private KeyboardImpl keyboard;
     private Memory          memory;
@@ -78,7 +78,7 @@ class CentralProcessingUnitSuperChipTest {
     void setUp() {
         addressRegister = new AddressRegister();
         callStack = new CallStack();
-        dataRegisters = new DataRegisters();
+        dataRegisters = new Registers();
         delayTimer = new DelayTimer();
         graphics = new Graphics();
         keyboard = new KeyboardImpl();

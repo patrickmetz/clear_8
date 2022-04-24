@@ -2,10 +2,17 @@ package de.patrickmetz.clear_8.emulator.hardware;
 
 import java.util.HashMap;
 
+/**
+ * Contains 2^12 = 4096 addressable memory cells which form CHIP-8's working memory.
+ *
+ * TODO: a cell only must hold a byte -> use signed short to hold unsigned bytes
+ */
 final class Memory {
 
     private final HashMap<Integer, Integer> memory;
 
+    // Has a lookup and insertion performance of O(1).
+    // A load factor of 2 should keep it from expanding at 75% capacity
     Memory() {
         memory = new HashMap<>(4096, 2);
     }
@@ -17,8 +24,12 @@ final class Memory {
     int[] read(int address, int count) {
         int[] data = new int[count];
 
-        for (int b = 0, m = address; m < address + count; b++, m++) {
-            data[b] = memory.get(m);
+        for (
+                int dataOffset = 0, memoryOffset = address;
+                memoryOffset < address + count;
+                dataOffset++, memoryOffset++
+        ) {
+            data[dataOffset] = memory.get(memoryOffset);
         }
 
         return data;
