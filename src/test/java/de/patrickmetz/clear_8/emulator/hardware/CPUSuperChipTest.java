@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CPUSuperChipImplTest {
 
-    private AddressRegister  addressRegister;
+    private AddressRegister addressRegister;
     private CallStack        callStack;
     private CPUSuperChipImpl cpu;
     private Registers        registers;
@@ -81,6 +81,22 @@ class CPUSuperChipImplTest {
         registers.write(1, 0x0099); // set 1st register to 0x99
 
         writeOpcodeToMemory(0x4177); // first opcode, X = 0x1, NN = 0x77
+        processOpcode();
+
+        assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
+    }
+
+    /**
+     * @see CPUSuperChipImpl#opcode5XY0
+     */
+    @Test
+    void opcode5XY0(){
+        int value = 0x0099;
+
+        registers.write(0x0, value);  // set two registers to same value
+        registers.write(0x1, value);
+
+        writeOpcodeToMemory(0x5010); // first opcode, X = 0x0, Y = 0x1
         processOpcode();
 
         assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?

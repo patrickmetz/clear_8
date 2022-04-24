@@ -6,7 +6,9 @@ import java.util.HashMap;
  * Contains 15 general purpose registers (0x0 to 0xE), and one carry flag
  * register (0xF) used by the CPU for doing its work.
  *
- * In CHIP-8 terms they were called "V0" to "VF".
+ *  Signed 32-bit integers act as containers for CHIP-8's unsigned 8-bit values.
+ *
+ * In CHIP-8 terms these registers were called "V0" to "VF".
  */
 final class Registers {
     /**
@@ -25,7 +27,7 @@ final class Registers {
     private final HashMap<Integer, Integer> memory;
 
     // Has a lookup and insertion performance of O(1).
-    // A load factor of 2 should keep it from expanding at 75% capacity
+    // A load factor of 2 should keep it from expanding at 75% capacity.
     Registers() {
         memory = new HashMap<>(16, 2);
     }
