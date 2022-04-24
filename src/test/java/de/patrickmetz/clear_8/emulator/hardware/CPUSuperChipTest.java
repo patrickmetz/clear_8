@@ -11,9 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-class CentralProcessingUnitSuperChipTest {
+class CPUSuperChipImplTest {
 
     private AddressRegister  addressRegister;
     private CallStack        callStack;
@@ -27,12 +26,23 @@ class CentralProcessingUnitSuperChipTest {
     private SoundTimer       soundTimer;
 
     /**
+     * @see CPUSuperChipImpl#opcode00EE
+     */
+    @Test
+    void opcode00EE() {
+        callStack.push(0x1234); // address before leaving subroutine
+        writeOpcodeToMemory(0x00EE);
+        processOpcode();
+        assertEquals(0x1234, programCounter.read()); // returned from subroutine?
+    }
+
+    /**
      * @see CPUSuperChipImpl#opcode1NNN
      */
     @Test
     void opcode1NNN() {
-        writeBytePairToMemory(0, 0x1123); // NNN = 0x0123
-        cpu.process(1); // set p.c. to NNN
+        writeOpcodeToMemory(0x1123); // NNN = 0x0123
+        processOpcode();
 
         assertEquals(0x0123, programCounter.read()); // p.c. is NNN?
     }
@@ -42,9 +52,9 @@ class CentralProcessingUnitSuperChipTest {
      */
     @Test
     void opcode2NNN() {
-        writeBytePairToMemory(0, 0x2123); // first opcode, NNN = 0x0123
+        writeOpcodeToMemory(0x2123); // first opcode, NNN = 0x0123
         programCounter.write(0x0000); // set p.c. to first opcode
-        cpu.process(1); // move p.c. by one opcode, push new address, set p.c. to NNN
+        processOpcode();
 
         assertEquals(0x0002, callStack.pop()); // second opcode on stack?
         assertEquals(0x0123, programCounter.read()); // p.c. is NNN?
@@ -57,8 +67,8 @@ class CentralProcessingUnitSuperChipTest {
     void opcode3XNN() {
         registers.write(1, 0x0099); // set 1st register to 0x99
 
-        writeBytePairToMemory(0, 0x3199); // first opcode, X = 0x1, NN = 0x99
-        cpu.process(1); // move p.c. by one opcode, skip next opcode if 1st register is 0x99
+        writeOpcodeToMemory(0x3199); // first opcode, X = 0x1, NN = 0x99
+        processOpcode();
 
         assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
     }
@@ -70,8 +80,8 @@ class CentralProcessingUnitSuperChipTest {
     void opcode4XNN() {
         registers.write(1, 0x0099); // set 1st register to 0x99
 
-        writeBytePairToMemory(0, 0x4177); // first opcode, X = 0x1, NN = 0x77
-        cpu.process(1); // move p.c. by one opcode, skip next opcode if 1st register isn't 0x77
+        writeOpcodeToMemory(0x4177); // first opcode, X = 0x1, NN = 0x77
+        processOpcode();
 
         assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
     }
@@ -95,9 +105,13 @@ class CentralProcessingUnitSuperChipTest {
         );
     }
 
-    private void writeBytePairToMemory(int address, int bits) {
-        memory.write(address, (bits & 0xFF00) >> 8); // 1st eight bits
-        memory.write(address + 1, bits & 0x00FF); // 2nd eight bits
+    private void processOpcode() {
+        cpu.process(1);
+    }
+
+    private void writeOpcodeToMemory(int bits) {
+        memory.write(0, (bits & 0xFF00) >> 8); // 1st eight bits
+        memory.write(1, bits & 0x00FF); // 2nd eight bits
     }
 
 }

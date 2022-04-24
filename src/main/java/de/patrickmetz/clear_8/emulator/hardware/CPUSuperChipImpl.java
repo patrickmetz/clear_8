@@ -219,7 +219,7 @@ class CPUSuperChipImpl extends AbstractCPU {
     }
 
     /**
-     * Leaves subroutine.
+     * Leaves subroutine to previous program counter position.
      */
     private void opcode00EE() {
         programCounter.write(callStack.pop());
