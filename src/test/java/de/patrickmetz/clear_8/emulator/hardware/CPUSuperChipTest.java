@@ -8,77 +8,79 @@ package de.patrickmetz.clear_8.emulator.hardware;
 
 import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class CentralProcessingUnitSuperChipTest {
 
-    private AddressRegister addressRegister;
+    private AddressRegister  addressRegister;
     private CallStack        callStack;
     private CPUSuperChipImpl cpu;
-    private Registers        dataRegisters;
+    private Registers        registers;
     private DelayTimer       delayTimer;
-    private Graphics     graphics;
-    private KeyboardImpl keyboard;
-    private Memory          memory;
-    private ProgramCounter  programCounter;
-    private SoundTimer      soundTimer;
+    private Graphics         graphics;
+    private KeyboardImpl     keyboard;
+    private Memory           memory;
+    private ProgramCounter   programCounter;
+    private SoundTimer       soundTimer;
 
     /**
      * @see CPUSuperChipImpl#opcode1NNN
      */
-    @Disabled
+    @Test
     void opcode1NNN() {
-        writeInstruction(0x1123);
-        cpu.process(1);
+        writeBytePairToMemory(0, 0x1123); // NNN = 0x0123
+        cpu.process(1); // set p.c. to NNN
 
-        assertEquals(0x0123, programCounter.read());
+        assertEquals(0x0123, programCounter.read()); // p.c. is NNN?
     }
 
     /**
      * @see CPUSuperChipImpl#opcode2NNN
      */
-    @Disabled
+    @Test
     void opcode2NNN() {
-        writeInstruction(0x2123);
-        cpu.process(1);
+        writeBytePairToMemory(0, 0x2123); // first opcode, NNN = 0x0123
+        programCounter.write(0x0000); // set p.c. to first opcode
+        cpu.process(1); // move p.c. by one opcode, push new address, set p.c. to NNN
 
-        assertEquals(2, callStack.pop());
-        assertEquals(0x0123, programCounter.read());
+        assertEquals(0x0002, callStack.pop()); // second opcode on stack?
+        assertEquals(0x0123, programCounter.read()); // p.c. is NNN?
     }
 
     /**
      * @see CPUSuperChipImpl#opcode3XNN
      */
-    @Disabled
-    void opcode3NNN() {
-        dataRegisters.write(1, 0x0023);
+    @Test
+    void opcode3XNN() {
+        registers.write(1, 0x0099); // set 1st register to 0x99
 
-        writeInstruction(0x3123);
-        cpu.process(1);
+        writeBytePairToMemory(0, 0x3199); // first opcode, X = 0x1, NN = 0x99
+        cpu.process(1); // move p.c. by one opcode, skip next opcode if 1st register is 0x99
 
-        assertEquals(4, programCounter.read());
+        assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
     }
 
     /**
      * @see CPUSuperChipImpl#opcode4XNN
      */
-    @Disabled
-    void opcode4NNN() {
-        dataRegisters.write(1, 0x0023);
+    @Test
+    void opcode4XNN() {
+        registers.write(1, 0x0099); // set 1st register to 0x99
 
-        writeInstruction(0x4155);
-        cpu.process(1);
+        writeBytePairToMemory(0, 0x4177); // first opcode, X = 0x1, NN = 0x77
+        cpu.process(1); // move p.c. by one opcode, skip next opcode if 1st register isn't 0x77
 
-        assertEquals(4, programCounter.read());
+        assertEquals(0x4, programCounter.read()); // p.c. is at 3rd opcode?
     }
 
     @BeforeEach
     void setUp() {
         addressRegister = new AddressRegister();
         callStack = new CallStack();
-        dataRegisters = new Registers();
+        registers = new Registers();
         delayTimer = new DelayTimer();
         graphics = new Graphics();
         keyboard = new KeyboardImpl();
@@ -87,15 +89,15 @@ class CentralProcessingUnitSuperChipTest {
         soundTimer = new SoundTimer(new Sound());
 
         cpu = new CPUSuperChipImpl(
-                addressRegister, callStack, dataRegisters,
+                addressRegister, callStack, registers,
                 delayTimer, graphics, keyboard, memory,
                 programCounter, soundTimer
         );
     }
 
-    private void writeInstruction(int i) {
-        memory.write(0, (i & 0xFF00) >> 8);
-        memory.write(1, i & 0x00FF);
+    private void writeBytePairToMemory(int address, int bits) {
+        memory.write(address, (bits & 0xFF00) >> 8); // 1st eight bits
+        memory.write(address + 1, bits & 0x00FF); // 2nd eight bits
     }
 
 }

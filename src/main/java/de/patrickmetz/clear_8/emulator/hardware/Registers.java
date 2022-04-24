@@ -30,12 +30,12 @@ final class Registers {
         memory = new HashMap<>(16, 2);
     }
 
-    int read(int address) {
-        return memory.get(address);
+    int read(int register) {
+        return memory.get(register);
     }
 
-    void write(int address, int value) {
-        memory.put(address, value);
+    void write(int register, int value) {
+        memory.put(register, value);
     }
 
 }

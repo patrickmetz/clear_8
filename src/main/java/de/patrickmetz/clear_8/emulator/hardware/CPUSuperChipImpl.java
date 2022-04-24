@@ -233,7 +233,7 @@ class CPUSuperChipImpl extends AbstractCPU {
     }
 
     /**
-     * Enters subroutine.
+     * Enters subroutine and sets program counter to NNN.
      */
     private void opcode2NNN(int opcode) {
         callStack.push(programCounter.read());
