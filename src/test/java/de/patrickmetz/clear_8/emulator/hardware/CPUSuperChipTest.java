@@ -10,6 +10,7 @@ import de.patrickmetz.clear_8.emulator.input.KeyboardImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static de.patrickmetz.clear_8.emulator.hardware.Registers.CARRY;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CPUSuperChipImplTest {
@@ -165,7 +166,7 @@ class CPUSuperChipImplTest {
      * @see CPUSuperChipImpl#opcode8XY1
      */
     @Test
-    void opcode8XY1(){
+    void opcode8XY1() {
         registers.write(0x0, 0xF0);
         registers.write(0x1, 0x0F);
 
@@ -179,7 +180,7 @@ class CPUSuperChipImplTest {
      * @see CPUSuperChipImpl#opcode8XY2
      */
     @Test
-    void opcode8XY2(){
+    void opcode8XY2() {
         registers.write(0x0, 0xF0);
         registers.write(0x1, 0x0F);
 
@@ -193,7 +194,7 @@ class CPUSuperChipImplTest {
      * @see CPUSuperChipImpl#opcode8XY3
      */
     @Test
-    void opcode8XY3(){
+    void opcode8XY3() {
         registers.write(0x0, 0xF0);
         registers.write(0x1, 0xFF);
 
@@ -203,6 +204,35 @@ class CPUSuperChipImplTest {
         assertEquals(0x0F, registers.read(0x0)); // X = (X XOR Y)?
     }
 
+    /**
+     * @see CPUSuperChipImpl#opcode8XY4
+     */
+    @Test
+    void opcode8XY4HandlesMaxByteValue() {
+        registers.write(0x0, 0x00);
+        registers.write(0x1, 0xFF);
+
+        writeOpcodeToMemory(0x8014); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0xFF, registers.read(0x0)); // X = 255?
+        assertEquals(0x0, registers.read(CARRY)); // no carry?
+    }
+
+    /**
+     * @see CPUSuperChipImpl#opcode8XY4
+     */
+    @Test
+    void opcode8XY4HandlesOverflow() {
+        registers.write(0x0, 0x01);
+        registers.write(0x1, 0xFF);
+
+        writeOpcodeToMemory(0x8014); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0x00, registers.read(0x0)); // X = 0?
+        assertEquals(0x1, registers.read(CARRY)); // carry set?
+    }
 
     @BeforeEach
     void setUp() {
