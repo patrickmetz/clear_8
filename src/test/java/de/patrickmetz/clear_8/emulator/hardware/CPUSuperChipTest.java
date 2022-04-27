@@ -264,6 +264,21 @@ class CPUSuperChipImplTest {
         assertEquals(0x0, registers.read(CARRY)); // borrow set?
     }
 
+    /**
+     * @see CPUSuperChipImpl#opcode8XY6
+     */
+    @Test
+    void opcode8XY6() {
+        registers.write(0x0, 0xFF);
+        registers.write(0x1, 0b0000_0010);
+
+        writeOpcodeToMemory(0x8016); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0b0000_0001, registers.read(0x0)); // X = (Y >> 1) ?
+        assertEquals(0x0, registers.read(CARRY)); // CARRY = (Y's previous LSB) = 0?
+    }
+
     @BeforeEach
     void setUp() {
         addressRegister = new AddressRegister();

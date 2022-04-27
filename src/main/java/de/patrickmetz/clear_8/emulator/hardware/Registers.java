@@ -18,9 +18,9 @@ final class Registers {
      * its range, i.e. an unsigned byte bigger than 255
      * <p>
      * <p>
-     * CHIP-8 also uses the carry to signal borrows
-     * (value underflows) and when a pixel collision
-     * is detected when drawing sprite graphics.
+     * CHIP-8 also inversely uses the carry to signal
+     * borrows (value underflows) and when a pixel
+     * collision is detected when drawing sprite graphics.
      */
     public static final int CARRY = 0xF;
 

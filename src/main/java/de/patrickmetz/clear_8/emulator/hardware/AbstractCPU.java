@@ -69,6 +69,13 @@ abstract public class AbstractCPU implements CPU {
     }
 
     /**
+     * Get the least significant (i.e. first) bit of a byte
+     */
+    protected static int LSB(int value) {
+        return value & 0b0000_0001;
+    }
+
+    /**
      * Retrieves the rightmost hex digit (four bits) from an opcode.
      */
     protected static int N(int opcode) {

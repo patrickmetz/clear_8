@@ -19,8 +19,8 @@ class CPUSuperChipImpl extends AbstractCPU {
     }
 
     /**
-     * Shifts the value of data register X by one bit
-     * to the right (i.e. divides it by two).
+     * Right-shifts the value of data register Y by one bit
+     * (i.e. divides it by two) and stores it in register X
      * <p>
      * The former value's least significant bit
      * is stored in the carry register.
@@ -29,11 +29,10 @@ class CPUSuperChipImpl extends AbstractCPU {
      * @see CPUCosmacVipImpl#opcode8XY6(int)
      */
     protected void opcode8XY6(int opcode) {
-        int X     = X(opcode);
-        int value = registers.read(X);
+        int value = registers.read(Y(opcode));
 
-        registers.write(Registers.CARRY, value & LSB);
-        registers.write(X, value >> 1);
+        registers.write(Registers.CARRY, LSB(value));
+        registers.write(X(opcode), value >> 1);
     }
 
     /**
