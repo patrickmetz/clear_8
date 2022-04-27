@@ -373,14 +373,13 @@ class CPUSuperChipImpl extends AbstractCPU {
      * is set to 0 (1 otherwise).
      */
     private void opcode8XY5(int opcode) {
-        int result =
-                unsignedByte(registers.read(X(opcode)))
-                        - unsignedByte(registers.read(Y(opcode)));
+        int result = registers.read(X(opcode)) - registers.read(Y(opcode));
 
-        registers.write(X(opcode), result);
+        // todo: should negative values really be 255? does it even matter?
+        registers.write(X(opcode), result < 0 ? 0xFF : result);
         registers.write(
                 Registers.CARRY,
-                (result < 0) ? 0 : 1
+                (result < 0) ? 0 : 1 // here CARRY means BORROW (underflow) and is inversely applied
         );
     }
 

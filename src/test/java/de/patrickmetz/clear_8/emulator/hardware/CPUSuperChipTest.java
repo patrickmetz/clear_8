@@ -234,6 +234,36 @@ class CPUSuperChipImplTest {
         assertEquals(0x1, registers.read(CARRY)); // carry set?
     }
 
+    /**
+     * @see CPUSuperChipImpl#opcode8XY5
+     */
+    @Test
+    void opcode8XY5HandlesMinByteValue() {
+        registers.write(0x0, 0x01);
+        registers.write(0x1, 0x01);
+
+        writeOpcodeToMemory(0x8015); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0x0, registers.read(0x0)); // X = 0?
+        assertEquals(0x1, registers.read(CARRY)); // no borrow?
+    }
+
+    /**
+     * @see CPUSuperChipImpl#opcode8XY5
+     */
+    @Test
+    void opcode8XY5HandlesUnderflow() {
+        registers.write(0x0, 0x00);
+        registers.write(0x1, 0x01);
+
+        writeOpcodeToMemory(0x8015); // X = 0x0, Y = 0x1
+        processOpcode();
+
+        assertEquals(0xFF, registers.read(0x0)); // X = 255?
+        assertEquals(0x0, registers.read(CARRY)); // borrow set?
+    }
+
     @BeforeEach
     void setUp() {
         addressRegister = new AddressRegister();
