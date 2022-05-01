@@ -350,9 +350,8 @@ class CPUSuperChipImpl extends AbstractCPU {
      * flag is set to 1 (0 otherwise).
      */
     private void opcode8XY4(int opcode) {
-        int result =
-                unsignedByte(registers.read(X(opcode)))
-                        + unsignedByte(registers.read(Y(opcode)));
+        int result = unsignedByte(registers.read(X(opcode)))
+                + unsignedByte(registers.read(Y(opcode)));
 
         int carry = 0;
 
@@ -375,11 +374,9 @@ class CPUSuperChipImpl extends AbstractCPU {
         int result = registers.read(X(opcode)) - registers.read(Y(opcode));
 
         // todo: should negative values really be 255? does it even matter?
-        registers.write(X(opcode), result < 0 ? 0xFF : result);
-        registers.write(
-                Registers.CARRY,
-                (result < 0) ? 0 : 1 // here CARRY means BORROW (underflow) and is inversely applied
-        );
+        registers.write(X(opcode), (result < 0) ? 0xFF : result);
+
+        registers.write(Registers.CARRY, (result < 0) ? 0 : 1);
     }
 
     /**
@@ -388,15 +385,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      * the carry flag is set to 0 (1 otherwise).
      */
     private void opcode8XY7(int opcode) {
-        int result =
-                unsignedByte(registers.read(Y(opcode)))
-                        - unsignedByte(registers.read(X(opcode)));
+        int result = registers.read(Y(opcode)) - registers.read(X(opcode));
 
-        registers.write(X(opcode), result);
-        registers.write(
-                Registers.CARRY,
-                (result < 0) ? 0 : 1
-        );
+        // todo: should negative values really be 255? does it even matter?
+        registers.write(X(opcode), (result < 0) ? 0xFF : result);
+
+        registers.write(Registers.CARRY, (result < 0) ? 0 : 1);
     }
 
     /**
