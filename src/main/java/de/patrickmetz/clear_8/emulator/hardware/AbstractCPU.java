@@ -69,10 +69,17 @@ abstract public class AbstractCPU implements CPU {
     }
 
     /**
-     * Get the least significant (i.e. first) bit of a byte
+     * Get the least significant (i.e. rightmost) bit of a byte
      */
     protected static int LSB(int value) {
         return value & 0b0000_0001;
+    }
+
+    /**
+     * Get the most significant (i.e. leftmost) bit of a byte
+     */
+    protected static int MSB(int value) {
+        return value & 0b1000_0000;
     }
 
     /**

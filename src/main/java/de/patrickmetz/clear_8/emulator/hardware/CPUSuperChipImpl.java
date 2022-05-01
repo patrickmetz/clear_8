@@ -350,8 +350,7 @@ class CPUSuperChipImpl extends AbstractCPU {
      * flag is set to 1 (0 otherwise).
      */
     private void opcode8XY4(int opcode) {
-        int result = unsignedByte(registers.read(X(opcode)))
-                + unsignedByte(registers.read(Y(opcode)));
+        int result = registers.read(X(opcode)) + registers.read(Y(opcode));
 
         int carry = 0;
 
@@ -371,12 +370,12 @@ class CPUSuperChipImpl extends AbstractCPU {
      * is set to 0 (1 otherwise).
      */
     private void opcode8XY5(int opcode) {
-        int result = registers.read(X(opcode)) - registers.read(Y(opcode));
+        int     result       = registers.read(X(opcode)) - registers.read(Y(opcode));
+        boolean lessThanZero = result < 0;
 
-        // todo: should negative values really be 255? does it even matter?
-        registers.write(X(opcode), (result < 0) ? 0xFF : result);
-
-        registers.write(Registers.CARRY, (result < 0) ? 0 : 1);
+        // todo: is 255 ok here?
+        registers.write(X(opcode), lessThanZero ? 0xFF : result);
+        registers.write(Registers.CARRY, lessThanZero ? 0 : 1);
     }
 
     /**
@@ -385,28 +384,24 @@ class CPUSuperChipImpl extends AbstractCPU {
      * the carry flag is set to 0 (1 otherwise).
      */
     private void opcode8XY7(int opcode) {
-        int result = registers.read(Y(opcode)) - registers.read(X(opcode));
+        int     result       = registers.read(Y(opcode)) - registers.read(X(opcode));
+        boolean lessThanZero = result < 0;
 
-        // todo: should negative values really be 255? does it even matter?
-        registers.write(X(opcode), (result < 0) ? 0xFF : result);
-
-        registers.write(Registers.CARRY, (result < 0) ? 0 : 1);
+        // todo: is 255 ok here?
+        registers.write(X(opcode), lessThanZero ? 0xFF : result);
+        registers.write(Registers.CARRY, lessThanZero ? 0 : 1);
     }
 
     /**
+     * Shifts data register Y to the left by 1 bit and stores the result in X.
      * Sets the carry register to the most significant bit
-     * of data register X.
-     * <p>
-     * Shifts data register X to the left by 1 bit.
+     * of data register Y's value befpre the shift.
      */
     private void opcode8XYE(int opcode) {
-        int X = X(opcode);
+        int Yvalue = registers.read(Y(opcode));
 
-        registers.write(Registers.CARRY, X & MSB);
-        registers.write(
-                X,
-                registers.read(X) << 1
-        );
+        registers.write(X(opcode), Yvalue << 1);
+        registers.write(Registers.CARRY, MSB(Yvalue));
     }
 
     /**
