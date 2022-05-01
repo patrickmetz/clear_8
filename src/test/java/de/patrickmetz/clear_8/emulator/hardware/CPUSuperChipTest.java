@@ -315,13 +315,13 @@ class CPUSuperChipImplTest {
     @Test
     void opcode8XYE() {
         registers.write(0x0, 0xFF);
-        registers.write(0x1, 0b0000_0010);
+        registers.write(0x1, 0b1000_0010);
 
         writeOpcodeToMemory(0x801E); // X = 0x0, Y = 0x1
         processOpcode();
 
         assertEquals(0b0000_0100, registers.read(0x0)); // X = (Y << 1) ?
-        assertEquals(0x0, registers.read(CARRY)); // CARRY = (Y's previous MSB) = 0?
+        assertEquals(0x1, registers.read(CARRY)); // CARRY = (Y's previous MSB) = 1?
     }
 
     @BeforeEach

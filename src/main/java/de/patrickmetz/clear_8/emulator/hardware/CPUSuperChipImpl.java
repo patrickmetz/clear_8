@@ -395,12 +395,15 @@ class CPUSuperChipImpl extends AbstractCPU {
     /**
      * Shifts data register Y to the left by 1 bit and stores the result in X.
      * Sets the carry register to the most significant bit
-     * of data register Y's value befpre the shift.
+     * of data register Y's value before the shift.
      */
     private void opcode8XYE(int opcode) {
         int Yvalue = registers.read(Y(opcode));
 
-        registers.write(X(opcode), Yvalue << 1);
+        registers.write(
+                X(opcode),
+                unsignedByte(Yvalue << 1) // don't get the bits that got pushed out of the byte
+        );
         registers.write(Registers.CARRY, MSB(Yvalue));
     }
 

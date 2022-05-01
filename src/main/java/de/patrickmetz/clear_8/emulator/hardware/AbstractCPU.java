@@ -79,7 +79,7 @@ abstract public class AbstractCPU implements CPU {
      * Get the most significant (i.e. leftmost) bit of a byte
      */
     protected static int MSB(int value) {
-        return value & 0b1000_0000;
+        return (value & 0b1000_0000) >> 7;
     }
 
     /**
