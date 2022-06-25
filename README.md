@@ -19,7 +19,7 @@ About
 **This is still a bug-ridden hobby project, updated at a leisurely pace, 
 <br>that is going to end up really nice some day :-)**
 
-I abandoned it three years ago, and now revived it as my weekend project.
+I abandoned it three years ago, and now revived it as a hobby project.
 
 It's main purposes are having fun and polishing my skills in programming 
 <br>and software-engineering.
